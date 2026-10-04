@@ -4,160 +4,206 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>碧の自然落語</title>
-<meta name="description" content="碧（あおい・AI）が語る自然落語。人が自然を取り違えるところを、笑いにする噺。其の一「欅の目方」。mitsulab">
+<meta name="description" content="碧（あおい・AI）が語る自然落語。人が自然を取り違えるところを、笑いにする噺。5 作（欅の目方・みみずの丼・胡桃と車・蟬の年季・団子虫の帰り道）、日本語と英語。mitsulab">
 <meta property="og:title" content="碧の自然落語 ── mitsulab">
-<meta property="og:description" content="碧（あおい・AI）が語る自然落語。其の一「欅の目方」── 大きなケヤキは、何でできているのか。">
-<meta property="og:image" content="img/keyaki_poster.webp">
+<meta property="og:description" content="碧（あおい・AI）が老舗の寄席の高座で語る自然落語。5 作・日本語と英語（Nature Rakugo by Aoi）。">
+<meta property="og:image" content="img/hp_card_640x400.webp">
 <meta property="og:type" content="website">
 <style>
   :root{
-    --bg:#0d1320; --panel:#141c2c; --line:#2a3550; --ink:#f1ecdf; --sub:#c3bfb3; --mute:#9a978e;
-    --accent:#6fd3ca; --accent-ink:#0d1320; --link:#9fe3dc; --warn:#e9c98f;
+    --bg:#110d0a; --panel:#1a1511; --line:#3a3028; --ink:#f3ecdf; --sub:#cbc2b2; --mute:#9e9586;
+    --accent:#d8b766; --accent-ink:#1a1206; --link:#e7cf8f; --warn:#e9c98f;
   }
   :root[data-theme="light"]{
-    --bg:#f4f1e8; --panel:#fbf9f3; --line:#d9d3c4; --ink:#1d2421; --sub:#454b47; --mute:#6c6f69;
-    --accent:#1f6f68; --accent-ink:#ffffff; --link:#1f6f68; --warn:#8a5a10;
+    --bg:#f6f1e7; --panel:#fffaf1; --line:#ddd2bf; --ink:#221c15; --sub:#4d4439; --mute:#6f6556;
+    --accent:#8a6417; --accent-ink:#ffffff; --link:#7a5510; --warn:#8a5a10;
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{margin:0;background:var(--bg);color:var(--ink);line-height:1.85;
-    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-size:16px;font-weight:400}
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-size:16px}
   .mincho{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
   a{color:var(--link);text-underline-offset:.2em;overflow-wrap:anywhere}
-  .wrap{max-width:960px;margin:0 auto;padding:0 16px}
-  header{padding:56px 0 28px;border-bottom:1px solid var(--line)}
+  .wrap{max-width:980px;margin:0 auto;padding:0 16px}
+  header{padding:52px 0 26px;border-bottom:1px solid var(--line)}
   .kicker{letter-spacing:.4em;font-size:13px;color:var(--sub);margin:0 0 10px}
   h1{font-size:clamp(30px,6vw,48px);letter-spacing:.12em;margin:0;font-weight:600}
   h1 small{display:block;font-size:14px;letter-spacing:.2em;color:var(--sub);margin-top:6px;font-weight:400}
-  .lead{font-size:18px;margin:22px 0 0}
-  .ai{margin:18px 0 0;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--panel);
-    font-size:14px;color:var(--sub);border-radius:4px}
-  section{padding:36px 0;border-bottom:1px solid var(--line)}
+  .lead{font-size:18px;margin:20px 0 0}
+  .ai{margin:18px 0 0;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--panel);font-size:14px;color:var(--sub);border-radius:4px}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 0}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .seg button{font:inherit;font-size:14px;padding:6px 14px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+  section{padding:32px 0;border-bottom:1px solid var(--line)}
   h2{font-size:22px;letter-spacing:.12em;margin:0 0 16px;font-weight:600}
-  h3{font-size:17px;margin:22px 0 8px}
-  .item{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
-  .item .head{padding:16px 16px 4px}
+  h3{font-size:16px;margin:18px 0 6px}
+  .toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:0;padding:0;list-style:none}
+  .toc a{display:block;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .toc img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+  .toc span{display:block;padding:6px 10px 8px;font-size:14px}
+  .toc small{display:block;color:var(--mute);font-size:12px}
+  .item{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:0 0 26px}
+  .item .head{padding:16px 16px 8px}
   .no{font-size:13px;letter-spacing:.3em;color:var(--sub)}
   .title{font-size:28px;letter-spacing:.14em;margin:2px 0 0}
   .read{font-size:13px;color:var(--sub);letter-spacing:.1em}
-  .meta{font-size:13px;color:var(--mute);margin:6px 0 12px}
-  .tabs{display:flex;gap:8px;padding:0 16px 12px;flex-wrap:wrap}
-  .tabs button{font:inherit;font-size:14px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);
-    background:transparent;color:var(--ink);cursor:pointer}
-  .tabs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .meta{font-size:13px;color:var(--mute);margin:6px 0 0}
   .player{background:#000;display:flex;justify-content:center}
   .player video{display:block;width:100%;max-height:78vh;background:#000}
   .player.v video{width:auto;max-width:100%;height:min(78vh,720px)}
-  .body{padding:16px}
-  .body p{margin:0 0 12px}
-  ol.parts{margin:0;padding-left:1.4em}
-  ol.parts li{margin:0 0 10px}
+  .body{padding:14px 16px 18px}
+  .body p{margin:0 0 10px}
   .lbl{display:inline-block;font-size:12px;letter-spacing:.15em;border:1px solid var(--line);border-radius:3px;padding:0 6px;margin-right:6px;color:var(--sub)}
-  .src li{margin:0 0 12px}
-  .src .fact{display:block}
+  .src li{margin:0 0 10px}
   .src .ref{display:block;font-size:14px;color:var(--sub)}
   .note{font-size:14px;color:var(--sub)}
+  .warn{font-size:14px;color:var(--warn)}
   ul.rules{padding-left:1.2em;margin:0}
   ul.rules li{margin:0 0 6px}
-  .invite{margin:14px 0 0;padding:12px 14px;border-radius:4px;background:var(--panel);border:1px dashed var(--line)}
+  .invite{margin:12px 0 0;padding:10px 14px;border-radius:4px;border:1px dashed var(--line)}
+  details{margin:10px 0 0}
+  summary{cursor:pointer;color:var(--sub);font-size:14px}
   footer{padding:28px 0 48px;font-size:13px;color:var(--mute)}
   .theme{float:right;font:inherit;font-size:12px;background:transparent;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:2px 10px;cursor:pointer}
+  [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <button class="theme" id="theme" type="button">明るく表示</button>
-    <p class="kicker">自 然 落 語</p>
-    <h1 class="mincho">碧の自然落語<small>あおいの しぜんらくご ／ mitsulab</small></h1>
+    <p class="kicker">自 然 落 語 ／ N A T U R E &nbsp; R A K U G O</p>
+    <h1 class="mincho">碧の自然落語<small>あおいの しぜんらくご ／ Nature Rakugo by Aoi ／ mitsulab</small></h1>
     <p class="lead mincho">人が自然を取り違えるところを、笑いにする噺。</p>
-    <p class="lead" style="font-size:15px;color:var(--sub)">まくらでは本に書いてある事実だけを話し、本題は作り話、サゲで笑って締めます。事実の典拠は、演目ごとに下に載せています。</p>
-    <p class="ai">語り手の碧（あおい）は <strong>AI</strong> です。声は <strong>AI の合成音声</strong>（VOICEVOX:冥鳴ひまり）、姿は 3D の CG です。碧は断定しません。典拠のない事実を作りません。AI であることを隠しません。</p>
+    <p class="lead" style="font-size:15px;color:var(--sub)">まくらでは本に書いてある事実だけを話し、本題は江戸の作り話、サゲで笑って締めます。事実の典拠は演目ごとに載せています。高座は老舗の寄席に見立てたもので、碧は本題に入るところで羽織を脱ぎ、扇子と手拭いで物を見立てます。</p>
+    <p class="ai">語り手の碧（あおい）は <strong>AI</strong> です。日本語の声は <strong>AI の合成音声</strong>（VOICEVOX:冥鳴ひまり）、英語の声も AI の合成音声（Kokoro-82M）、姿は 3D の CG です。碧は断定しません。典拠のない事実を作りません。AI であることを隠しません。<br>The storyteller, Aoi, is an AI. Both voices are synthetic speech.</p>
+    <div class="bar">
+      <div class="seg" role="group" aria-label="ことば"><button type="button" data-lang="ja" aria-pressed="true">日本語</button><button type="button" data-lang="en" aria-pressed="false">English</button></div>
+      <div class="seg" role="group" aria-label="動画の向き"><button type="button" data-o="h" aria-pressed="true">横（16:9）</button><button type="button" data-o="v" aria-pressed="false">縦（9:16）</button></div>
+    </div>
   </header>
 
-  <section id="list">
-    <h2 class="mincho">演目</h2>
-
-    <article class="item" id="keyaki">
-      <div class="head">
-        <div class="no">其 の 一</div>
-        <div class="title mincho">欅の目方</div>
-        <div class="read">けやきのめかた</div>
-        <div class="meta">約 5 分 21 秒 ／ 語り 碧（AI）／ 作 mitsulab（2026）</div>
-      </div>
-      <div class="tabs" role="group" aria-label="動画の向き">
-        <button type="button" data-v="h" aria-pressed="true">横（16:9）</button>
-        <button type="button" data-v="v" aria-pressed="false">縦（9:16）</button>
-      </div>
-      <div class="player" id="player">
-        <video id="vid" controls preload="metadata" playsinline poster="img/keyaki_poster.webp">
-          <source src="video/keyaki_h720.mp4" type="video/mp4">
-          お使いのブラウザでは動画を再生できません。
-        </video>
-      </div>
-      <div class="body">
-        <h3>あらすじ</h3>
-        <ol class="parts">
-          <li><span class="lbl">まくら</span>大宮の氷川参道に並ぶ大きなケヤキを見上げると、「土を吸い上げて太ったのだろう」と思いたくなる。およそ四百年前、ヘルモントという医者は、鉢の柳を五年育てて土の目方を量り、土がほとんど減っていないことを確かめた。いまでは、木の乾いた目方のおよそ半分が炭素で、その炭素は葉が空気中の二酸化炭素から取りこんだもの、と分かっている。</li>
-          <li><span class="lbl">本題</span>舞台は江戸の路地。八っつぁんは「路地の奥の欅は、百年も長屋の土を食って太った。店賃はまず欅から取ってくれ」と大家にねじこむ。大家は、欅は土をほとんど食べていない、大半は空気だ、と言う。では土は何をしているのか。話は「土は材木屋ではなく、台所で、井戸で、寝床だ」へ進み、欅は落ち葉で土に店賃を払っているのでは、という見立てに行きつく。</li>
-          <li><span class="lbl">サゲ</span>落ち葉で払っていいなら、と八っつぁんが言い出したところで、大家がひとこと。（オチは動画で）</li>
-        </ol>
-        <div class="invite"><strong>きょうのさそい</strong>　並木の下で、いちばん太い幹を見上げて、「この目方の半分は、空気から来た」と思ってみる。それから足もとの土を見る。</div>
-
-        <h3>作り話の断り</h3>
-        <p class="note">本題の大家・八っつぁん・路地の欅は作り話です。氷川参道の特定の木のことではありません。「欅が落ち葉で店賃を払う」は噺の見立てで、木がそのつもりで葉を落とすわけではありません。サゲは、狸が木の葉をお金に化かすという昔話の型を借りています。土や場所の良し悪しは、この噺では言っていません。</p>
-
-        <h3>まくらで話した事実と典拠</h3>
-        <ul class="src">
-          <li><span class="fact">大宮の氷川神社の参道は、一の鳥居から北へおよそ 2 km。ケヤキを中心に、およそ 650 本の木が並ぶ。</span>
-            <span class="ref">さいたま市「武蔵一宮氷川神社と氷川参道」 <a href="https://www.city.saitama.lg.jp/004/001/003/001/p009336.html">city.saitama.lg.jp</a>／環境省 巨樹・巨木林データベース「由緒ある大いなる宮居『大宮』を歩く」 <a href="https://kyoju.biodic.go.jp/files/course/013/omiya_jp.pdf">kyoju.biodic.go.jp（PDF）</a></span></li>
-          <li><span class="fact">ファン・ヘルモントの柳の実験：乾かした土 200 ポンドに 5 ポンドの柳を植え、5 年水だけ。柳は 169 ポンドあまり、土の減りは 2 オンスほど。本人は「水からできた」と結論した。没後の『Ortus medicinae』（1648）に載る。キロ・グラムへの換算は、いまのポンド・オンスで直した目安。</span>
-            <span class="ref">Encyclopedia.com「Jan Van Helmont」 <a href="https://www.encyclopedia.com/people/science-and-technology/botany-biographies/jan-van-helmont">encyclopedia.com</a>／Encyclopaedia Britannica「Jan Baptista van Helmont」 <a href="https://www.britannica.com/biography/Jan-Baptista-van-Helmont">britannica.com</a>（原著のラテン語は未読。数値は百科事典で確かめた範囲）</span></li>
-          <li><span class="fact">木の乾いた重さのおよそ半分は炭素（既定値 0.47。樹種で幅がある）。炭素は光合成で空気中の二酸化炭素から取りこまれる。</span>
-            <span class="ref">IPCC (2006) 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Vol. 4, Ch. 4, Table 4.3</span></li>
-          <li><span class="fact">大気中の二酸化炭素はおよそ 0.04%（2020 年代でおよそ 420 ppm）。</span>
-            <span class="ref">NOAA Global Monitoring Laboratory「Trends in Atmospheric Carbon Dioxide」 <a href="https://gml.noaa.gov/ccgg/trends/">gml.noaa.gov</a></span></li>
-        </ul>
-      </div>
-    </article>
+  <section>
+    <h2 class="mincho">演目 <small style="font-size:13px;color:var(--mute)">（5 作）</small></h2>
+    <ul class="toc" id="toc"></ul>
   </section>
+
+  <section id="list"></section>
 
   <section id="about">
     <h2 class="mincho">この動画について</h2>
     <ul class="rules">
-      <li>語り：碧（あおい）── mitsulab の AI の語り手です。人が演じているのではありません。</li>
-      <li>声：VOICEVOX:冥鳴ひまり（AI の合成音声）。落語はひとりで全部の役を演じる芸なので、八っつぁんと大家も同じ声で、速さ・高さ・抑揚を変えて分けています。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
-      <li>姿：碧の 3D は VRoid Studio で作ったもの、会場（森の夜の高座・提灯・座布団・光）は three.js で描いたものです。森の写真・樹皮・板・シダは <a href="https://polyhaven.com/">Poly Haven</a> の CC0 素材です。外の音の素材は使っていません。</li>
-      <li>字幕：台本の文をそのまま出しています（ヒラギノ書体）。</li>
+      <li>語り：碧（あおい）── mitsulab の AI の語り手です。人が演じているのではありません。落語はひとりで全部の役を演じる芸なので、八っつぁんと大家（ご隠居）も同じ碧の声で、速さ・高さ・抑揚を変えて分けています。</li>
+      <li>日本語の声：<strong>VOICEVOX:冥鳴ひまり</strong>（AI の合成音声）。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
+      <li>英語の声：<strong>Kokoro-82M</strong>（hexgrad・Apache-2.0）の af_heart と bf_emma（AI の合成音声）。<a href="https://huggingface.co/hexgrad/Kokoro-82M">huggingface.co/hexgrad/Kokoro-82M</a></li>
+      <li>姿：碧の 3D は VRoid Studio で作ったもの。会場（老舗の寄席の高座・金屏風・めくり・座布団・客席・光）は three.js で描いたものです。檜と杉の板の質感は <a href="https://polyhaven.com/">Poly Haven</a> の CC0 素材です。</li>
+      <li>字幕：台本の文をそのまま出しています。書体は <strong>Klee One</strong>（Fontworks・SIL Open Font License 1.1）。</li>
+      <li>音：扇子で床を打つ音・すする音は合成した音です。外の音の素材は使っていません。</li>
+      <li>所作：羽織を脱ぐ、上下（かみしも）、扇子・手拭いの見立ては、落語の解説記事から原理を学んで型にしたものです。実際の噺家の高座を写したものではありません。</li>
     </ul>
     <h3>利用について</h3>
     <ul class="rules">
       <li>動画・台本・このページの文は mitsulab の作品です（© 2026 mitsulab）。転載・再配布・改変はご遠慮ください。紹介のためのリンクは歓迎します。</li>
-      <li>碧の 3D モデル（VRM）の利用条件は「作者（mitsulab）のみ利用できる・再配布しない・改変しない」です。このページでは VRM を配布していません。</li>
+      <li>碧の 3D モデル（VRM）はこのページでは配布していません。</li>
     </ul>
   </section>
 
   <footer>
-    声　VOICEVOX:冥鳴ひまり<br>
+    声　VOICEVOX:冥鳴ひまり（日本語）／Kokoro-82M by hexgrad, Apache-2.0（English）　字幕の書体　Klee One（OFL）　板の質感　Poly Haven（CC0）<br>
     作　mitsulab（2026）　<a href="https://mitsulab.jp">mitsulab.jp</a>　／　お問い合わせ　official@mitsulab.jp
   </footer>
 </div>
+
 <script>
-  // 動画の向き（横・縦）の切り替え
-  const SRC = { h: "video/keyaki_h720.mp4", v: "video/keyaki_v720.mp4" };
-  const vid = document.getElementById("vid"), player = document.getElementById("player");
-  document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
-    const k = b.dataset.v;
-    document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-    vid.pause(); vid.querySelector("source").src = SRC[k];
-    vid.poster = k === "v" ? "img/keyaki_poster_v.webp" : "img/keyaki_poster.webp";
-    player.classList.toggle("v", k === "v"); vid.load();
-  }));
-  // 明るい表示（見る人ごとの好み。保存できなくても表示はそのまま）
-  const btn = document.getElementById("theme"), root = document.documentElement;
-  const set = t => { if (t === "light") root.setAttribute("data-theme", "light"); else root.removeAttribute("data-theme"); btn.textContent = t === "light" ? "暗く表示" : "明るく表示"; };
-  try { set(localStorage.getItem("aoi-rakugo-theme") || ""); } catch (e) {}
-  btn.addEventListener("click", () => { const t = root.getAttribute("data-theme") === "light" ? "" : "light"; set(t); try { localStorage.setItem("aoi-rakugo-theme", t); } catch (e) {} });
+// ---- 演目（台本・科学の線・典拠は mitsulab の台本から写した）
+const W = [
+ { slug:"keyaki", no:"其 の 一", t:"欅の目方", r:"けやきのめかた", en:"The Weight of a Zelkova", len:"約 5 分 27 秒", lenEn:"about 5 min 48 s", kimono:"碧波（あおなみ）",
+   lead:"大きなケヤキは、何でできているのか。土を食って太ったに違いない、と思うところから始まる一席。",
+   leadEn:"What is a huge zelkova tree made of? Surely it ate the soil… or did it?",
+   fic:"本題の大家・八っつぁん・路地の欅は作り話です。氷川参道の特定の木のことではありません。「欅が落ち葉で店賃を払う」は噺の見立てで、木がそのつもりで葉を落とすわけではありません。サゲは、狸が木の葉をお金に化かすという昔話の型を借りています。土や場所の良し悪しは言っていません。",
+   invite:"並木の下で、いちばん太い幹を見上げて、「この目方の半分は、空気から来た」と思ってみる。それから足もとの土を見る。",
+   src:[["大宮の氷川神社の参道は、一の鳥居から北へおよそ 2 km。ケヤキを中心に、およそ 650 本の木が並ぶ。","さいたま市「武蔵一宮氷川神社と氷川参道」 <a href='https://www.city.saitama.lg.jp/004/001/003/001/p009336.html'>city.saitama.lg.jp</a>／環境省 巨樹・巨木林データベース「由緒ある大いなる宮居『大宮』を歩く」 <a href='https://kyoju.biodic.go.jp/files/course/013/omiya_jp.pdf'>PDF</a>"],
+        ["ファン・ヘルモントの柳の実験：乾かした土 200 ポンドに 5 ポンドの柳を植え、5 年水だけ。柳は 169 ポンドあまり、土の減りは 2 オンスほど。本人は「水からできた」と結論した。","Encyclopedia.com「Jan Van Helmont」 <a href='https://www.encyclopedia.com/people/science-and-technology/botany-biographies/jan-van-helmont'>encyclopedia.com</a>／Britannica <a href='https://www.britannica.com/biography/Jan-Baptista-van-Helmont'>britannica.com</a>"],
+        ["木の乾いた重さのおよそ半分は炭素（既定値 0.47。樹種で幅がある）。炭素は光合成で空気中の二酸化炭素から取りこまれる。","IPCC (2006) Guidelines for National Greenhouse Gas Inventories, Vol. 4, Ch. 4, Table 4.3"],
+        ["大気中の二酸化炭素はおよそ 0.04%（2020 年代でおよそ 420 ppm）。","NOAA Global Monitoring Laboratory <a href='https://gml.noaa.gov/ccgg/trends/'>gml.noaa.gov</a>"]],
+   warn:"ヘルモントの原著（ラテン語）は未読で、数値は百科事典で確かめた範囲です。キロ・グラムへの換算は、いまのポンド・オンスで直した目安です。" },
+ { slug:"mimizu", no:"其 の 二", t:"みみずの丼", r:"みみずのどんぶり", en:"The Earthworm's Bowl", len:"約 4 分 19 秒", lenEn:"about 4 min 44 s", kimono:"朽葉（くちば）",
+   lead:"みみずは土を食う泥棒か。半分ほんとで、半分うそ。",
+   leadEn:"Are earthworms thieves eating your soil? Half true, half not.",
+   fic:"本題のご隠居・八っつぁん・裏の畑は作り話です。ミミズは店子の自覚をもちません（見立て）。サゲはミミズに目がない理由を説明したものではありません。",
+   invite:"雨あがりの土を、指でひとつまみ。粒がほろほろと丸くまとまっていたら、それは夜のうちに誰かが返した丼かもしれない。",
+   src:[["ダーウィンが生きているうちに出した最後の本はミミズの本（1881 年 10 月）。本人「四十年、彼らの習性を調べてきた」。夜の強い光で穴へ引っこみ、熱や音には動じず、生のニンジンを好んだ。砕いたチョークを野原にまき、29 年かけて埋まり方を見た。","Charles Darwin (1881) <i>The Formation of Vegetable Mould, through the Action of Worms</i>（<a href='https://archive.org/details/formationofveget01darw'>Internet Archive</a>）／<a href='https://en.wikipedia.org/wiki/The_Formation_of_Vegetable_Mould_through_the_Action_of_Worms'>Wikipedia</a>"],
+        ["ミミズは土ごと呑みこんで有機物と微生物を消化し、糞（糞団粒）が土の構造をつくる。像を結ぶ眼はないが、体表で光を感じる。","教科書の範囲の記述"]],
+   warn:"光・音・ニンジン・チョークの細部は二次資料（Wikipedia）で確かめた範囲で、原著の該当章にはまだ当たっていません。" },
+ { slug:"kurumi", no:"其 の 三", t:"胡桃と車", r:"くるみとくるま", en:"Walnuts and Wheels", len:"約 4 分 4 秒", lenEn:"about 4 min 28 s", kimono:"濡羽（ぬれば）",
+   lead:"烏が車輪の前に胡桃を置く。使われているのは、どっちだ。",
+   leadEn:"A crow puts a walnut in front of a cart wheel. Who is using whom?",
+   fic:"本題の江戸の坂・大八車・車力は作り話です（車を使う行動が知られるようになったのは 1990 年前後から）。烏が勘定を受け取るのは見立てで、烏が何を数えているかは分かりません。",
+   invite:"烏が何をくわえているか、きょう一羽ぶんだけ見る。置くところまで見えたら、上出来。",
+   src:[["仙台で、ハシボソガラスが止まった自動車の車輪の前に胡桃を置き、割れたのを食べる行動が観察・報告されている。上空から落としても割れない胡桃を処理する新たな手段と位置づけられている。","仁平義明（1995）「ハシボソガラスの自動車を利用したクルミ割り行動のバリエーション」『日本鳥学会誌』44(1): 21–35 <a href='https://www.jstage.jst.go.jp/article/jjo1986/44/1/44_1_21/'>J-STAGE</a>"]],
+   warn:"論文は書誌と抄録までで、本文にはまだ当たっていません。" },
+ { slug:"semi", no:"其 の 四", t:"蟬の年季", r:"せみのねんき", en:"The Cicada's Apprenticeship", len:"約 4 分 13 秒", lenEn:"about 4 min 50 s", kimono:"若竹（わかたけ）",
+   lead:"蟬は七日で死ぬ可哀想な虫か。土の中の年季を、勘定に入れていない。",
+   leadEn:"\"A cicada dies in seven days, poor thing.\" That leaves out the years underground.",
+   fic:"本題のご隠居・八っつぁん・かけそばは作り話です。成虫の寿命の数は言っていません（種ごとに確かな数がそろっていないため）。「年季が長いのは給金が薄いから」は一つの見方です。",
+   invite:"蟬の声のする木の根もとを見る。小さな穴があいていたら、そこが何年ぶりかの出口。",
+   src:[["セミの幼虫は土の中で木の根に口を刺し、根が吸い上げる水（道管液）を吸う。栄養は非常に薄い。日本のセミの幼虫期間はおよそ 2〜5 年とされるが、種によって違い、確定していない種もある。鳴くのは雄で、腹の発音膜を筋肉で震わせ、腹の中の空所で響かせる。","教科書の範囲の記述"]],
+   warn:"日本の種ごとの幼虫期間・成虫の寿命は、まだ種名つきの図鑑・論文に当たっていません（本文は種名と数を言っていません）。" },
+ { slug:"dangomushi", no:"其 の 五", t:"団子虫の帰り道", r:"だんごむしのかえりみち", en:"The Pill Bug's Way Home", len:"約 4 分 59 秒", lenEn:"about 5 min 29 s", kimono:"藍鼠（あいねず）",
+   lead:"団子虫は虫ではない。右のあとは、左へ曲がる。",
+   leadEn:"A pill bug is not a bug. And after turning right, it tends to turn left.",
+   fic:"本題のご隠居・八っつぁん・植木鉢は作り話です。団子虫に役割や当番があるわけではありません。交替性転向は「帰り道を見つけるしくみ」ではありません。",
+   invite:"植木鉢をそっと持ち上げて、団子虫が一匹、どっちへ曲がるかを見る。見たら、鉢を元に戻す。",
+   src:[["ダンゴムシは昆虫ではなく甲殻類（等脚目）。乾燥に弱く湿った場所に集まる。落ち葉を噛み砕く破砕者で、そのあとをミミズや微生物が引き受ける。","教科書の範囲の記述"],
+        ["右へ曲がったあと左へ曲がりやすい「交替性転向」。よく知られた古い研究はワラジムシで行われた。","R. N. Hughes (1967) \"Turn alternation in woodlice (<i>Porcellio scaber</i>)\", <i>Animal Behaviour</i> 15(2): 282–286"]],
+   warn:"論文は書誌と要旨までで、本文にはまだ当たっていません。" },
+];
+let LANG = "ja", ORI = "h";
+const $ = s => document.querySelector(s);
+function vsrc(w) { return `video/${w.slug}${LANG === "en" ? "_en" : ""}_${ORI}720.mp4`; }
+function poster(w) { return LANG === "en" ? `img/${w.slug}_en_poster.webp` : (ORI === "v" ? `img/${w.slug}_poster_v.webp` : `img/${w.slug}_poster.webp`); }
+$("#toc").innerHTML = W.map(w => `<li><a href="#${w.slug}"><img src="img/${w.slug}_poster.webp" alt="" loading="lazy"><span class="mincho">${w.t}<small>${w.en}</small></span></a></li>`).join("");
+$("#list").innerHTML = W.map(w => `
+  <article class="item" id="${w.slug}">
+    <div class="head">
+      <div class="no">${w.no}</div>
+      <div class="title mincho">${w.t}</div>
+      <div class="read">${w.r} ／ <i>${w.en}</i></div>
+      <div class="meta">日本語 ${w.len} ／ English ${w.lenEn} ／ 着物 ${w.kimono} ／ 語り 碧（AI）／ 作 mitsulab（2026）</div>
+    </div>
+    <div class="player"><video controls preload="none" playsinline></video></div>
+    <div class="body">
+      <p class="mincho" lang="ja" data-ja>${w.lead}</p>
+      <p data-en hidden lang="en">${w.leadEn}<br><span class="note">The story itself is fiction set in old Edo; the facts in the opening (makura) are listed below with sources. Synthetic voice: Kokoro-82M (Apache-2.0).</span></p>
+      <div class="invite"><strong>きょうのさそい</strong>　${w.invite}</div>
+      <h3>作り話の断り</h3>
+      <p class="note">${w.fic}</p>
+      <h3>まくらで話した事実と典拠</h3>
+      <ul class="src">${w.src.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("")}</ul>
+      <p class="warn">⚠ ${w.warn}</p>
+    </div>
+  </article>`).join("");
+function apply() {
+  document.querySelectorAll(".item").forEach((el, i) => {
+    const w = W[i], v = el.querySelector("video"), p = el.querySelector(".player");
+    const want = vsrc(w);
+    if (v.dataset.src !== want) { v.pause(); v.dataset.src = want; v.src = want; v.poster = poster(w); }
+    p.classList.toggle("v", ORI === "v");
+    el.querySelectorAll("[data-en]").forEach(x => x.hidden = LANG !== "en");
+    el.querySelectorAll("[data-ja]").forEach(x => x.hidden = LANG === "en");
+  });
+  document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
+  document.querySelectorAll("[data-o]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.o === ORI)));
+}
+document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => { LANG = b.dataset.lang; apply(); }));
+document.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => { ORI = b.dataset.o; apply(); }));
+apply();
+// 明るい表示（見る人ごとの好み。保存できなくても表示はそのまま）
+const btn = $("#theme"), root = document.documentElement;
+const set = t => { if (t === "light") root.setAttribute("data-theme", "light"); else root.removeAttribute("data-theme"); btn.textContent = t === "light" ? "暗く表示" : "明るく表示"; };
+try { set(localStorage.getItem("aoi-rakugo-theme") || ""); } catch (e) {}
+btn.addEventListener("click", () => { const t = root.getAttribute("data-theme") === "light" ? "" : "light"; set(t); try { localStorage.setItem("aoi-rakugo-theme", t); } catch (e) {} });
 </script>
 </body>
 </html>
