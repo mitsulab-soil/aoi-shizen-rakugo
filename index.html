@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>碧の自然落語</title>
+<meta name="description" content="碧（あおい・AI）が語る自然落語。人が自然を取り違えるところを、笑いにする噺。其の一「欅の目方」。mitsulab">
+<meta property="og:title" content="碧の自然落語 ── mitsulab">
+<meta property="og:description" content="碧（あおい・AI）が語る自然落語。其の一「欅の目方」── 大きなケヤキは、何でできているのか。">
+<meta property="og:image" content="img/keyaki_poster.webp">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --bg:#0d1320; --panel:#141c2c; --line:#2a3550; --ink:#f1ecdf; --sub:#c3bfb3; --mute:#9a978e;
+    --accent:#6fd3ca; --accent-ink:#0d1320; --link:#9fe3dc; --warn:#e9c98f;
+  }
+  :root[data-theme="light"]{
+    --bg:#f4f1e8; --panel:#fbf9f3; --line:#d9d3c4; --ink:#1d2421; --sub:#454b47; --mute:#6c6f69;
+    --accent:#1f6f68; --accent-ink:#ffffff; --link:#1f6f68; --warn:#8a5a10;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.85;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-size:16px;font-weight:400}
+  .mincho{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
+  a{color:var(--link);text-underline-offset:.2em;overflow-wrap:anywhere}
+  .wrap{max-width:960px;margin:0 auto;padding:0 16px}
+  header{padding:56px 0 28px;border-bottom:1px solid var(--line)}
+  .kicker{letter-spacing:.4em;font-size:13px;color:var(--sub);margin:0 0 10px}
+  h1{font-size:clamp(30px,6vw,48px);letter-spacing:.12em;margin:0;font-weight:600}
+  h1 small{display:block;font-size:14px;letter-spacing:.2em;color:var(--sub);margin-top:6px;font-weight:400}
+  .lead{font-size:18px;margin:22px 0 0}
+  .ai{margin:18px 0 0;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--panel);
+    font-size:14px;color:var(--sub);border-radius:4px}
+  section{padding:36px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:22px;letter-spacing:.12em;margin:0 0 16px;font-weight:600}
+  h3{font-size:17px;margin:22px 0 8px}
+  .item{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .item .head{padding:16px 16px 4px}
+  .no{font-size:13px;letter-spacing:.3em;color:var(--sub)}
+  .title{font-size:28px;letter-spacing:.14em;margin:2px 0 0}
+  .read{font-size:13px;color:var(--sub);letter-spacing:.1em}
+  .meta{font-size:13px;color:var(--mute);margin:6px 0 12px}
+  .tabs{display:flex;gap:8px;padding:0 16px 12px;flex-wrap:wrap}
+  .tabs button{font:inherit;font-size:14px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);
+    background:transparent;color:var(--ink);cursor:pointer}
+  .tabs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .player{background:#000;display:flex;justify-content:center}
+  .player video{display:block;width:100%;max-height:78vh;background:#000}
+  .player.v video{width:auto;max-width:100%;height:min(78vh,720px)}
+  .body{padding:16px}
+  .body p{margin:0 0 12px}
+  ol.parts{margin:0;padding-left:1.4em}
+  ol.parts li{margin:0 0 10px}
+  .lbl{display:inline-block;font-size:12px;letter-spacing:.15em;border:1px solid var(--line);border-radius:3px;padding:0 6px;margin-right:6px;color:var(--sub)}
+  .src li{margin:0 0 12px}
+  .src .fact{display:block}
+  .src .ref{display:block;font-size:14px;color:var(--sub)}
+  .note{font-size:14px;color:var(--sub)}
+  ul.rules{padding-left:1.2em;margin:0}
+  ul.rules li{margin:0 0 6px}
+  .invite{margin:14px 0 0;padding:12px 14px;border-radius:4px;background:var(--panel);border:1px dashed var(--line)}
+  footer{padding:28px 0 48px;font-size:13px;color:var(--mute)}
+  .theme{float:right;font:inherit;font-size:12px;background:transparent;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:2px 10px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <button class="theme" id="theme" type="button">明るく表示</button>
+    <p class="kicker">自 然 落 語</p>
+    <h1 class="mincho">碧の自然落語<small>あおいの しぜんらくご ／ mitsulab</small></h1>
+    <p class="lead mincho">人が自然を取り違えるところを、笑いにする噺。</p>
+    <p class="lead" style="font-size:15px;color:var(--sub)">まくらでは本に書いてある事実だけを話し、本題は作り話、サゲで笑って締めます。事実の典拠は、演目ごとに下に載せています。</p>
+    <p class="ai">語り手の碧（あおい）は <strong>AI</strong> です。声は <strong>AI の合成音声</strong>（VOICEVOX:冥鳴ひまり）、姿は 3D の CG です。碧は断定しません。典拠のない事実を作りません。AI であることを隠しません。</p>
+  </header>
+
+  <section id="list">
+    <h2 class="mincho">演目</h2>
+
+    <article class="item" id="keyaki">
+      <div class="head">
+        <div class="no">其 の 一</div>
+        <div class="title mincho">欅の目方</div>
+        <div class="read">けやきのめかた</div>
+        <div class="meta">約 5 分 21 秒 ／ 語り 碧（AI）／ 作 mitsulab（2026）</div>
+      </div>
+      <div class="tabs" role="group" aria-label="動画の向き">
+        <button type="button" data-v="h" aria-pressed="true">横（16:9）</button>
+        <button type="button" data-v="v" aria-pressed="false">縦（9:16）</button>
+      </div>
+      <div class="player" id="player">
+        <video id="vid" controls preload="metadata" playsinline poster="img/keyaki_poster.webp">
+          <source src="video/keyaki_h720.mp4" type="video/mp4">
+          お使いのブラウザでは動画を再生できません。
+        </video>
+      </div>
+      <div class="body">
+        <h3>あらすじ</h3>
+        <ol class="parts">
+          <li><span class="lbl">まくら</span>大宮の氷川参道に並ぶ大きなケヤキを見上げると、「土を吸い上げて太ったのだろう」と思いたくなる。およそ四百年前、ヘルモントという医者は、鉢の柳を五年育てて土の目方を量り、土がほとんど減っていないことを確かめた。いまでは、木の乾いた目方のおよそ半分が炭素で、その炭素は葉が空気中の二酸化炭素から取りこんだもの、と分かっている。</li>
+          <li><span class="lbl">本題</span>舞台は江戸の路地。八っつぁんは「路地の奥の欅は、百年も長屋の土を食って太った。店賃はまず欅から取ってくれ」と大家にねじこむ。大家は、欅は土をほとんど食べていない、大半は空気だ、と言う。では土は何をしているのか。話は「土は材木屋ではなく、台所で、井戸で、寝床だ」へ進み、欅は落ち葉で土に店賃を払っているのでは、という見立てに行きつく。</li>
+          <li><span class="lbl">サゲ</span>落ち葉で払っていいなら、と八っつぁんが言い出したところで、大家がひとこと。（オチは動画で）</li>
+        </ol>
+        <div class="invite"><strong>きょうのさそい</strong>　並木の下で、いちばん太い幹を見上げて、「この目方の半分は、空気から来た」と思ってみる。それから足もとの土を見る。</div>
+
+        <h3>作り話の断り</h3>
+        <p class="note">本題の大家・八っつぁん・路地の欅は作り話です。氷川参道の特定の木のことではありません。「欅が落ち葉で店賃を払う」は噺の見立てで、木がそのつもりで葉を落とすわけではありません。サゲは、狸が木の葉をお金に化かすという昔話の型を借りています。土や場所の良し悪しは、この噺では言っていません。</p>
+
+        <h3>まくらで話した事実と典拠</h3>
+        <ul class="src">
+          <li><span class="fact">大宮の氷川神社の参道は、一の鳥居から北へおよそ 2 km。ケヤキを中心に、およそ 650 本の木が並ぶ。</span>
+            <span class="ref">さいたま市「武蔵一宮氷川神社と氷川参道」 <a href="https://www.city.saitama.lg.jp/004/001/003/001/p009336.html">city.saitama.lg.jp</a>／環境省 巨樹・巨木林データベース「由緒ある大いなる宮居『大宮』を歩く」 <a href="https://kyoju.biodic.go.jp/files/course/013/omiya_jp.pdf">kyoju.biodic.go.jp（PDF）</a></span></li>
+          <li><span class="fact">ファン・ヘルモントの柳の実験：乾かした土 200 ポンドに 5 ポンドの柳を植え、5 年水だけ。柳は 169 ポンドあまり、土の減りは 2 オンスほど。本人は「水からできた」と結論した。没後の『Ortus medicinae』（1648）に載る。キロ・グラムへの換算は、いまのポンド・オンスで直した目安。</span>
+            <span class="ref">Encyclopedia.com「Jan Van Helmont」 <a href="https://www.encyclopedia.com/people/science-and-technology/botany-biographies/jan-van-helmont">encyclopedia.com</a>／Encyclopaedia Britannica「Jan Baptista van Helmont」 <a href="https://www.britannica.com/biography/Jan-Baptista-van-Helmont">britannica.com</a>（原著のラテン語は未読。数値は百科事典で確かめた範囲）</span></li>
+          <li><span class="fact">木の乾いた重さのおよそ半分は炭素（既定値 0.47。樹種で幅がある）。炭素は光合成で空気中の二酸化炭素から取りこまれる。</span>
+            <span class="ref">IPCC (2006) 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Vol. 4, Ch. 4, Table 4.3</span></li>
+          <li><span class="fact">大気中の二酸化炭素はおよそ 0.04%（2020 年代でおよそ 420 ppm）。</span>
+            <span class="ref">NOAA Global Monitoring Laboratory「Trends in Atmospheric Carbon Dioxide」 <a href="https://gml.noaa.gov/ccgg/trends/">gml.noaa.gov</a></span></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <section id="about">
+    <h2 class="mincho">この動画について</h2>
+    <ul class="rules">
+      <li>語り：碧（あおい）── mitsulab の AI の語り手です。人が演じているのではありません。</li>
+      <li>声：VOICEVOX:冥鳴ひまり（AI の合成音声）。落語はひとりで全部の役を演じる芸なので、八っつぁんと大家も同じ声で、速さ・高さ・抑揚を変えて分けています。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
+      <li>姿：碧の 3D は VRoid Studio で作ったもの、会場（森の夜の高座・提灯・座布団・光）は three.js で描いたものです。森の写真・樹皮・板・シダは <a href="https://polyhaven.com/">Poly Haven</a> の CC0 素材です。外の音の素材は使っていません。</li>
+      <li>字幕：台本の文をそのまま出しています（ヒラギノ書体）。</li>
+    </ul>
+    <h3>利用について</h3>
+    <ul class="rules">
+      <li>動画・台本・このページの文は mitsulab の作品です（© 2026 mitsulab）。転載・再配布・改変はご遠慮ください。紹介のためのリンクは歓迎します。</li>
+      <li>碧の 3D モデル（VRM）の利用条件は「作者（mitsulab）のみ利用できる・再配布しない・改変しない」です。このページでは VRM を配布していません。</li>
+    </ul>
+  </section>
+
+  <footer>
+    声　VOICEVOX:冥鳴ひまり<br>
+    作　mitsulab（2026）　<a href="https://mitsulab.jp">mitsulab.jp</a>　／　お問い合わせ　official@mitsulab.jp
+  </footer>
+</div>
+<script>
+  // 動画の向き（横・縦）の切り替え
+  const SRC = { h: "video/keyaki_h720.mp4", v: "video/keyaki_v720.mp4" };
+  const vid = document.getElementById("vid"), player = document.getElementById("player");
+  document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.v;
+    document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    vid.pause(); vid.querySelector("source").src = SRC[k];
+    vid.poster = k === "v" ? "img/keyaki_poster_v.webp" : "img/keyaki_poster.webp";
+    player.classList.toggle("v", k === "v"); vid.load();
+  }));
+  // 明るい表示（見る人ごとの好み。保存できなくても表示はそのまま）
+  const btn = document.getElementById("theme"), root = document.documentElement;
+  const set = t => { if (t === "light") root.setAttribute("data-theme", "light"); else root.removeAttribute("data-theme"); btn.textContent = t === "light" ? "暗く表示" : "明るく表示"; };
+  try { set(localStorage.getItem("aoi-rakugo-theme") || ""); } catch (e) {}
+  btn.addEventListener("click", () => { const t = root.getAttribute("data-theme") === "light" ? "" : "light"; set(t); try { localStorage.setItem("aoi-rakugo-theme", t); } catch (e) {} });
+</script>
+</body>
+</html>
