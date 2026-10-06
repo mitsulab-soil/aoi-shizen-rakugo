@@ -105,10 +105,10 @@
     <ul class="rules">
       <li>語り：碧（あおい）── 人と自然のあいだに立つ依代として語ります。落語はひとりで全部の役を演じる芸なので、八っつぁんと大家（ご隠居）も同じ碧の声で、速さ・高さ・抑揚を変えて分けています。</li>
       <li>日本語の声：<strong>VOICEVOX:冥鳴ひまり</strong>。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
-      <li>英語の声：<strong>Kokoro-82M</strong>（hexgrad・Apache-2.0）の af_heart と bf_emma。<a href="https://huggingface.co/hexgrad/Kokoro-82M">huggingface.co/hexgrad/Kokoro-82M</a></li>
+      <li>英語の声：<strong>Kokoro-82M</strong>（hexgrad・Apache-2.0）。af_heart と jf_alpha を半々に混ぜ、日本語の碧の声の高さに寄せています（大家・ご隠居の役は bf_emma も少し混ぜます）。<a href="https://huggingface.co/hexgrad/Kokoro-82M">huggingface.co/hexgrad/Kokoro-82M</a></li>
       <li>姿：碧の 3D は VRoid Studio で作ったもの。会場（窓の外に森の見える高座の間・袖の幕・行灯・提灯・めくり・座布団・客席、窓の外の町屋と夜空）は three.js で描いたものです。森の写真・樹皮・板・シダの質感は <a href="https://polyhaven.com/">Poly Haven</a> の CC0 素材です。</li>
       <li>字幕：台本の文をそのまま出しています。書体は <strong>Klee One</strong>（Fontworks・SIL Open Font License 1.1）。字幕は画面の下の真ん中に、縁取りのある字で出します（2026-10-06 に、読みやすさのため大きく・太く直しました）。</li>
-      <li>音：扇子で床を打つ音・すする音は合成した音です。日本語版には客席の笑い声を入れていません（2026-10-06）。英語版（前の版のまま）だけ、客席の笑い声に lonemonk の録音（<a href="https://freesound.org/people/lonemonk/">freesound.org</a>・<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>）を短く切り出し、小さく、部屋の響きに寄せて使っています。</li>
+      <li>音：扇子で床を打つ音・すする音は合成した音です。客席の笑い声は入れていません（日本語版・英語版とも）。</li>
       <li>所作：羽織を脱ぐ、上下（かみしも）、扇子・手拭いの見立ては、落語の解説記事から原理を学んで型にしたものです。</li>
     </ul>
     <h3>利用について</h3>
@@ -119,7 +119,7 @@
   </section>
 
   <footer>
-    声　VOICEVOX:冥鳴ひまり（日本語）／Kokoro-82M by hexgrad, Apache-2.0（English）　字幕の書体　Klee One（OFL）　森・樹皮・板・シダ　Poly Haven（CC0）　笑い声（英語版のみ）　lonemonk（freesound.org・CC BY 3.0）<br>
+    声　VOICEVOX:冥鳴ひまり（日本語）／Kokoro-82M by hexgrad, Apache-2.0（English）　字幕の書体　Klee One（OFL）　森・樹皮・板・シダ　Poly Haven（CC0）<br>
     作　mitsulab（2026）　<a href="https://mitsulab.jp">mitsulab.jp</a>　／　お問い合わせ　official@mitsulab.jp
   </footer>
 </div>
@@ -129,7 +129,7 @@
 const W = [
  { slug:"keyaki", no:"其 の 一", t:"欅の目方", r:"けやきのめかた", en:"The Weight of a Zelkova", kimono:"碧波（あおなみ）",
    lead:"大きなケヤキは、何でできているのか。土を食って太ったに違いない、と思うところから始まる一席。",
-   leadEn:"What is a huge zelkova tree made of? Surely it ate the soil… or did it?", d:353, dEn:379,
+   leadEn:"What is a huge zelkova tree made of? Surely it ate the soil… or did it?", d:356, dEn:384,
    inviteEn:"Stand under the thickest tree on the street, look up, and think: half of this weight came out of the air. Then look at the soil at your feet.",
    ficEn:"The landlord, Hachi and the zelkova in the alley are made up. \"The tree pays its rent in leaves\" is a joke; trees don't drop leaves on purpose. The punch line borrows an old folk motif: tanuki (raccoon dogs) were said to turn leaves into money.",
    fic:"本題の大家・八っつぁん・路地の欅は作り話です。氷川参道の特定の木のことではありません。「欅が落ち葉で店賃を払う」は噺の見立てで、木がそのつもりで葉を落とすわけではありません。サゲは、狸が木の葉をお金に化かすという昔話の型を借りています。",
@@ -141,7 +141,7 @@ const W = [
    warn:"ヘルモントの原著（ラテン語）は未読で、数値は百科事典で確かめた範囲です。キロ・グラムへの換算は、いまのポンド・オンスで直した目安です。" },
  { slug:"koumori", no:"其 の 二", t:"蝙蝠の耳", r:"こうもりのみみ", en:"The Bat's Ears", kimono:"濡羽（ぬれば）",
    lead:"夕方の空は、聞こえないだけで、うるさい。蝙蝠の声と、聞こえないものの噺。",
-   leadEn:"The evening sky is noisy — we just can't hear it. Bats, and the sounds beyond human ears.", d:281, dEn:294,
+   leadEn:"The evening sky is noisy — we just can't hear it. Bats, and the sounds beyond human ears.", d:284, dEn:299,
    inviteEn:"At dusk, look up around a street lamp. If small shapes are flitting there, the air is full of voices you can't hear. (Watch bats; never touch them.)",
    ficEn:"The old man, Hachi, his wife and the row house are made up.",
    fic:"本題のご隠居・八っつぁん・かかあ・長屋は作り話です。",
@@ -152,7 +152,7 @@ const W = [
    warn:"一次資料（Griffin の論文など）にはまだ当たっていません（百科事典で確かめた範囲）。" },
  { slug:"hachi", no:"其 の 三", t:"蜂の目", r:"はちのめ", en:"The Bee's Eyes", kimono:"山吹（やまぶき）",
    lead:"花は、人には読めない字で看板を出している。蜂に見える紫外線と、見えない赤の噺。",
-   leadEn:"Flowers hang out signs we can't read. What bees see — and the red they can't.", d:244, dEn:261,
+   leadEn:"Flowers hang out signs we can't read. What bees see — and the red they can't.", d:247, dEn:264,
    inviteEn:"Look closely at one yellow flower, all the way to its center. Petals that look plain to us may carry a sign only bees can read. (If bees are there, keep your distance.)",
    ficEn:"The old man, Hachi, the red shop curtain and the red tavern lantern are made up. How red looks to a bee depends on the background, so the story doesn't claim it for certain.",
    fic:"本題のご隠居・八っつぁん・赤い暖簾・赤提灯は作り話です。蜂に赤がどう見えるかは背景によって変わるので、断定していません。",
@@ -161,7 +161,7 @@ const W = [
    warn:"フォン・フリッシュの原著（1914）は未読で、総説で確かめた範囲です。" },
  { slug:"wataridori", no:"其 の 四", t:"渡りの磁石", r:"わたりのじしゃく", en:"The Migrant's Compass", kimono:"鳩羽（はとば）",
    lead:"鳥の羅針盤は、北と南を知らない。地球の磁気を感じる鳥と、帰り道を知らない男の噺。",
-   leadEn:"A bird's compass doesn't know north from south. Birds that feel the earth's magnetism — and a man who can't find his way home.", d:280, dEn:300,
+   leadEn:"A bird's compass doesn't know north from south. Birds that feel the earth's magnetism — and a man who can't find his way home.", d:283, dEn:304,
    inviteEn:"When you see a swallow's nest, try to remember whether it was there last year. The bird may have found the same eaves from thousands of kilometres away.",
    ficEn:"The old man, Hachi, the neighbourhood meeting and the shrine are made up. The punch line about lanterns is a joke: brighter light does not make a bird's compass work better.",
    fic:"本題のご隠居・八っつぁん・寄り合い・稲荷は作り話です。サゲの提灯は噺の笑いで、明るいほど鳥の羅針盤が効くという意味ではありません。",
@@ -170,14 +170,17 @@ const W = [
    warn:"Wiltschko (1968) の原著と、ツバメの帰巣の具体的な数には当たっていません（本文は数を言っていません）。" },
  { slug:"hoshi", no:"其 の 五", t:"星の遅刻", r:"ほしのちこく", en:"Late Starlight", kimono:"紺青（こんじょう）",
    lead:"いま見えている星は、いまの星ではない。光の届く時間と、すぐ帰ると言った男の噺。",
-   leadEn:"The stars you see aren't the stars as they are now. Light's long road — and a man who said he'd be right back.", d:239, dEn:250,
+   leadEn:"The stars you see aren't the stars as they are now. Light's long road — and a man who said he'd be right back.", d:308, dEn:253,
    inviteEn:"On a winter night, look up at the brightest star and ask: when this light set out, what was I doing?",
    ficEn:"The old man, Hachi, his wife and the meeting are made up. The punch line is about Hachi, not a claim that the star is gone (a star as near as Sirius is still there).",
-   fic:"本題のご隠居・八っつぁん・かかあ・寄り合いは作り話です。サゲは八っつぁんのことで、星がなくなっているという主張ではありません（シリウスほど近い星はいまもあります）。",
-   invite:"冬の夜、いちばん明るい星を見上げて、「この光が出たとき、自分は何をしていたか」を思い出してみる。",
-   src:[["太陽までおよそ 1 億 5 千万 km。光は約 8 分 20 秒かかる。","NASA Science「Sun: Facts」 <a href='https://science.nasa.gov/sun/facts/'>science.nasa.gov</a>"],
-        ["シリウスは夜空でいちばん明るい星（おおいぬ座）。およそ 8.6 光年。1 光年はおよそ 9.46 兆 km。","Wikipedia「Sirius」 <a href='https://en.wikipedia.org/wiki/Sirius'>en.wikipedia.org</a>／NASA 用語集 <a href='https://science.nasa.gov/learn/basics-of-space-flight/glossary/'>science.nasa.gov</a>"]],
-   warn:"シリウスの距離は二次資料で確かめた範囲です。" },
+   fic:"本題のご隠居・八っつぁん・かかあ・寄り合いは作り話です。サゲは、ご隠居の「シリウスは八年あまり前に出た光」を八っつぁんが言い訳に使い、ご隠居がかみさんの返しを先回りして言う噺の見立てです。まくらの「推しの名を並べる」「八分先を歩いている」はたとえです。",
+   invite:"冬の夜、南の空でいちばん明るい星（シリウス）を見上げて、「この光が出たとき、自分は何をしていたか」を思い出してみる。",
+   src:[["清少納言『枕草子』に「星はすばる。ひこぼし。ゆふづつ。…」。","Wikipedia「プレアデス星団」（原文を引く） <a href='https://ja.wikipedia.org/wiki/%E3%83%97%E3%83%AC%E3%82%A2%E3%83%87%E3%82%B9%E6%98%9F%E5%9B%A3'>ja.wikipedia.org</a>"],
+        ["1676 年、デンマーク生まれのオーレ・レーマーが、パリの天文台で、木星の衛星イオが影に入る時刻のずれ（地球が遠ざかる時期は遅れ、近づく時期は早まる）から、光に速さがあることを示した。当時は論争になった。1676 年は四代将軍・徳川家綱の在職中（1651〜1680）。","Wikipedia「Rømer's determination of the speed of light」 <a href='https://en.wikipedia.org/wiki/R%C3%B8mer%27s_determination_of_the_speed_of_light'>en.wikipedia.org</a>／Wikipedia「徳川家綱」 <a href='https://ja.wikipedia.org/wiki/%E5%BE%B3%E5%B7%9D%E5%AE%B6%E7%B6%B1'>ja.wikipedia.org</a>"],
+        ["月まで約 38 万 km、光で約 1.3 秒。太陽まで約 1 億 5 千万 km、光で約 8 分 20 秒。","JAXA「『月』ってナンだ!?」 <a href='https://www.jaxa.jp/countdown/f13/special/moon_j.html'>jaxa.jp</a>／JAXA 宇宙科学研究所 キッズサイト <a href='https://www.kids.isas.jaxa.jp/faq/solar/000130.html'>kids.isas.jaxa.jp</a>／Wikipedia「Light-second」 <a href='https://en.wikipedia.org/wiki/Light-second'>en.wikipedia.org</a>"],
+        ["織姫（ベガ）と彦星（アルタイル）は 14.4 光年ほど離れ、光でも約 14 年半かかる。","国立天文台「七夕について教えて」 <a href='https://www.nao.ac.jp/faq/a0309.html'>nao.ac.jp</a>"],
+        ["シリウス（おおいぬ座）はおよそ 8.6 光年（資料により 8.6〜8.7 光年）。","Wikipedia「シリウス」 <a href='https://ja.wikipedia.org/wiki/%E3%82%B7%E3%83%AA%E3%82%A6%E3%82%B9'>ja.wikipedia.org</a>"]],
+   warn:"レーマー・家綱・シリウスの距離は二次資料（Wikipedia）で確かめた範囲です。枕草子の段は原典の校本には当たっていません。" },
 ];
 let LANG = "ja", ORI = "h";
 const $ = s => document.querySelector(s);
@@ -200,7 +203,7 @@ $("#list").innerHTML = W.map(w => `
     <div class="player"><video controls preload="none" playsinline></video></div>
     <div class="body">
       <p class="mincho" lang="ja" data-ja>${w.lead}</p>
-      <p data-en hidden lang="en">${w.leadEn}<br><span class="note">The story itself is fiction set in old Edo; the facts in the opening (makura) are listed below with sources. Synthetic voice: Kokoro-82M (Apache-2.0).</span></p>
+      <p data-en hidden lang="en">${w.leadEn}<br><span class="note">The story itself is fiction set in old Edo; the facts in the opening (makura) are listed below with sources. Voice: Kokoro-82M (Apache-2.0).</span></p>
       <div class="invite" data-ja><strong>きょうのさそい</strong>　${w.invite}</div>
       <div class="invite" data-en hidden lang="en"><strong>Try this today</strong>　${w.inviteEn}</div>
       <h3 data-ja>作り話の断り</h3><h3 data-en hidden lang="en">What is made up</h3>

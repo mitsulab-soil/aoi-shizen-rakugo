@@ -19,7 +19,7 @@
 ## 声と素材
 
 - 日本語の声は **VOICEVOX:冥鳴ひまり**、英語の声は **Kokoro-82M**（hexgrad・Apache-2.0）。動画の終わりの札にも記している。
-- 碧の 3D は VRoid Studio で作ったもの、会場（森の中の高座・場面の町屋と夜空）は three.js で描いたもの。森の写真・樹皮・板・シダの質感は Poly Haven の CC0 素材（https://polyhaven.com/license）、字幕の書体は Klee One（SIL Open Font License 1.1）。所作の音は合成。日本語版には客席の笑い声を入れていない（2026-10-06）。英語版（前の版のまま）だけ、客席の笑い声に lonemonk の録音（freesound.org・CC BY 3.0）を加工して使用。
+- 碧の 3D は VRoid Studio で作ったもの、会場（森の中の高座・場面の町屋と夜空）は three.js で描いたもの。森の写真・樹皮・板・シダの質感は Poly Haven の CC0 素材（https://polyhaven.com/license）、字幕の書体は Klee One（SIL Open Font License 1.1）。所作の音は合成。客席の笑い声は入れていない（日本語版・英語版とも。2026-10-06）。
 
 ## 本題について
 
