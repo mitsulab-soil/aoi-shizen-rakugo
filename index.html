@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>森羅寄席</title>
-<meta name="description" content="森羅寄席 ── 碧（依代・AI のキャラクター）が語る自然落語。人の感じる外の世界を、笑いにする噺。5 作（欅の目方・蝙蝠の耳・蜂の目・渡りの磁石・星の遅刻）、日本語と英語。mitsulab">
+<meta name="description" content="森羅寄席 ── 碧（依代）が語る自然落語。人の感じる外の世界を、笑いにする噺。5 作（欅の目方・蝙蝠の耳・蜂の目・渡りの磁石・星の遅刻）、日本語と英語。mitsulab">
 <meta property="og:title" content="森羅寄席 ── 碧の自然落語 ／ mitsulab">
 <meta property="og:description" content="森の中の高座で、碧が語る自然落語。5 作・日本語と英語（Shinra Yose — nature rakugo told by Aoi）。">
 <meta property="og:image" content="img/hp_card_640x400.webp">
@@ -66,6 +66,10 @@
   summary{cursor:pointer;color:var(--sub);font-size:14px}
   footer{padding:28px 0 48px;font-size:13px;color:var(--mute)}
   .theme{float:right;font:inherit;font-size:12px;background:transparent;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:2px 10px;cursor:pointer}
+  .howto{margin:14px 0 0;padding:12px 14px;border:1px solid var(--line);background:var(--panel);border-radius:4px;font-size:15px}
+  .howto p{margin:0 0 6px}
+  .first{margin:12px 0 0;font-size:15px}
+  .dur{display:inline-block;margin-left:6px;font-size:12px;color:var(--sub)}
   [hidden]{display:none!important}
 </style>
 </head>
@@ -76,8 +80,13 @@
     <p class="kicker">森 羅 寄 席 ／ S H I N R A &nbsp; Y O S E</p>
     <h1 class="mincho">森羅寄席<small>しんらよせ ── 碧の自然落語 ／ nature rakugo told by Aoi ／ mitsulab</small></h1>
     <p class="lead mincho">人の目や耳の外にある世界を、笑いにする噺。</p>
-    <p class="lead" style="font-size:15px;color:var(--sub)">まくらでは本に書いてある事実だけを話し、本題は江戸の作り話、サゲで笑って締めます。事実の典拠は演目ごとに載せています。高座は、森の見える大きな窓のある間に見立てたもので、話の展開で窓の外が町屋や夜空へ静かに移ります。碧は本題に入るところで羽織を脱ぎ、扇子と手拭いで物を見立てます。</p>
-    <p class="ai">語り手の碧（あおい）は、人と自然のあいだに立つ<strong>依代</strong>として語る、<strong>AI のキャラクター</strong>です。日本語の声は <strong>AI の合成音声</strong>（VOICEVOX:冥鳴ひまり）、英語の声も合成音声（Kokoro-82M）、姿は 3D の CG です。碧は断定しません。典拠のない事実を作りません。AI であることを隠しません（動画の終わりにも記しています）。<br>Aoi is an AI character who speaks as a <i>yorishiro</i>. Both voices are synthetic speech. English versions are horizontal only.</p>
+    <p class="lead" style="font-size:15px;color:var(--sub)">まくらでは本に書いてある事実だけを話し、本題は江戸の作り話、サゲで笑って締めます。事実の典拠は演目ごとに載せています。高座は、森の見える大きな窓のある間に見立てたもので、話の展開で窓の外が町屋や夜空へ静かに移ります。碧はまくらを話しながら羽織を脱ぎ、脱ぎ終えたところで本題に入ります。扇子と手拭いで物を見立てます。</p>
+    <p class="ai">語り手の碧（あおい）は、人と自然のあいだに立つ<strong>依代</strong>として語ります。碧は断定しません。典拠のない事実を作りません。<br>English versions are horizontal only.</p>
+    <p class="first" data-ja>はじめての方は <a href="#hachi">《蜂の目》</a>（約 4 分）からどうぞ。</p>
+    <div class="howto" data-en hidden lang="en">
+      <p><strong>How rakugo works.</strong> One storyteller sits on a cushion and plays every character. When the head turns to the audience's right, it is the younger, livelier man (Hachi); turned to the left, it is the older, calmer one (the landlord or the old man next door). A folded fan and a small cloth stand in for a pipe, a book, a broom or a door. The talk opens with a few true facts (the <i>makura</i>), slips into a made-up tale, and ends on one punch line (the <i>sage</i>), followed by a bow.</p>
+      <p>Start with <a href="#hachi"><i>The Bee's Eyes</i></a> (about 4 minutes).</p>
+    </div>
     <div class="bar">
       <div class="seg" role="group" aria-label="ことば"><button type="button" data-lang="ja" aria-pressed="true">日本語</button><button type="button" data-lang="en" aria-pressed="false">English</button></div>
       <div class="seg" role="group" aria-label="動画の向き"><button type="button" data-o="h" aria-pressed="true">横（16:9）</button><button type="button" data-o="v" aria-pressed="false">縦（9:16）</button></div>
@@ -94,12 +103,12 @@
   <section id="about">
     <h2 class="mincho">この動画について</h2>
     <ul class="rules">
-      <li>語り：碧（あおい）── mitsulab の AI のキャラクターで、人と自然のあいだに立つ依代として語ります。人が演じているのではありません。落語はひとりで全部の役を演じる芸なので、八っつぁんと大家（ご隠居）も同じ碧の声で、速さ・高さ・抑揚を変えて分けています。</li>
-      <li>日本語の声：<strong>VOICEVOX:冥鳴ひまり</strong>（AI の合成音声）。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
-      <li>英語の声：<strong>Kokoro-82M</strong>（hexgrad・Apache-2.0）の af_heart と bf_emma（AI の合成音声）。<a href="https://huggingface.co/hexgrad/Kokoro-82M">huggingface.co/hexgrad/Kokoro-82M</a></li>
+      <li>語り：碧（あおい）── 人と自然のあいだに立つ依代として語ります。落語はひとりで全部の役を演じる芸なので、八っつぁんと大家（ご隠居）も同じ碧の声で、速さ・高さ・抑揚を変えて分けています。</li>
+      <li>日本語の声：<strong>VOICEVOX:冥鳴ひまり</strong>。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
+      <li>英語の声：<strong>Kokoro-82M</strong>（hexgrad・Apache-2.0）の af_heart と bf_emma。<a href="https://huggingface.co/hexgrad/Kokoro-82M">huggingface.co/hexgrad/Kokoro-82M</a></li>
       <li>姿：碧の 3D は VRoid Studio で作ったもの。会場（窓の外に森の見える高座の間・袖の幕・行灯・提灯・めくり・座布団・客席、窓の外の町屋と夜空）は three.js で描いたものです。森の写真・樹皮・板・シダの質感は <a href="https://polyhaven.com/">Poly Haven</a> の CC0 素材です。</li>
-      <li>字幕：台本の文をそのまま出しています。書体は <strong>Klee One</strong>（Fontworks・SIL Open Font License 1.1）。一字ずつ浮かぶ見せ方は、歌詞の映像の考え方を参考に作ったもので、ほかの作品の素材は使っていません。</li>
-      <li>音：扇子で床を打つ音・すする音は合成した音です。客席の笑い声は lonemonk の録音（<a href="https://freesound.org/people/lonemonk/">freesound.org</a>・<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>）を短く切り出し、小さく、部屋の響きに寄せて使っています。</li>
+      <li>字幕：台本の文をそのまま出しています。書体は <strong>Klee One</strong>（Fontworks・SIL Open Font License 1.1）。字幕は画面の下の真ん中に、縁取りのある字で出します（2026-10-06 に、読みやすさのため大きく・太く直しました）。</li>
+      <li>音：扇子で床を打つ音・すする音は合成した音です。日本語版には客席の笑い声を入れていません（2026-10-06）。英語版（前の版のまま）だけ、客席の笑い声に lonemonk の録音（<a href="https://freesound.org/people/lonemonk/">freesound.org</a>・<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>）を短く切り出し、小さく、部屋の響きに寄せて使っています。</li>
       <li>所作：羽織を脱ぐ、上下（かみしも）、扇子・手拭いの見立ては、落語の解説記事から原理を学んで型にしたものです。実際の噺家の高座を写したものではありません。</li>
     </ul>
     <h3>利用について</h3>
@@ -110,7 +119,7 @@
   </section>
 
   <footer>
-    声　VOICEVOX:冥鳴ひまり（日本語）／Kokoro-82M by hexgrad, Apache-2.0（English）　字幕の書体　Klee One（OFL）　森・樹皮・板・シダ　Poly Haven（CC0）　笑い声　lonemonk（freesound.org・CC BY 3.0）<br>
+    声　VOICEVOX:冥鳴ひまり（日本語）／Kokoro-82M by hexgrad, Apache-2.0（English）　字幕の書体　Klee One（OFL）　森・樹皮・板・シダ　Poly Haven（CC0）　笑い声（英語版のみ）　lonemonk（freesound.org・CC BY 3.0）<br>
     作　mitsulab（2026）　<a href="https://mitsulab.jp">mitsulab.jp</a>　／　お問い合わせ　official@mitsulab.jp
   </footer>
 </div>
@@ -120,7 +129,9 @@
 const W = [
  { slug:"keyaki", no:"其 の 一", t:"欅の目方", r:"けやきのめかた", en:"The Weight of a Zelkova", kimono:"碧波（あおなみ）",
    lead:"大きなケヤキは、何でできているのか。土を食って太ったに違いない、と思うところから始まる一席。",
-   leadEn:"What is a huge zelkova tree made of? Surely it ate the soil… or did it?",
+   leadEn:"What is a huge zelkova tree made of? Surely it ate the soil… or did it?", d:353, dEn:379,
+   inviteEn:"Stand under the thickest tree on the street, look up, and think: half of this weight came out of the air. Then look at the soil at your feet.",
+   ficEn:"The landlord, Hachi and the zelkova in the alley are made up. \"The tree pays its rent in leaves\" is a joke; trees don't drop leaves on purpose. The punch line borrows an old folk motif: tanuki (raccoon dogs) were said to turn leaves into money.",
    fic:"本題の大家・八っつぁん・路地の欅は作り話です。氷川参道の特定の木のことではありません。「欅が落ち葉で店賃を払う」は噺の見立てで、木がそのつもりで葉を落とすわけではありません。サゲは、狸が木の葉をお金に化かすという昔話の型を借りています。",
    invite:"並木の下で、いちばん太い幹を見上げて、「この目方の半分は、空気から来た」と思ってみる。それから足もとの土を見る。",
    src:[["大宮の氷川神社の参道は、一の鳥居から北へおよそ 2 km。ケヤキを中心に、およそ 650 本の木が並ぶ。","さいたま市「武蔵一宮氷川神社と氷川参道」 <a href='https://www.city.saitama.lg.jp/004/001/003/001/p009336.html'>city.saitama.lg.jp</a>／環境省 巨樹・巨木林データベース <a href='https://kyoju.biodic.go.jp/files/course/013/omiya_jp.pdf'>PDF</a>"],
@@ -130,29 +141,38 @@ const W = [
    warn:"ヘルモントの原著（ラテン語）は未読で、数値は百科事典で確かめた範囲です。キロ・グラムへの換算は、いまのポンド・オンスで直した目安です。" },
  { slug:"koumori", no:"其 の 二", t:"蝙蝠の耳", r:"こうもりのみみ", en:"The Bat's Ears", kimono:"濡羽（ぬれば）",
    lead:"夕方の空は、聞こえないだけで、うるさい。蝙蝠の声と、聞こえないものの噺。",
-   leadEn:"The evening sky is noisy — we just can't hear it. Bats, and the sounds beyond human ears.",
+   leadEn:"The evening sky is noisy — we just can't hear it. Bats, and the sounds beyond human ears.", d:281, dEn:294,
+   inviteEn:"At dusk, look up around a street lamp. If small shapes are flitting there, the air is full of voices you can't hear. (Watch bats; never touch them.)",
+   ficEn:"The old man, Hachi, his wife and the row house are made up.",
    fic:"本題のご隠居・八っつぁん・かかあ・長屋は作り話です。",
-   invite:"夕方、街灯のまわりを見上げる。ひらひらした影が見えたら、そこはいま、聞こえない声でいっぱい。",
+   invite:"夕方、街灯のまわりを見上げる。ひらひらした影が見えたら、そこはいま、聞こえない声でいっぱい。（蝙蝠は見るだけにして、手でさわらない）",
    src:[["18 世紀にスパランツァーニが、目をふさいだ蝙蝠でもぶつからずに飛ぶことを示した。ジュリーヌが耳をふさぐと物にぶつかるようになった（1798）。1930 年代の終わりにグリフィンが蝙蝠の超音波を確かめ、のちに「反響定位（echolocation）」と名がついた（1944）。","Wikipedia「Animal echolocation」 <a href='https://en.wikipedia.org/wiki/Animal_echolocation'>en.wikipedia.org</a>／「Donald Griffin」 <a href='https://en.wikipedia.org/wiki/Donald_Griffin'>en.wikipedia.org</a>"],
-        ["人の可聴域はおよそ 20 kHz まで。虫を捕る蝙蝠の声の多くはそれより上（多くは 20〜60 kHz）。日本の町なかでよく見かけるのはアブラコウモリ。","同上／図鑑の範囲の記述"]],
+        ["人の可聴域はおよそ 20 kHz まで。虫を捕る蝙蝠の声の多くはそれより上（多くは 20〜60 kHz）。日本の町なかでよく見かけるのはアブラコウモリ。","同上（アブラコウモリは図鑑の範囲の記述で、種名つきの典拠はまだ足していません）"],
+        ["本題の「木の中で水の柱がぷつりと切れる音」：木の道管の水の柱が切れて気泡ができる（キャビテーション）ときに、超音波の音が出ることが知られています。音を出すのは水が上がること自体ではありません。「人に聞こえない高さで鳴く虫」は、キリギリスの仲間などのこと（蚊や蜂の羽音はふつうに聞こえます）。","本題の言い回しの注（2026-10-06 に直しました）"]],
    warn:"一次資料（Griffin の論文など）にはまだ当たっていません（百科事典で確かめた範囲）。" },
  { slug:"hachi", no:"其 の 三", t:"蜂の目", r:"はちのめ", en:"The Bee's Eyes", kimono:"山吹（やまぶき）",
    lead:"花は、人には読めない字で看板を出している。蜂に見える紫外線と、見えない赤の噺。",
-   leadEn:"Flowers hang out signs we can't read. What bees see — and the red they can't.",
+   leadEn:"Flowers hang out signs we can't read. What bees see — and the red they can't.", d:244, dEn:261,
+   inviteEn:"Look closely at one yellow flower, all the way to its center. Petals that look plain to us may carry a sign only bees can read. (If bees are there, keep your distance.)",
+   ficEn:"The old man, Hachi, the red shop curtain and the red tavern lantern are made up. How red looks to a bee depends on the background, so the story doesn't claim it for certain.",
    fic:"本題のご隠居・八っつぁん・赤い暖簾・赤提灯は作り話です。蜂に赤がどう見えるかは背景によって変わるので、断定していません。",
-   invite:"黄色い花をひとつ、まん中まで見る。人の目には何もない花びらにも、蜂にだけ読める看板が出ているかもしれない。",
+   invite:"黄色い花をひとつ、まん中まで見る。人の目には何もない花びらにも、蜂にだけ読める看板が出ているかもしれない。（蜂がいたら近づきすぎず、そっと離れて見る）",
    src:[["1914 年、フォン・フリッシュが色の紙と甘い水で蜂を訓練し、灰色の紙と並べても覚えた色に来ることを示した。ミツバチの色の受容体の感度の山は、およそ紫外（344 nm）・青（436 nm）・緑（544 nm）。赤への感度は低い。多くの花に紫外線の模様（蜜標）がある。","N. Hempel de Ibarra, M. Vorobyev, R. Menzel (2014) \"Mechanisms, functions and ecology of colour vision in the honeybee\", <i>J. Comp. Physiol. A</i> <a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC4035557/'>PMC</a>"]],
    warn:"フォン・フリッシュの原著（1914）は未読で、総説で確かめた範囲です。" },
  { slug:"wataridori", no:"其 の 四", t:"渡りの磁石", r:"わたりのじしゃく", en:"The Migrant's Compass", kimono:"鳩羽（はとば）",
    lead:"鳥の羅針盤は、北と南を知らない。地球の磁気を感じる鳥と、帰り道を知らない男の噺。",
-   leadEn:"A bird's compass doesn't know north from south. Birds that feel the earth's magnetism — and a man who can't find his way home.",
-   fic:"本題のご隠居・八っつぁん・寄り合い・稲荷は作り話です。",
+   leadEn:"A bird's compass doesn't know north from south. Birds that feel the earth's magnetism — and a man who can't find his way home.", d:280, dEn:300,
+   inviteEn:"When you see a swallow's nest, try to remember whether it was there last year. The bird may have found the same eaves from thousands of kilometres away.",
+   ficEn:"The old man, Hachi, the neighbourhood meeting and the shrine are made up. The punch line about lanterns is a joke: brighter light does not make a bird's compass work better.",
+   fic:"本題のご隠居・八っつぁん・寄り合い・稲荷は作り話です。サゲの提灯は噺の笑いで、明るいほど鳥の羅針盤が効くという意味ではありません。",
    invite:"ツバメの巣を見かけたら、去年もそこにあったかを思い出してみる。何千キロ向こうから、同じ軒先を探しあてたのかもしれない。",
-   src:[["1960 年代、ヴィルチコがヨーロッパコマドリで、磁場の向きを変えると渡りの向きが変わることを示した（磁気コンパス）。鳥のコンパスは北と南の極性ではなく、磁力線の傾きで「極のほう」「赤道のほう」を知る（伏角コンパス）。短い波長の光を要し、目の中のクリプトクロムがかかわるという考えが有力。","R. Wiltschko, W. Wiltschko (2014) \"Sensing Magnetic Directions in Birds: Radical Pair Processes Involving Cryptochrome\", <i>Biosensors</i> <a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC4264356/'>PMC</a>"]],
+   src:[["1960 年代、ヴィルチコがヨーロッパコマドリで、磁場の向きを変えると渡りの向きが変わることを示した（磁気コンパス）。鳥のコンパスは北と南の極性ではなく、磁力線の傾きで「極のほう」「赤道のほう」を知る（伏角コンパス）。短い波長の光を要し、目の中のクリプトクロムがかかわるという考えが有力。磁気の羅針盤がはたらいたのはかなり弱い光の下で、強すぎる光の下ではかえって向きが乱れた（明るいほど効く、ではない）。磁力線が北ほど地面へもぐるのは北半球のことで、南半球を模した磁場では春のコマドリが南へ向きを変えた。","R. Wiltschko, W. Wiltschko (2014) \"Sensing Magnetic Directions in Birds: Radical Pair Processes Involving Cryptochrome\", <i>Biosensors</i> <a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC4264356/'>PMC</a>"]],
    warn:"Wiltschko (1968) の原著と、ツバメの帰巣の具体的な数には当たっていません（本文は数を言っていません）。" },
  { slug:"hoshi", no:"其 の 五", t:"星の遅刻", r:"ほしのちこく", en:"Late Starlight", kimono:"紺青（こんじょう）",
    lead:"いま見えている星は、いまの星ではない。光の届く時間と、すぐ帰ると言った男の噺。",
-   leadEn:"The stars you see aren't the stars as they are now. Light's long road — and a man who said he'd be right back.",
+   leadEn:"The stars you see aren't the stars as they are now. Light's long road — and a man who said he'd be right back.", d:239, dEn:250,
+   inviteEn:"On a winter night, look up at the brightest star and ask: when this light set out, what was I doing?",
+   ficEn:"The old man, Hachi, his wife and the meeting are made up. The punch line is about Hachi, not a claim that the star is gone (a star as near as Sirius is still there).",
    fic:"本題のご隠居・八っつぁん・かかあ・寄り合いは作り話です。サゲは八っつぁんのことで、星がなくなっているという主張ではありません（シリウスほど近い星はいまもあります）。",
    invite:"冬の夜、いちばん明るい星を見上げて、「この光が出たとき、自分は何をしていたか」を思い出してみる。",
    src:[["太陽までおよそ 1 億 5 千万 km。光は約 8 分 20 秒かかる。","NASA Science「Sun: Facts」 <a href='https://science.nasa.gov/sun/facts/'>science.nasa.gov</a>"],
@@ -163,28 +183,39 @@ let LANG = "ja", ORI = "h";
 const $ = s => document.querySelector(s);
 function vsrc(w) { return `video/${w.slug}${LANG === "en" ? "_en_h" : "_" + ORI}720.mp4`; }   // 英語版は横だけ
 function poster(w) { return LANG === "en" ? `img/${w.slug}_en_poster.webp` : (ORI === "v" ? `img/${w.slug}_poster_v.webp` : `img/${w.slug}_poster.webp`); }
-$("#toc").innerHTML = W.map(w => `<li><a href="#${w.slug}"><img src="img/${w.slug}_poster.webp" alt="" loading="lazy"><span class="mincho">${w.t}<small>${w.en}</small></span></a></li>`).join("");
+const mmss = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+function drawToc() {
+  $("#toc").innerHTML = W.map(w => `<li><a href="#${w.slug}"><img src="img/${w.slug}_poster.webp" alt="" loading="lazy"><span class="mincho">${LANG === "en" ? w.en : w.t}<small>${LANG === "en" ? w.t : w.en}</small><small>${LANG === "en" ? "about " + Math.round(w.dEn / 60) + " min (" + mmss(w.dEn) + ")" : "約 " + Math.round(w.d / 60) + " 分（" + mmss(w.d) + "）"}</small></span></a></li>`).join("");
+}
+drawToc();
 $("#list").innerHTML = W.map(w => `
   <article class="item" id="${w.slug}">
     <div class="head">
       <div class="no">${w.no}</div>
       <div class="title mincho">${w.t}</div>
       <div class="read">${w.r} ／ <i>${w.en}</i></div>
-      <div class="meta">着物 ${w.kimono} ／ 語り 碧（依代・AI のキャラクター）／ 作 mitsulab（2026）</div>
+      <div class="meta" data-ja>長さ ${mmss(w.d)} ／ 着物 ${w.kimono} ／ 語り 碧（依代）／ 作 mitsulab（2026）</div>
+      <div class="meta" data-en hidden lang="en">${mmss(w.dEn)} / told by Aoi (a <i>yorishiro</i>) / mitsulab (2026)</div>
     </div>
     <div class="player"><video controls preload="none" playsinline></video></div>
     <div class="body">
       <p class="mincho" lang="ja" data-ja>${w.lead}</p>
       <p data-en hidden lang="en">${w.leadEn}<br><span class="note">The story itself is fiction set in old Edo; the facts in the opening (makura) are listed below with sources. Synthetic voice: Kokoro-82M (Apache-2.0).</span></p>
-      <div class="invite"><strong>きょうのさそい</strong>　${w.invite}</div>
-      <h3>作り話の断り</h3>
-      <p class="note">${w.fic}</p>
-      <h3>まくらで話した事実と典拠</h3>
+      <div class="invite" data-ja><strong>きょうのさそい</strong>　${w.invite}</div>
+      <div class="invite" data-en hidden lang="en"><strong>Try this today</strong>　${w.inviteEn}</div>
+      <h3 data-ja>作り話の断り</h3><h3 data-en hidden lang="en">What is made up</h3>
+      <p class="note" data-ja>${w.fic}</p>
+      <p class="note" data-en hidden lang="en">${w.ficEn}</p>
+      <h3 data-ja>まくらで話した事実と典拠</h3><h3 data-en hidden lang="en">Facts in the opening, and sources <small style="font-weight:400;color:var(--mute)">(notes in Japanese)</small></h3>
       <ul class="src">${w.src.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("")}</ul>
       <p class="warn">⚠ ${w.warn}</p>
     </div>
   </article>`).join("");
 function apply() {
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("header [data-en]").forEach(x => x.hidden = LANG !== "en");
+  document.querySelectorAll("header [data-ja]").forEach(x => x.hidden = LANG === "en");
+  drawToc();
   document.querySelectorAll(".item").forEach((el, i) => {
     const w = W[i], v = el.querySelector("video"), p = el.querySelector(".player");
     const want = vsrc(w);
@@ -196,7 +227,10 @@ function apply() {
   document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
   document.querySelectorAll("[data-o]").forEach(b => { b.setAttribute("aria-pressed", String(b.dataset.o === (LANG === "en" ? "h" : ORI))); b.disabled = LANG === "en" && b.dataset.o === "v"; });
 }
-document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => { LANG = b.dataset.lang; apply(); }));
+document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => { LANG = b.dataset.lang; try { history.replaceState(null, "", LANG === "en" ? "?lang=en" + location.hash : location.pathname + location.hash); } catch (e) {} apply(); }));
+// ?lang=en で英語のまま開く・幅の狭い画面（スマホ）では縦の動画を既定に（字幕が読める大きさになる）
+try { if (new URLSearchParams(location.search).get("lang") === "en") LANG = "en"; } catch (e) {}
+if (window.matchMedia && matchMedia("(max-width: 700px)").matches) ORI = "v";
 document.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => { ORI = b.dataset.o; apply(); }));
 apply();
 // 明るい表示（見る人ごとの好み。保存できなくても表示はそのまま）
