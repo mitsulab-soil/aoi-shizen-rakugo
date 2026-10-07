@@ -180,6 +180,9 @@ const W = [
         ["月まで約 38 万 km、光で約 1.3 秒。太陽まで約 1 億 5 千万 km、光で約 8 分 20 秒。","JAXA「『月』ってナンだ!?」 <a href='https://www.jaxa.jp/countdown/f13/special/moon_j.html'>jaxa.jp</a>／JAXA 宇宙科学研究所 キッズサイト <a href='https://www.kids.isas.jaxa.jp/faq/solar/000130.html'>kids.isas.jaxa.jp</a>／Wikipedia「Light-second」 <a href='https://en.wikipedia.org/wiki/Light-second'>en.wikipedia.org</a>"],
         ["織姫（ベガ）と彦星（アルタイル）は 14.4 光年ほど離れ、光でも約 14 年半かかる。","国立天文台「七夕について教えて」 <a href='https://www.nao.ac.jp/faq/a0309.html'>nao.ac.jp</a>"],
         ["シリウス（おおいぬ座）はおよそ 8.6 光年（資料により 8.6〜8.7 光年）。","Wikipedia「シリウス」 <a href='https://ja.wikipedia.org/wiki/%E3%82%B7%E3%83%AA%E3%82%A6%E3%82%B9'>ja.wikipedia.org</a>"]],
+   // 2026-10-08 未明（11 人の検証 P1・えま・さき）：英語の動画はまだ前の台本（まくら＝太陽とシリウスだけ）。英語の動画を作り直すまで、英語表示の事実の表は英語の動画で話している 2 項だけにする
+   srcEn:[["The sun is about 150 million km away; its light takes about 8 minutes 20 seconds to reach us.","JAXA ISAS Kids (in Japanese) <a href='https://www.kids.isas.jaxa.jp/faq/solar/000130.html'>kids.isas.jaxa.jp</a> / Wikipedia \"Light-second\" <a href='https://en.wikipedia.org/wiki/Light-second'>en.wikipedia.org</a>"],
+          ["Sirius (in Canis Major) is about 8.6 light-years away (8.6–8.7 depending on the source). A light-year is about 9.46 trillion km.","Wikipedia \"Sirius\" <a href='https://en.wikipedia.org/wiki/Sirius'>en.wikipedia.org</a> / Wikipedia \"Light-year\" <a href='https://en.wikipedia.org/wiki/Light-year'>en.wikipedia.org</a>"]],
    warn:"レーマー・家綱・シリウスの距離は二次資料（Wikipedia）で確かめた範囲です。枕草子の段は原典の校本には当たっていません。" },
 ];
 let LANG = "ja", ORI = "h";
@@ -209,8 +212,9 @@ $("#list").innerHTML = W.map(w => `
       <h3 data-ja>作り話の断り</h3><h3 data-en hidden lang="en">What is made up</h3>
       <p class="note" data-ja>${w.fic}</p>
       <p class="note" data-en hidden lang="en">${w.ficEn}</p>
-      <h3 data-ja>まくらで話した事実と典拠</h3><h3 data-en hidden lang="en">Facts in the opening, and sources <small style="font-weight:400;color:var(--mute)">(notes in Japanese)</small></h3>
-      <ul class="src">${w.src.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("")}</ul>
+      <h3 data-ja>まくらで話した事実と典拠</h3><h3 data-en hidden lang="en">Facts in the opening, and sources ${w.srcEn ? "" : `<small style="font-weight:400;color:var(--mute)">(notes in Japanese)</small>`}</h3>
+      ${w.srcEn ? `<ul class="src" data-ja>${w.src.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("")}</ul><ul class="src" data-en hidden lang="en">${w.srcEn.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("")}</ul>`
+        : `<ul class="src">${w.src.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("")}</ul>`}
       <p class="warn">⚠ ${w.warn}</p>
     </div>
   </article>`).join("");
