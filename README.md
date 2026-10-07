@@ -27,7 +27,9 @@
 
 ## 利用について
 
-- 動画・台本・ページの文は © 2026 mitsulab。転載・再配布・改変はご遠慮ください（リンクは歓迎）。
+- 動画・台本・ページの文は © 2026 mitsulab. All rights reserved. 無断の複製・転載・再配布・改変と、AI の学習・生成への利用はお断りします（テキスト・データマイニングの権利を留保します。[利用規約](https://mitsulab.jp/terms/#ai)）。リンクは歓迎します。
+- 声・書体・質感など他者の素材は、それぞれの条件に従います。
+- Videos, scripts and page text © 2026 mitsulab. All rights reserved. Copying, reposting, redistribution or modification without permission, and use for AI training or generation, are not permitted; text and data mining rights are reserved ([Terms](https://mitsulab.jp/terms/#ai-en)).
 - 碧の 3D モデル（VRM）はこのリポジトリに入れていない。
 
 作：mitsulab　https://mitsulab.jp
