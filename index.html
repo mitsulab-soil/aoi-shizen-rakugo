@@ -10,68 +10,129 @@
 <meta property="og:description" content="森の中の高座で、碧が語る自然落語。5 作・日本語と英語（Shinra Yose — nature rakugo told by Aoi）。">
 <meta property="og:image" content="img/hp_card_640x400.webp">
 <meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600&family=Inter:wght@400;500&family=Cormorant+Garamond:ital,wght@1,500&family=JetBrains+Mono&display=swap" rel="stylesheet">
 <style>
+  /* mitsulab の共通トークン（01_経営/03_対外書類/12_ブランド/_共通3D/tokens.css v1 から、このページで使う分を写した） */
   :root{
-    --bg:#110d0a; --panel:#1a1511; --line:#3a3028; --ink:#f3ecdf; --sub:#cbc2b2; --mute:#9e9586;
-    --accent:#d8b766; --accent-ink:#1a1206; --link:#e7cf8f; --warn:#e9c98f;
-  }
-  :root[data-theme="light"]{
-    --bg:#f6f1e7; --panel:#fffaf1; --line:#ddd2bf; --ink:#221c15; --sub:#4d4439; --mute:#6f6556;
-    --accent:#8a6417; --accent-ink:#ffffff; --link:#7a5510; --warn:#8a5a10;
+    --ml-bg:#03060f; --ml-ink:#eef5fb; --ml-ink-2:#c3cce0; --ml-ink-3:#8f9bb4;
+    --ml-aoi:#5cc8e0; --ml-aoi-2:#9bdcf0; --ml-aoi-deep:#0d87a3;
+    --ml-line:rgba(92,200,224,.32); --ml-line-2:rgba(150,170,240,.18); --ml-line-weak:rgba(195,204,224,.14);
+    --ml-panel:rgba(6,10,18,.72); --ml-nav:rgba(6,8,15,.42);
+    --ml-serif:"Shippori Mincho","Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
+    --ml-sans:"Inter","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP",sans-serif;
+    --ml-latin:"Cormorant Garamond","Times New Roman",serif;
+    --ml-mono:"JetBrains Mono",ui-monospace,monospace;
+    --ml-radius:2px; --ml-gutter:16px; --ml-ease:cubic-bezier(.22,.61,.36,1); --ml-t-fast:.18s; --ml-t:.42s;
+    --bar-h:60px; color-scheme:dark;
   }
   *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
-  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.85;
-    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-size:16px}
-  .mincho{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
-  a{color:var(--link);text-underline-offset:.2em;overflow-wrap:anywhere}
-  .wrap{max-width:980px;margin:0 auto;padding:0 16px}
-  header{padding:52px 0 26px;border-bottom:1px solid var(--line)}
-  .kicker{letter-spacing:.4em;font-size:13px;color:var(--sub);margin:0 0 10px}
-  h1{font-size:clamp(30px,6vw,48px);letter-spacing:.12em;margin:0;font-weight:600}
-  h1 small{display:block;font-size:14px;letter-spacing:.2em;color:var(--sub);margin-top:6px;font-weight:400}
-  .lead{font-size:18px;margin:20px 0 0}
-  .ai{margin:18px 0 0;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--panel);font-size:14px;color:var(--sub);border-radius:4px}
-  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 0}
-  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
-  .seg button{font:inherit;font-size:14px;padding:6px 14px;border:0;background:transparent;color:var(--ink);cursor:pointer}
-  .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
-  section{padding:32px 0;border-bottom:1px solid var(--line)}
-  h2{font-size:22px;letter-spacing:.12em;margin:0 0 16px;font-weight:600}
-  h3{font-size:16px;margin:18px 0 6px}
-  .toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:0;padding:0;list-style:none}
-  .toc a{display:block;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
-  .toc img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
-  .toc span{display:block;padding:6px 10px 8px;font-size:14px}
-  .toc small{display:block;color:var(--mute);font-size:12px}
-  .item{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:0 0 26px}
-  .item .head{padding:16px 16px 8px}
-  .no{font-size:13px;letter-spacing:.3em;color:var(--sub)}
-  .title{font-size:28px;letter-spacing:.14em;margin:2px 0 0}
-  .read{font-size:13px;color:var(--sub);letter-spacing:.1em}
-  .meta{font-size:13px;color:var(--mute);margin:6px 0 0}
-  .player{background:#000;display:flex;justify-content:center}
-  .player video{display:block;width:100%;max-height:78vh;background:#000}
-  .player.v video{width:auto;max-width:100%;height:min(78vh,720px)}
-  .body{padding:14px 16px 18px}
-  .body p{margin:0 0 10px}
-  .lbl{display:inline-block;font-size:12px;letter-spacing:.15em;border:1px solid var(--line);border-radius:3px;padding:0 6px;margin-right:6px;color:var(--sub)}
-  .src li{margin:0 0 10px}
-  .src .ref{display:block;font-size:14px;color:var(--sub)}
-  .note{font-size:14px;color:var(--sub)}
-  .warn{font-size:14px;color:var(--warn)}
-  ul.rules{padding-left:1.2em;margin:0}
-  ul.rules li{margin:0 0 6px}
-  .invite{margin:12px 0 0;padding:10px 14px;border-radius:4px;border:1px dashed var(--line)}
-  details{margin:10px 0 0}
-  summary{cursor:pointer;color:var(--sub);font-size:14px}
-  footer{padding:28px 0 48px;font-size:13px;color:var(--mute)}
-  .theme{float:right;font:inherit;font-size:12px;background:transparent;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:2px 10px;cursor:pointer}
-  .howto{margin:14px 0 0;padding:12px 14px;border:1px solid var(--line);background:var(--panel);border-radius:4px;font-size:15px}
-  .howto p{margin:0 0 6px}
-  .first{margin:12px 0 0;font-size:15px}
-  .dur{display:inline-block;margin-left:6px;font-size:12px;color:var(--sub)}
+  html,body{margin:0}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:var(--bar-h)}
+  body{background:var(--ml-bg);color:var(--ml-ink);font-family:var(--ml-sans);line-height:1.85;overflow-x:hidden}
+  a{color:var(--ml-aoi-2);text-underline-offset:.2em;overflow-wrap:anywhere}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+  .ml-en{font-family:var(--ml-latin);font-style:italic;letter-spacing:.24em;text-transform:uppercase;color:var(--ml-aoi-deep);font-size:.75rem;white-space:nowrap}
+  .ml-kicker{font-family:var(--ml-mono);font-size:.68rem;letter-spacing:.28em;color:var(--ml-ink-3);text-transform:uppercase}
+  .ml-kicker span{white-space:nowrap}
+  .ml-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:44px;padding:0 20px;
+    font:500 .95rem/1 var(--ml-sans);letter-spacing:.08em;color:var(--ml-ink);background:rgba(3,6,15,.35);
+    border:1px solid var(--ml-line);border-radius:var(--ml-radius);cursor:pointer;position:relative;overflow:hidden;text-decoration:none;
+    transition:border-color var(--ml-t-fast) var(--ml-ease),color var(--ml-t-fast)}
+  .ml-btn::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--ml-aoi);transform:scaleX(0);transform-origin:left;transition:transform var(--ml-t) var(--ml-ease)}
+  .ml-btn:hover,.ml-btn:focus-visible{border-color:var(--ml-aoi);color:#fff}
+  .ml-btn:hover::after,.ml-btn:focus-visible::after{transform:scaleX(1)}
+  .ml-btn:focus-visible{outline:1px solid var(--ml-aoi-2);outline-offset:3px}
+  .ml-btn--primary{border-color:var(--ml-aoi);color:var(--ml-aoi-2)}
+  .ml-seg{display:inline-flex;gap:14px;font:400 .82rem var(--ml-sans);letter-spacing:.08em}
+  .ml-seg button{appearance:none;background:none;border:0;color:var(--ml-ink-3);padding:6px 0;cursor:pointer;border-bottom:1px solid transparent;min-height:36px}
+  .ml-seg button[aria-pressed="true"]{color:var(--ml-ink);border-bottom-color:var(--ml-aoi)}
+  .ml-panel{background:var(--ml-panel);border:1px solid var(--ml-line-2);border-radius:var(--ml-radius);padding:16px 18px;color:var(--ml-ink-2)}
+  .ml-panel-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px;margin:0 0 8px;color:var(--ml-ink)}
+  .ml-panel--corner{position:relative;border-color:transparent}
+  .ml-panel--corner::before,.ml-panel--corner::after{content:"";position:absolute;width:14px;height:14px;border:1px solid var(--ml-aoi);opacity:.7;pointer-events:none}
+  .ml-panel--corner::before{left:-1px;top:-1px;border-right:0;border-bottom:0}
+  .ml-panel--corner::after{right:-1px;bottom:-1px;border-left:0;border-top:0}
+  .ml-fold{border-top:1px solid var(--ml-line-weak)}
+  .ml-fold > summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;font:400 .88rem var(--ml-sans);letter-spacing:.1em;color:var(--ml-ink-2)}
+  .ml-fold > summary::-webkit-details-marker{display:none}
+  .ml-fold > summary::after{content:"＋";color:var(--ml-aoi);font-size:.9rem}
+  .ml-fold[open] > summary::after{content:"－"}
+  /* 上の帯：HP と同じ高さ・同じ色 */
+  .bar{position:fixed;inset:0 0 auto 0;z-index:20;height:var(--bar-h);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 28px;background:var(--ml-nav);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(150,170,240,.10)}
+  .bar .name{display:flex;align-items:baseline;gap:12px;color:var(--ml-ink);text-decoration:none;min-width:0}
+  .bar .name b{font-family:var(--ml-serif);font-weight:600;font-size:1.05rem;letter-spacing:.2em;white-space:nowrap}
+  /* 高座（いま選んでいる演目）：画面いっぱいの一枚 */
+  .koza{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;display:grid;background:var(--ml-bg)}
+  .koza picture,.koza picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .koza .veil{position:absolute;inset:0;pointer-events:none;background:
+     linear-gradient(180deg,rgba(3,6,15,.55) 0,rgba(3,6,15,0) 22%,rgba(3,6,15,0) 48%,rgba(3,6,15,.86) 82%,var(--ml-bg) 100%),
+     linear-gradient(90deg,rgba(3,6,15,.72) 0,rgba(3,6,15,0) 46%)}
+  .koza svg.lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .koza .lines line{stroke:var(--ml-aoi);stroke-width:1;fill:none;vector-effect:non-scaling-stroke}
+  .koza .lines .draw{stroke-dasharray:1600;stroke-dashoffset:1600;animation:draw 2.6s var(--ml-ease) .3s forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .koza .text{position:relative;align-self:end;padding:0 28px 64px;z-index:2;width:100%}
+  .kicker{margin:0 0 14px}
+  .koza h1{font-family:var(--ml-serif);font-weight:600;font-size:clamp(40px,6.2vw,76px);letter-spacing:.14em;line-height:1.2;margin:0}
+  .koza .yomi{margin:8px 0 0;color:var(--ml-ink-2);font-size:.95rem;letter-spacing:.12em}
+  .koza .lead{font-family:var(--ml-serif);font-size:clamp(17px,1.9vw,21px);letter-spacing:.06em;max-width:30em;margin:22px 0 0;color:var(--ml-ink)}
+  .koza .act{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 0}
+  .koza .dur{color:var(--ml-ink-3);font-size:.85em;font-variant-numeric:tabular-nums}
+  .koza .meta{margin:16px 0 0;font-size:.86rem;color:var(--ml-ink-2);letter-spacing:.06em}
+  /* 再生中：動画は帯の下から画面の底まで。向きは画面の形で選ぶので、PC では横・スマホの縦持ちでは縦 */
+  .koza video{position:absolute;left:0;right:0;top:var(--bar-h);bottom:0;width:100%;height:calc(100% - var(--bar-h));object-fit:contain;background:#000;z-index:3}
+  .koza .close{position:absolute;z-index:4;top:calc(var(--bar-h) + 12px);right:16px;min-height:40px;padding:0 14px;font-size:.85rem}
+  /* めくり（演目の名札）：高座の右に縦書き。寄席のめくりの見立て */
+  .mekuri{position:absolute;right:max(28px,6vw);top:96px;z-index:2;writing-mode:vertical-rl;padding:22px 14px;
+    background:rgba(238,245,251,.92);color:#0b1220;border-radius:1px;box-shadow:0 0 0 1px rgba(3,6,15,.4)}
+  .mekuri .no{font-family:var(--ml-serif);font-size:.82rem;letter-spacing:.3em;color:#3d4a5c}
+  .mekuri .t{font-family:var(--ml-serif);font-weight:600;font-size:clamp(28px,3.4vw,40px);letter-spacing:.2em;margin-top:.6em}
+  /* 番組：縦長のめくり 5 枚 */
+  .bangumi{padding:56px 28px 24px}
+  .bangumi h2,.sec h2{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;font-family:var(--ml-serif);font-weight:600;font-size:1.35rem;letter-spacing:.16em;margin:0 0 22px}
+  .list{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:0;padding:0;list-style:none}
+  .card{appearance:none;display:block;width:100%;text-align:left;background:none;border:1px solid var(--ml-line-2);border-radius:var(--ml-radius);color:var(--ml-ink);padding:0;cursor:pointer;overflow:hidden;position:relative;font:inherit;transition:border-color var(--ml-t-fast)}
+  .card img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;filter:saturate(.85) brightness(.78);transition:filter var(--ml-t)}
+  .card .plate{position:absolute;top:10px;right:10px;writing-mode:vertical-rl;background:rgba(238,245,251,.92);color:#0b1220;padding:10px 6px;border-radius:1px}
+  .card .plate .cno{font-family:var(--ml-serif);font-size:.62rem;letter-spacing:.24em;color:#3d4a5c}
+  .card .plate .ct{font-family:var(--ml-serif);font-weight:600;font-size:1.05rem;letter-spacing:.16em;margin-top:.5em}
+  .card .cap{position:absolute;inset:auto 0 0 0;padding:28px 12px 10px;background:linear-gradient(180deg,transparent,rgba(3,6,15,.92) 55%);font-size:.78rem;line-height:1.5}
+  .card .cen{display:block;font-family:var(--ml-latin);font-style:italic;font-size:.92rem;color:var(--ml-ink-2)}
+  .card .cd{color:var(--ml-ink-2);font-size:.86rem;font-variant-numeric:tabular-nums}
+  .card:hover img,.card[aria-current="true"] img{filter:none}
+  .card:focus-visible{outline:1px solid var(--ml-aoi-2);outline-offset:2px}
+  .card[aria-current="true"]{border-color:var(--ml-aoi)}
+  .card[aria-current="true"]::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ml-aoi)}
+  /* さそい・手がかり */
+  .sec{padding:40px 28px}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:start}
+  .invite p{font-family:var(--ml-serif);font-size:1.12rem;letter-spacing:.05em;line-height:2;margin:0;color:var(--ml-ink)}
+  .clues{color:var(--ml-ink-2);font-size:.92rem}
+  .clues ul{margin:0 0 12px;padding-left:1.1em}
+  .clues li{margin:0 0 10px}
+  .clues .ref{display:block;font-size:.8rem;color:var(--ml-ink-3)}
+  .clues .note{font-size:.82rem;color:var(--ml-ink-3)}
+  .about{color:var(--ml-ink-2);font-size:.9rem;line-height:1.95}
+  .about p{margin:0 0 12px;max-width:44em}
+  .about ul{margin:0 0 12px;padding-left:1.1em}
+  .about li{margin:0 0 8px}
+  .about .fine{color:var(--ml-ink-3);font-size:.82rem}
+  footer{border-top:1px solid var(--ml-line-weak);padding:26px 28px 48px;color:var(--ml-ink-3);font-size:.78rem;line-height:1.9}
   [hidden]{display:none!important}
+  @media (max-width:860px){ .list{grid-template-columns:repeat(5,minmax(132px,1fr));overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;overscroll-behavior-x:contain} .list li{scroll-snap-align:start} .grid2{grid-template-columns:1fr} }
+  @media (max-width:560px){
+    :root{--bar-h:54px}
+    .wrap,.bangumi,.sec,footer{padding-left:var(--ml-gutter);padding-right:var(--ml-gutter)}
+    .bar{padding:0 var(--ml-gutter)} .bar .ml-en{display:none}
+    .koza{min-height:600px} .koza .text{padding:0 var(--ml-gutter) 36px} .koza svg.lines{display:none}
+    .koza .veil{background:linear-gradient(180deg,rgba(3,6,15,.5) 0,rgba(3,6,15,0) 18%,rgba(3,6,15,0) 40%,rgba(3,6,15,.9) 72%,var(--ml-bg) 100%)}
+    .mekuri{top:calc(var(--bar-h) + 18px);right:var(--ml-gutter);padding:14px 9px} .mekuri .t{font-size:26px}
+    .koza .act .ml-btn{flex:1 1 auto}
+    .list{grid-template-columns:repeat(5,128px)}
+    .ml-panel{padding:14px var(--ml-gutter)}
+  }
+  @media (prefers-reduced-motion:reduce){ .koza .lines .draw{animation:none;stroke-dashoffset:0} .ml-btn,.ml-btn::after,.card img{transition:none} }
 </style>
 <link rel="icon" href="favicon/favicon.ico" sizes="any">
 <link rel="icon" href="favicon/icon.svg" type="image/svg+xml">
@@ -81,57 +142,99 @@
 </head>
 <body>
 <script src="loader/loader.js" data-title="森羅寄席" data-en="Shinra Yose" data-icon="favicon/icon.svg" data-auto="load" data-max="8000"></script>   <!-- mitsulab 共通の読み込み画面（01_経営/03_対外書類/12_ブランド/loader・2026-10-09） -->
-<div class="wrap">
-  <header>
-    <button class="theme" id="theme" type="button">明るく表示</button>
-    <p class="kicker">森 羅 寄 席 ／ S H I N R A &nbsp; Y O S E</p>
-    <h1 class="mincho">森羅寄席<small>しんらよせ ── 碧の自然落語 ／ nature rakugo told by Aoi ／ mitsulab</small></h1>
-    <p class="lead mincho">人の目や耳の外にある世界を、笑いにする噺。</p>
-    <p class="lead" style="font-size:15px;color:var(--sub)">まくらでは本に書いてある事実だけを話し、本題は江戸の作り話、サゲで笑って締めます。事実の典拠は演目ごとに載せています。高座は、森の見える大きな窓のある間に見立てたもので、話の展開で窓の外が町屋や夜空へ静かに移ります。碧はまくらを話しながら羽織を脱ぎ、脱ぎ終えたところで本題に入ります。扇子と手拭いで物を見立てます。</p>
-    <p class="ai">語り手の碧（あおい）は、人と自然のあいだに立つ<strong>依代</strong>として語ります。碧は断定しません。典拠のない事実を作りません。<br>English versions are horizontal only.</p>
-    <p class="first" data-ja>はじめての方は <a href="#hachi">《蜂の目》</a>（約 4 分）からどうぞ。</p>
-    <div class="howto" data-en hidden lang="en">
-      <p><strong>How rakugo works.</strong> One storyteller sits on a cushion and plays every character. When the head turns to the audience's right, it is the younger, livelier man (Hachi); turned to the left, it is the older, calmer one (the landlord or the old man next door). A folded fan and a small cloth stand in for a pipe, a book, a broom or a door. The talk opens with a few true facts (the <i>makura</i>), slips into a made-up tale, and ends on one punch line (the <i>sage</i>), followed by a bow.</p>
-      <p>Start with <a href="#hachi"><i>The Bee's Eyes</i></a> (about 4 minutes).</p>
-    </div>
-    <div class="bar">
-      <div class="seg" role="group" aria-label="ことば"><button type="button" data-lang="ja" aria-pressed="true">日本語</button><button type="button" data-lang="en" aria-pressed="false">English</button></div>
-      <div class="seg" role="group" aria-label="動画の向き"><button type="button" data-o="h" aria-pressed="true">横（16:9）</button><button type="button" data-o="v" aria-pressed="false">縦（9:16）</button></div>
-    </div>
-  </header>
+<header class="bar">
+  <a class="name" href="#koza"><b>森羅寄席</b><span class="ml-en">Shinra Yose</span></a>
+  <div class="ml-seg" role="group" aria-label="ことば / language"><button type="button" data-lang="ja" aria-pressed="true">日本語</button><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div>
+</header>
 
-  <section>
-    <h2 class="mincho">演目 <small style="font-size:13px;color:var(--mute)">（5 作）</small></h2>
-    <ul class="toc" id="toc"></ul>
+<main>
+  <section class="koza" id="koza" aria-label="高座">
+    <picture id="poster"><source id="posterV" media="(orientation: portrait)"><img id="posterImg" alt=""></picture>
+    <div class="veil"></div>
+    <svg class="lines" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true">
+      <line class="draw" x1="0" y1="430" x2="1000" y2="430" style="opacity:.35"/>
+      <line class="draw" x1="80" y1="436" x2="920" y2="436" style="opacity:.14"/>
+    </svg>
+    <div class="mekuri" aria-hidden="true"><span class="no" id="mNo"></span><span class="t" id="mT"></span></div>
+    <div class="text">
+      <div style="max-width:1124px;margin:0 auto">
+        <p class="kicker ml-kicker"><span>碧の自然落語</span> ／ <span lang="en">nature rakugo told by Aoi</span></p>
+        <h1 id="title"></h1>
+        <p class="yomi" id="yomi"></p>
+        <p class="lead" id="lead"></p>
+        <div class="act">
+          <button class="ml-btn ml-btn--primary" id="play" type="button"><span data-ja>▶ 高座へ</span><span data-en hidden lang="en">▶ Watch</span> <span class="dur" id="dur"></span></button>
+          <a class="ml-btn" href="#bangumi"><span data-ja>番組を見る</span><span data-en hidden lang="en">All five stories</span></a>
+        </div>
+        <p class="meta" id="meta"></p>
+      </div>
+    </div>
+    <button class="ml-btn close" id="close" type="button" hidden><span data-ja>× 閉じる</span><span data-en hidden lang="en">× Close</span></button>
   </section>
 
-  <section id="list"></section>
-
-  <section id="about">
-    <h2 class="mincho">この動画について</h2>
-    <ul class="rules">
-      <li>語り：碧（あおい）── 人と自然のあいだに立つ依代として語ります。落語はひとりで全部の役を演じる芸なので、八っつぁんと大家（ご隠居）も同じ碧の声で、速さ・高さ・抑揚を変えて分けています。</li>
-      <li>日本語の声：<strong>VOICEVOX:冥鳴ひまり</strong>。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
-      <li>英語の声：<strong>Kokoro-82M</strong>（hexgrad・Apache-2.0）。af_heart と jf_alpha を半々に混ぜ、日本語の碧の声の高さに寄せています（大家・ご隠居の役は bf_emma も少し混ぜます）。<a href="https://huggingface.co/hexgrad/Kokoro-82M">huggingface.co/hexgrad/Kokoro-82M</a></li>
-      <li>姿：碧の 3D は VRoid Studio で作ったもの。会場（窓の外に森の見える高座の間・袖の幕・行灯・提灯・めくり・座布団・客席、窓の外の町屋と夜空）は three.js で描いたものです。森の写真・樹皮・板・シダの質感は <a href="https://polyhaven.com/">Poly Haven</a> の CC0 素材です。</li>
-      <li>字幕：台本の文をそのまま出しています。書体は <strong>Klee One</strong>（Fontworks・SIL Open Font License 1.1）。字幕は画面の下の真ん中に、縁取りのある字で出します（2026-10-06 に、読みやすさのため大きく・太く直しました）。</li>
-      <li>音：扇子で床を打つ音・すする音は合成した音です。客席の笑い声は入れていません（日本語版・英語版とも）。</li>
-      <li>所作：羽織を脱ぐ、上下（かみしも）、扇子・手拭いの見立ては、落語の解説記事から原理を学んで型にしたものです。</li>
-    </ul>
-    <h3>利用について</h3>
-    <ul class="rules">
-      <li>動画・台本・このページの文は mitsulab の作品です（© 2026 mitsulab. All rights reserved.）。無断の複製・転載・再配布・改変と、AI の学習・生成への利用はお断りします（テキスト・データマイニングの権利を留保します。<a href="https://mitsulab.jp/terms/#ai">利用規約</a>）。紹介のためのリンクは歓迎します。</li>
-      <li>上に書いた他者の素材（声・書体・質感）は、それぞれの条件に従います。</li>
-      <li>碧の 3D モデル（VRM）はこのページでは配布していません。</li>
-    </ul>
+  <section class="bangumi" id="bangumi">
+    <div style="max-width:1124px;margin:0 auto">
+      <h2><span data-ja>番組</span><span data-en hidden lang="en">Program</span><span class="ml-en">five stories</span></h2>
+      <ul class="list" id="list"></ul>
+    </div>
   </section>
 
-  <footer>
+  <section class="sec">
+    <div class="grid2" style="max-width:1124px;margin:0 auto">
+      <div class="ml-panel ml-panel--corner invite">
+        <div class="ml-panel-head"><span style="font-family:var(--ml-serif);font-weight:600;letter-spacing:.12em" data-ja>きょうのさそい</span><span style="font-family:var(--ml-serif);font-weight:600;letter-spacing:.08em" data-en hidden lang="en">Try this today</span><span class="ml-en">after the story</span></div>
+        <p id="invite"></p>
+      </div>
+      <div class="clues">
+        <details class="ml-fold"><summary><span data-ja>まくらで話した事実と、その典拠</span><span data-en hidden lang="en">Facts in the opening, and sources</span></summary><p class="note" id="srcNote" hidden lang="en">(notes in Japanese)</p><ul id="src"></ul><p class="note" id="warn"></p></details>
+        <details class="ml-fold"><summary><span data-ja>本題の作り話のこと</span><span data-en hidden lang="en">What is made up</span></summary><p id="fic" style="margin:0 0 14px"></p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec about" id="about">
+    <div style="max-width:1124px;margin:0 auto">
+      <h2><span data-ja>森羅寄席のこと</span><span data-en hidden lang="en">About Shinra Yose</span><span class="ml-en">about</span></h2>
+      <div data-ja>
+        <p style="font-family:var(--ml-serif);font-size:1.05rem;color:var(--ml-ink)">人の目や耳の外にある世界を、笑いにする噺。</p>
+        <p>まくらでは本に書いてある事実だけを話し、本題は江戸の作り話、サゲで笑って締めます。事実の典拠は演目ごとに載せています。高座は、森の見える大きな窓のある間に見立てたもので、話の展開で窓の外が町屋や夜空へ静かに移ります。碧はまくらを話しながら羽織を脱ぎ、脱ぎ終えたところで本題に入ります。扇子と手拭いで物を見立てます。</p>
+        <p>語り手の碧（あおい）は、人と自然のあいだに立つ依代として語ります。碧は断定しません。典拠のない事実を作りません。はじめての方は <a href="?e=hachi#koza" data-pick="hachi">《蜂の目》</a>（約 5 分）からどうぞ。動画の向き（横・縦）は、画面の形に合わせて選ばれます。</p>
+      </div>
+      <div data-en hidden lang="en">
+        <p><strong>How rakugo works.</strong> One storyteller sits on a cushion and plays every character. When the head turns to the audience's right, it is the younger, livelier man (Hachi); turned to the left, it is the older, calmer one (the landlord or the old man next door). A folded fan and a small cloth stand in for a pipe, a book, a broom or a door. The talk opens with a few true facts (the <i>makura</i>), slips into a made-up tale, and ends on one punch line (the <i>sage</i>), followed by a bow.</p>
+        <p>Aoi, the storyteller, speaks as a <i>yorishiro</i> standing between people and nature. Aoi does not overstate, and never invents facts without a source. Start with <a href="?e=hachi&amp;lang=en#koza" data-pick="hachi"><i>The Bee's Eyes</i></a> (about 4 minutes). The English versions are horizontal only.</p>
+      </div>
+      <details class="ml-fold"><summary><span data-ja>この寄席のつくり（声・姿・素材）</span><span data-en hidden lang="en">Credits (voices, figure, materials)</span></summary>
+        <ul>
+          <li>語り：碧（あおい）── 人と自然のあいだに立つ依代として語ります。落語はひとりで全部の役を演じる芸なので、八っつぁんと大家（ご隠居）も同じ碧の声で、速さ・高さ・抑揚を変えて分けています。</li>
+          <li>日本語の声：<strong>VOICEVOX:冥鳴ひまり</strong>。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
+          <li>英語の声：<strong>Kokoro-82M</strong>（hexgrad・Apache-2.0）。af_heart と jf_alpha を半々に混ぜ、日本語の碧の声の高さに寄せています（大家・ご隠居の役は bf_emma も少し混ぜます）。<a href="https://huggingface.co/hexgrad/Kokoro-82M">huggingface.co/hexgrad/Kokoro-82M</a></li>
+          <li>姿：碧の 3D は VRoid Studio で作ったもの。会場（窓の外に森の見える高座の間・袖の幕・行灯・提灯・めくり・座布団・客席、窓の外の町屋と夜空）は three.js で描いたものです。森の写真・樹皮・板・シダの質感は <a href="https://polyhaven.com/">Poly Haven</a> の CC0 素材です。</li>
+          <li>字幕：台本の文をそのまま出しています。書体は <strong>Klee One</strong>（Fontworks・SIL Open Font License 1.1）。字幕は画面の下の真ん中に、縁取りのある字で出します。</li>
+          <li>音：出囃子・受け囃子（《蜂の目》）、扇子で床を打つ音・すする音は、数式から合成した音です（録音や既存の曲は使っていません）。客席の笑い声は入れていません（日本語版・英語版とも）。</li>
+          <li>所作と表情：羽織を脱ぐ、上下（かみしも）、扇子・手拭いの見立て、人物ごとの顔と姿勢、礼は、落語の解説記事から原理を学んで型にしたものです（日本語版は 2026-10-13 に、所作と表情を直した高座で書き出し直しました）。</li>
+          <li lang="en">Voices: VOICEVOX:冥鳴ひまり (Japanese) / Kokoro-82M by hexgrad, Apache-2.0 (English). Figure made with VRoid Studio; the hall is drawn with three.js; forest, bark, wood and fern textures from Poly Haven (CC0). Subtitle typeface: Klee One (OFL). All sounds other than the voices are synthesized; no audience laughter.</li>
+        </ul>
+      </details>
+      <details class="ml-fold"><summary><span data-ja>利用について</span><span data-en hidden lang="en">Terms of use</span></summary>
+        <ul>
+          <li>動画・台本・このページの文は mitsulab の作品です（© 2026 mitsulab. All rights reserved.）。無断の複製・転載・再配布・改変と、AI の学習・生成への利用はお断りします（テキスト・データマイニングの権利を留保します。<a href="https://mitsulab.jp/terms/#ai">利用規約</a>）。紹介のためのリンクは歓迎します。</li>
+          <li>上に書いた他者の素材（声・書体・質感）は、それぞれの条件に従います。</li>
+          <li>碧の 3D モデル（VRM）はこのページでは配布していません。</li>
+          <li lang="en">Videos, scripts and page text © 2026 mitsulab. All rights reserved. Copying, reposting, redistribution or modification without permission, and use for AI training or generation, are not permitted; text and data mining rights are reserved (<a href="https://mitsulab.jp/terms/#ai-en">Terms</a>). Links are welcome.</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div style="max-width:1124px;margin:0 auto">
     声　VOICEVOX:冥鳴ひまり（日本語）／Kokoro-82M by hexgrad, Apache-2.0（English）　字幕の書体　Klee One（OFL）　森・樹皮・板・シダ　Poly Haven（CC0）<br>
-    作　mitsulab（2026）　<a href="https://mitsulab.jp">mitsulab.jp</a>　／　お問い合わせ　official@mitsulab.jp
-    <br>© 2026 mitsulab. All rights reserved.
-  </footer>
-</div>
+    作　mitsulab（2026）　<a href="https://mitsulab.jp">mitsulab.jp</a>　／　お問い合わせ　official@mitsulab.jp<br>
+    © 2026 mitsulab. All rights reserved.　AI の学習・生成への利用はお断りします（<a href="https://mitsulab.jp/terms/#ai">利用規約</a>）。
+  </div>
+</footer>
 
 <script>
 // ---- 演目（台本・科学の線・典拠は mitsulab の台本から写した）
@@ -161,7 +264,7 @@ const W = [
    warn:"一次資料（Griffin の論文など）にはまだ当たっていません（百科事典で確かめた範囲）。" },
  { slug:"hachi", no:"其 の 三", t:"蜂の目", r:"はちのめ", en:"The Bee's Eyes", kimono:"山吹（やまぶき）",
    lead:"花は、人には読めない字で看板を出している。蜂に見える紫外線と、見えない赤の噺。",
-   leadEn:"Flowers hang out signs we can't read. What bees see — and the red they can't.", d:247, dEn:264,
+   leadEn:"Flowers hang out signs we can't read. What bees see — and the red they can't.", d:289, dEn:264,
    inviteEn:"Look closely at one yellow flower, all the way to its center. Petals that look plain to us may carry a sign only bees can read. (If bees are there, keep your distance.)",
    ficEn:"The old man, Hachi, the red shop curtain and the red tavern lantern are made up. How red looks to a bee depends on the background, so the story doesn't claim it for certain.",
    fic:"本題のご隠居・八っつぁん・赤い暖簾・赤提灯は作り話です。蜂に赤がどう見えるかは背景によって変わるので、断定していません。",
@@ -194,66 +297,92 @@ const W = [
           ["Sirius (in Canis Major) is about 8.6 light-years away (8.6–8.7 depending on the source). A light-year is about 9.46 trillion km.","Wikipedia \"Sirius\" <a href='https://en.wikipedia.org/wiki/Sirius'>en.wikipedia.org</a> / Wikipedia \"Light-year\" <a href='https://en.wikipedia.org/wiki/Light-year'>en.wikipedia.org</a>"]],
    warn:"レーマー・家綱・シリウスの距離は二次資料（Wikipedia）で確かめた範囲です。枕草子の段は原典の校本には当たっていません。" },
 ];
-let LANG = "ja", ORI = "h";
+// 2026-10-13 画面の作り直し：高座（いまの演目）＋番組（めくり 5 枚）＋さそい＋折りたたみ（典拠・作り話・つくり）。
+// 動画の向きは画面の形で自動（縦持ちは縦・ほかは横。英語は横だけ）。明るい表示の切りかえは外した。
+let LANG = "ja", cur = "hachi";
 const $ = s => document.querySelector(s);
-function vsrc(w) { return `video/${w.slug}${LANG === "en" ? "_en_h" : "_" + ORI}720.mp4`; }   // 英語版は横だけ
-function poster(w) { return LANG === "en" ? `img/${w.slug}_en_poster.webp` : (ORI === "v" ? `img/${w.slug}_poster_v.webp` : `img/${w.slug}_poster.webp`); }
 const mmss = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
-function drawToc() {
-  $("#toc").innerHTML = W.map(w => `<li><a href="#${w.slug}"><img src="img/${w.slug}_poster.webp" alt="" loading="lazy"><span class="mincho">${LANG === "en" ? w.en : w.t}<small>${LANG === "en" ? w.t : w.en}</small><small>${LANG === "en" ? "about " + Math.round(w.dEn / 60) + " min (" + mmss(w.dEn) + ")" : "約 " + Math.round(w.d / 60) + " 分（" + mmss(w.d) + "）"}</small></span></a></li>`).join("");
-}
-drawToc();
-$("#list").innerHTML = W.map(w => `
-  <article class="item" id="${w.slug}">
-    <div class="head">
-      <div class="no">${w.no}</div>
-      <div class="title mincho">${w.t}</div>
-      <div class="read">${w.r} ／ <i>${w.en}</i></div>
-      <div class="meta" data-ja>長さ ${mmss(w.d)} ／ 着物 ${w.kimono} ／ 語り 碧（依代）／ 作 mitsulab（2026）</div>
-      <div class="meta" data-en hidden lang="en">${mmss(w.dEn)} / told by Aoi (a <i>yorishiro</i>) / mitsulab (2026)</div>
-    </div>
-    <div class="player"><video controls preload="none" playsinline></video></div>
-    <div class="body">
-      <p class="mincho" lang="ja" data-ja>${w.lead}</p>
-      <p data-en hidden lang="en">${w.leadEn}<br><span class="note">The story itself is fiction set in old Edo; the facts in the opening (makura) are listed below with sources. Voice: Kokoro-82M (Apache-2.0).</span></p>
-      <div class="invite" data-ja><strong>きょうのさそい</strong>　${w.invite}</div>
-      <div class="invite" data-en hidden lang="en"><strong>Try this today</strong>　${w.inviteEn}</div>
-      <h3 data-ja>作り話の断り</h3><h3 data-en hidden lang="en">What is made up</h3>
-      <p class="note" data-ja>${w.fic}</p>
-      <p class="note" data-en hidden lang="en">${w.ficEn}</p>
-      <h3 data-ja>まくらで話した事実と典拠</h3><h3 data-en hidden lang="en">Facts in the opening, and sources ${w.srcEn ? "" : `<small style="font-weight:400;color:var(--mute)">(notes in Japanese)</small>`}</h3>
-      ${w.srcEn ? `<ul class="src" data-ja>${w.src.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("")}</ul><ul class="src" data-en hidden lang="en">${w.srcEn.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("")}</ul>`
-        : `<ul class="src">${w.src.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("")}</ul>`}
-      <p class="warn">⚠ ${w.warn}</p>
-    </div>
-  </article>`).join("");
-function apply() {
+const portrait = () => !!(window.matchMedia && matchMedia("(orientation: portrait)").matches);
+const reduce = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+const vsrc = slug => `video/${slug}${LANG === "en" ? "_en_h" : portrait() ? "_v" : "_h"}720.mp4`;
+function setLangUI() {
   document.documentElement.lang = LANG;
-  document.querySelectorAll("header [data-en]").forEach(x => x.hidden = LANG !== "en");
-  document.querySelectorAll("header [data-ja]").forEach(x => x.hidden = LANG === "en");
-  drawToc();
-  document.querySelectorAll(".item").forEach((el, i) => {
-    const w = W[i], v = el.querySelector("video"), p = el.querySelector(".player");
-    const want = vsrc(w);
-    if (v.dataset.src !== want) { v.pause(); v.dataset.src = want; v.src = want; v.poster = poster(w); }
-    p.classList.toggle("v", ORI === "v" && LANG !== "en");
-    el.querySelectorAll("[data-en]").forEach(x => x.hidden = LANG !== "en");
-    el.querySelectorAll("[data-ja]").forEach(x => x.hidden = LANG === "en");
-  });
   document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
-  document.querySelectorAll("[data-o]").forEach(b => { b.setAttribute("aria-pressed", String(b.dataset.o === (LANG === "en" ? "h" : ORI))); b.disabled = LANG === "en" && b.dataset.o === "v"; });
+  document.querySelectorAll("[data-ja]").forEach(x => x.hidden = LANG === "en");
+  document.querySelectorAll("[data-en]").forEach(x => x.hidden = LANG !== "en");
 }
-document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => { LANG = b.dataset.lang; try { history.replaceState(null, "", LANG === "en" ? "?lang=en" + location.hash : location.pathname + location.hash); } catch (e) {} apply(); }));
-// ?lang=en で英語のまま開く・幅の狭い画面（スマホ）では縦の動画を既定に（字幕が読める大きさになる）
-try { if (new URLSearchParams(location.search).get("lang") === "en") LANG = "en"; } catch (e) {}
-if (window.matchMedia && matchMedia("(max-width: 700px)").matches) ORI = "v";
-document.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => { ORI = b.dataset.o; apply(); }));
-apply();
-// 明るい表示（見る人ごとの好み。保存できなくても表示はそのまま）
-const btn = $("#theme"), root = document.documentElement;
-const set = t => { if (t === "light") root.setAttribute("data-theme", "light"); else root.removeAttribute("data-theme"); btn.textContent = t === "light" ? "暗く表示" : "明るく表示"; };
-try { set(localStorage.getItem("aoi-rakugo-theme") || ""); } catch (e) {}
-btn.addEventListener("click", () => { const t = root.getAttribute("data-theme") === "light" ? "" : "light"; set(t); try { localStorage.setItem("aoi-rakugo-theme", t); } catch (e) {} });
+function list() {
+  $("#list").innerHTML = W.map(w => `<li><button class="card" type="button" data-slug="${w.slug}" aria-label="${LANG === "en" ? w.en : w.t}">
+    <img src="img/${w.slug}_poster_v.webp" alt="" loading="lazy" width="720" height="1280">
+    <span class="plate" aria-hidden="true"><span class="cno">${w.no.replace(/ /g, "")}</span><span class="ct">${w.t}</span></span>
+    <span class="cap">${LANG === "en" ? `<span class="cen">${w.en}</span>` : ""}<span class="cd">${mmss(LANG === "en" ? w.dEn : w.d)}</span></span></button></li>`).join("");
+  document.querySelectorAll(".card").forEach(c => c.setAttribute("aria-current", String(c.dataset.slug === cur)));
+}
+function show(slug) {
+  const w = W.find(x => x.slug === slug) || W.find(x => x.slug === "hachi"), en = LANG === "en";
+  cur = w.slug; stop();
+  $("#posterImg").src = `img/${cur}_${en ? "en_" : ""}poster.webp`;
+  $("#posterV").srcset = `img/${cur}_poster_v.webp`;   // 縦持ちの高座の絵は縦のポスター（字幕なしのコマ。英語でも同じ絵）
+  $("#mNo").textContent = w.no; $("#mT").textContent = w.t;
+  $("#title").textContent = en ? w.en : w.t;
+  $("#title").lang = en ? "en" : "ja";
+  $("#yomi").innerHTML = en ? `${w.t}　<span class="ml-en">${w.r}</span>` : `${w.r}　<span class="ml-en">${w.en}</span>`;
+  $("#lead").textContent = en ? w.leadEn : w.lead;
+  $("#dur").textContent = mmss(en ? w.dEn : w.d);
+  $("#meta").textContent = en ? "Told by Aoi · the opening is fact, the tale is fiction · mitsulab (2026)" : `着物 ${w.kimono} ／ 語り 碧（依代）／ まくらは事実、本題は作り話 ／ 作 mitsulab（2026）`;
+  $("#invite").textContent = en ? w.inviteEn : w.invite;
+  $("#fic").textContent = en ? w.ficEn : w.fic;
+  const S = en && w.srcEn ? w.srcEn : w.src;
+  $("#src").innerHTML = S.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("");
+  $("#srcNote").hidden = !(en && !w.srcEn);
+  $("#warn").textContent = w.warn ? "※ " + w.warn : "";
+  document.title = en ? `${w.en} — Shinra Yose` : `${w.t} ── 森羅寄席`;
+  document.querySelectorAll(".card").forEach(c => c.setAttribute("aria-current", String(c.dataset.slug === cur)));
+}
+function play() {
+  stop();
+  const v = document.createElement("video");
+  v.id = "vid"; v.controls = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto";
+  v.poster = LANG === "en" ? `img/${cur}_en_poster.webp` : portrait() ? `img/${cur}_poster_v.webp` : `img/${cur}_poster.webp`;
+  v.src = vsrc(cur); v.dataset.src = v.src;
+  $("#koza").appendChild(v); $("#close").hidden = false;
+  v.addEventListener("ended", stop);
+  const p = v.play(); if (p && p.catch) p.catch(() => {});
+  window.scrollTo({ top: 0, behavior: "auto" });   // 再生は高座を画面いっぱいに（閉じるボタンも必ず見える位置に）
+}
+function stop() { const v = $("#vid"); if (v) { v.pause(); v.removeAttribute("src"); v.load(); v.remove(); } $("#close").hidden = true; }
+// 再生中に画面の向きが変わったら、同じ所から縦・横の動画を差しかえる（日本語だけ）
+if (window.matchMedia) {
+  const mq = matchMedia("(orientation: portrait)"), on = () => {
+    const v = $("#vid"); if (!v || LANG === "en") return;
+    const want = new URL(vsrc(cur), location.href).href; if (v.src === want) return;
+    const t = v.currentTime, playing = !v.paused; v.src = want;
+    v.addEventListener("loadedmetadata", () => { v.currentTime = t; if (playing) v.play().catch(() => {}); }, { once: true });
+  };
+  mq.addEventListener ? mq.addEventListener("change", on) : mq.addListener(on);
+}
+function pick(slug, scroll) {
+  show(slug);
+  try { history.replaceState(null, "", (LANG === "en" ? "?lang=en" : location.pathname) + "#" + cur); } catch (e) {}
+  if (scroll) $("#koza").scrollIntoView({ behavior: reduce() ? "auto" : "smooth" });
+}
+$("#play").addEventListener("click", play);
+$("#close").addEventListener("click", stop);
+$("#list").addEventListener("click", e => { const c = e.target.closest(".card"); if (c) pick(c.dataset.slug, true); });
+document.querySelectorAll("[data-pick]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); pick(a.dataset.pick, true); }));
+document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => {
+  LANG = b.dataset.lang; setLangUI(); list(); show(cur);
+  try { history.replaceState(null, "", (LANG === "en" ? "?lang=en" : location.pathname) + "#" + cur); } catch (e) {}
+}));
+// ?lang=en で英語・#keyaki や ?e=keyaki で演目を選んで開く（前の版の #slug のリンクもそのまま効く）
+try {
+  const q = new URLSearchParams(location.search);
+  if (q.get("lang") === "en") LANG = "en";
+  const h = location.hash.replace("#", ""), e = q.get("e");
+  if (W.some(x => x.slug === h)) cur = h; else if (W.some(x => x.slug === e)) cur = e;
+} catch (e) {}
+setLangUI(); list(); show(cur);
+window.addEventListener("hashchange", () => { const h = location.hash.replace("#", ""); if (W.some(x => x.slug === h)) pick(h, true); });
 </script>
 </body>
 </html>
