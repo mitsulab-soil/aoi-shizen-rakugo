@@ -351,16 +351,8 @@ function play() {
   window.scrollTo({ top: 0, behavior: "auto" });   // 再生は高座を画面いっぱいに（閉じるボタンも必ず見える位置に）
 }
 function stop() { const v = $("#vid"); if (v) { v.pause(); v.removeAttribute("src"); v.load(); v.remove(); } $("#close").hidden = true; }
-// 再生中に画面の向きが変わったら、同じ所から縦・横の動画を差しかえる（日本語だけ）
-if (window.matchMedia) {
-  const mq = matchMedia("(orientation: portrait)"), on = () => {
-    const v = $("#vid"); if (!v || LANG === "en") return;
-    const want = new URL(vsrc(cur), location.href).href; if (v.src === want) return;
-    const t = v.currentTime, playing = !v.paused; v.src = want;
-    v.addEventListener("loadedmetadata", () => { v.currentTime = t; if (playing) v.play().catch(() => {}); }, { once: true });
-  };
-  mq.addEventListener ? mq.addEventListener("change", on) : mq.addListener(on);
-}
+// 画面を回しても再生中の動画は保つ。既存の object-fit:contain で新しい画面に収める。
+// 縦・横の動画を選ぶのは play() の時だけ（演目を替えて再生するときも、その向きに合わせる）。
 function pick(slug, scroll) {
   show(slug);
   try { history.replaceState(null, "", (LANG === "en" ? "?lang=en" : location.pathname) + "#" + cur); } catch (e) {}
