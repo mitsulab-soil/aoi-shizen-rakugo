@@ -304,7 +304,7 @@ const $ = s => document.querySelector(s);
 const mmss = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
 const portrait = () => !!(window.matchMedia && matchMedia("(orientation: portrait)").matches);
 const reduce = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
-const vsrc = slug => `video/${slug}${LANG === "en" ? "_en_h" : portrait() ? "_v" : "_h"}720.mp4`;
+const vsrc = slug => `video/${slug}${LANG === "en" ? "_en_h720" : portrait() ? (innerWidth < 700 ? "_v540" : "_v720") : "_h720"}.mp4`;   // 2026-10-19：スマホの縦は軽い版（540p・約 0.6 Mbps）。通信が落ちても止まらないように
 function setLangUI() {
   document.documentElement.lang = LANG;
   document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
