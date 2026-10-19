@@ -1,6 +1,6 @@
-# 森羅寄席（しんらよせ）── 碧の自然落語 ／ mitsulab
+# Qualia/rakugo ── 碧の自然落語 ／ mitsulab
 
-人の目や耳の外にある世界を、笑いにする噺。語り手は、人と自然のあいだに立つ依代、碧（あおい）。日本語と英語（*Shinra Yose — nature rakugo told by Aoi*）。
+人の目や耳の外にある世界を、笑いにする噺。語り手は、人と自然のあいだに立つ依代、碧（あおい）。日本語と英語（*Qualia/rakugo — nature rakugo told by Aoi*）。
 
 公開先：https://mitsulab-soil.github.io/aoi-shizen-rakugo/
 
