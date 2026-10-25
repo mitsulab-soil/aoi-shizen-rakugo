@@ -10,15 +10,16 @@ export async function buildHall(ctx) {
   const LITE = !!ctx.lite;
   const out = { particles: null, audience: [], lanternMats: [], flickerLights: [], boards: [], seats: {}, houseMats: [] };
   const texL = new THREE.TextureLoader();
-  const loadTex = (p, srgb) => new Promise((ok, ng) => texL.load(BASE + p, t => {
-    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = maxAniso; if (srgb) t.colorSpace = THREE.SRGBColorSpace; ok(t);
-  }, undefined, ng));
-  const pbr = async name => ({
-    map: await loadTex(`sozai/${name}/${name}_diff_1k.jpg`, true),
-    normalMap: await loadTex(`sozai/${name}/${name}_nor_1k.jpg`, false),
-    roughnessMap: await loadTex(`sozai/${name}/${name}_rough_1k.jpg`, false),
+  // 板の質感は待たずに建物を出し、届いたら貼る（起動を速く）。clone した写しにも届いた絵を配る
+  const loadTex = (p, srgb) => { const kids = []; const t = texL.load(BASE + p, () => { for (const k of kids) { k.image = t.image; k.needsUpdate = true; } });
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = maxAniso; if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+    const c0 = t.clone.bind(t); t.clone = () => { const k = c0(); kids.push(k); return k; }; return t; };
+  const pbr = name => ({
+    map: loadTex(`sozai/${name}/${name}_diff_1k.jpg`, true),
+    normalMap: loadTex(`sozai/${name}/${name}_nor_1k.jpg`, false),
+    roughnessMap: loadTex(`sozai/${name}/${name}_rough_1k.jpg`, false),
   });
-  const [HINOKI, SUGI] = await Promise.all([pbr('hinoki_planks'), pbr('japanese_cedar_planks')]);
+  const HINOKI = pbr('hinoki_planks'), SUGI = pbr('japanese_cedar_planks');
   function texMat(T, rx, ry, color, rough = 0.6) {
     const m = new THREE.MeshStandardMaterial({ color, roughness: rough, envMapIntensity: 0.5, normalScale: new THREE.Vector2(0.7, 0.7) });
     for (const k of ['map', 'normalMap', 'roughnessMap']) { m[k] = T[k].clone(); m[k].repeat.set(rx, ry); m[k].needsUpdate = true; }
