@@ -1873,7 +1873,10 @@ const FR = {   // 客席の目が「寄る」先（カット表の画の種類 �
   MEDC: () => [tmpV.set(0, HY - 0.08, 0), 0.46], CU: () => [tmpV.set(0, HY + 0.03, 0), 0.36], REI: () => [tmpV.set(0, HY - 0.38, 0.05), 0.6],
   HANDS: () => [tmpV.copy(handsMid), 0.38], HANDSF: () => [tmpV.copy(handsMid), 0.38], SIDE: () => [tmpV.set(0, HY - 0.24, 0), 0.52], SIDE_R: () => [tmpV.set(0, HY - 0.24, 0), 0.52],
 };
+// 2026-10-26 本人「視点は一定にしてください。ズームしたり、ズームアウトしたりは不要です。」→ 席に着いたら見る点と高さは噺のあいだずっと同じ（カット表で寄らない）
+const FIXED_ATT = () => ({ p: new THREE.Vector3(0, HY - 0.22, 0), h: 1.1 });
 function attention(t) {
+  return FIXED_ATT();
   if (!started) return { p: tmpV.set(0.45, HY - 0.3, 0.2).clone(), h: 1.25 };
   if (t > TL.bow_end + 0.5) return { p: tmpV.set(0.7, HY - 0.35, 0.4).clone(), h: 1.5 };
   const s = shotAt(t); const f = (FR[s.k] || FR.MED)(); return { p: f[0].clone(), h: f[1] };
@@ -1945,15 +1948,13 @@ function createCamera() {
   const el = renderer.domElement; el.style.touchAction = 'none';
   const ptrs = new Map(); let pinch0 = 0, zoom0 = 1;
   el.addEventListener('pointerdown', e => { ptrs.set(e.pointerId, [e.clientX, e.clientY]); el.setPointerCapture(e.pointerId); st.input = performance.now() / 1000;
-    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = st.zoom; } });
+  });
   el.addEventListener('pointermove', e => { if (!ptrs.has(e.pointerId)) return; const p = ptrs.get(e.pointerId); st.input = performance.now() / 1000;
     if (ptrs.size === 1) { st.yaw = Math.max(-0.9, Math.min(0.9, st.yaw - (e.clientX - p[0]) * 0.0035)); st.pitch = Math.max(-0.45, Math.min(0.45, st.pitch + (e.clientY - p[1]) * 0.0030)); }
-    ptrs.set(e.pointerId, [e.clientX, e.clientY]);
-    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch0 > 0) st.zoom = Math.max(0.45, Math.min(2.6, zoom0 * pinch0 / d)); } });
+    ptrs.set(e.pointerId, [e.clientX, e.clientY]); });
   const up = e => { ptrs.delete(e.pointerId); pinch0 = 0; };
   el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
-  el.addEventListener('wheel', e => { e.preventDefault(); st.zoom = Math.max(0.45, Math.min(2.6, st.zoom * Math.exp(e.deltaY * 0.0012))); st.input = performance.now() / 1000; }, { passive: false });
-  el.addEventListener('dblclick', () => { st.yaw = st.pitch = 0; st.zoom = 1; });
+  el.addEventListener('dblclick', () => { st.yaw = st.pitch = 0; });   // つまむ・ホイールで寄る操作は外した（視点は一定）
   const api = {
     phaseName: () => st.phase,
     seatName: () => st.seatName,
