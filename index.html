@@ -3,40 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="tdm-reservation" content="1">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Qualia/rakugo</title>
-<meta name="description" content="Qualia/rakugo ── 碧が、蜂やみみずや犬や写真機の受けとっている世界を、噺に訳して語る落語。聞いたあと、いつもの花や土や道や夜空の見え方が変わる 8 席。mitsulab">
+<meta name="description" content="Qualia/rakugo ── 木戸をくぐって席に座ると、高座で碧が噺をする 3D の寄席。蜂やみみずや犬や写真機の受けとっている世界を、噺に訳した 8 席。mitsulab">
 <meta property="og:title" content="Qualia/rakugo ／ mitsulab">
-<meta property="og:description" content="森の見える高座で、碧が語る Qualia/rakugo。ほかの生き物や機械の受けとり方を、噺に訳した 8 席。">
+<meta property="og:description" content="木戸をくぐって、席に座る。高座で碧が、ほかの生き物や機械の受けとり方を噺に訳して語る、3D の寄席。8 席。">
 <meta property="og:image" content="img/hp_card_640x400.webp">
 <meta property="og:type" content="website">
+<link rel="icon" href="favicon/favicon.ico" sizes="any"><link rel="icon" href="favicon/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="favicon/apple-touch-icon.png"><link rel="manifest" href="favicon/manifest.webmanifest">
+<link rel="preload" href="yose/fonts/potta.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="yose/aoi/aoi_kouza.vrm" as="fetch" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600&family=Inter:wght@400;500&family=Cormorant+Garamond:ital,wght@1,500&family=JetBrains+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="modulepreload" href="vendor/three/build/three.module.js"><link rel="modulepreload" href="vendor/three/build/three.core.js"><link rel="modulepreload" href="yose.js"><link rel="modulepreload" href="hall.js"><link rel="modulepreload" href="enmoku.js">
+<script type="importmap">
+{ "imports": {
+  "three": "./vendor/three/build/three.module.js",
+  "three/addons/": "./vendor/three/examples/jsm/",
+  "@pixiv/three-vrm": "./vendor/three-vrm/three-vrm.module.min.js"
+} }
+</script>
 <style>
-  /* mitsulab の共通トークン（01_経営/03_対外書類/12_ブランド/_共通3D/tokens.css v1 から、このページで使う分を写した） */
+  @font-face{font-family:"PottaOne";src:url("yose/fonts/potta.woff2") format("woff2");font-display:block}
+  @font-face{font-family:"KleeSub";src:url("yose/fonts/klee-sb.woff2") format("woff2");font-weight:600;font-display:swap}
+  /* mitsulab の共通トークン（12_ブランド/_共通3D/tokens.css から、このページで使う分）。層の色＝culture（小豆） */
   :root{
     --ml-bg:#03060f; --ml-ink:#eef5fb; --ml-ink-2:#c3cce0; --ml-ink-3:#8f9bb4;
-    --ml-aoi:#5cc8e0; --ml-aoi-2:#9bdcf0; --ml-aoi-deep:#0d87a3;
+    --ml-aoi:#5cc8e0; --ml-aoi-2:#9bdcf0; --ml-aoi-deep:#0d87a3; --layer:#864e4c; --layer-2:#c98c84;
     --ml-line:rgba(92,200,224,.32); --ml-line-2:rgba(150,170,240,.18); --ml-line-weak:rgba(195,204,224,.14);
-    --ml-panel:rgba(6,10,18,.72); --ml-nav:rgba(6,8,15,.42);
+    --ml-panel:rgba(6,10,18,.74);
     --ml-serif:"Shippori Mincho","Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
     --ml-sans:"Inter","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP",sans-serif;
-    --ml-latin:"Cormorant Garamond","Times New Roman",serif;
-    --ml-mono:"JetBrains Mono",ui-monospace,monospace;
-    --ml-radius:2px; --ml-gutter:16px; --ml-ease:cubic-bezier(.22,.61,.36,1); --ml-t-fast:.18s; --ml-t:.42s;
-    --bar-h:60px; color-scheme:dark;
+    --ml-latin:"Cormorant Garamond","Times New Roman",serif; --ml-mono:"JetBrains Mono",ui-monospace,monospace;
+    --yose:"PottaOne","Hiragino Mincho ProN",serif;
+    --ml-radius:2px; --ml-ease:cubic-bezier(.22,.61,.36,1); --ml-t-fast:.18s; --ml-t:.42s;
+    --g:16px; --sb:env(safe-area-inset-bottom,0px); color-scheme:dark;
   }
   *{box-sizing:border-box}
-  html,body{margin:0}
-  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:var(--bar-h)}
-  body{background:var(--ml-bg);color:var(--ml-ink);font-family:var(--ml-sans);line-height:1.85;overflow-x:hidden}
-  a{color:var(--ml-aoi-2);text-underline-offset:.2em;overflow-wrap:anywhere}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
-  .ml-en{font-family:var(--ml-latin);font-style:italic;letter-spacing:.24em;text-transform:uppercase;color:var(--ml-aoi-deep);font-size:.75rem;white-space:nowrap}
-  .ml-kicker{font-family:var(--ml-mono);font-size:.68rem;letter-spacing:.28em;color:var(--ml-ink-3);text-transform:uppercase}
-  .ml-kicker span{white-space:nowrap}
-  .ml-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:44px;padding:0 20px;
-    font:500 .95rem/1 var(--ml-sans);letter-spacing:.08em;color:var(--ml-ink);background:rgba(3,6,15,.35);
+  html,body{margin:0;height:100%;overflow:hidden;background:#05060a;color:var(--ml-ink);font-family:var(--ml-sans);-webkit-text-size-adjust:100%}
+  #stage{position:fixed;inset:0}
+  #stage canvas{display:block;width:100%;height:100%}
+  a{color:var(--ml-aoi-2);text-underline-offset:.2em}
+  button{font:inherit}
+  .ml-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:.5em;min-height:44px;padding:0 18px;
+    font:500 .92rem/1 var(--ml-sans);letter-spacing:.08em;color:var(--ml-ink);background:rgba(3,6,15,.5);
     border:1px solid var(--ml-line);border-radius:var(--ml-radius);cursor:pointer;position:relative;overflow:hidden;text-decoration:none;
     transition:border-color var(--ml-t-fast) var(--ml-ease),color var(--ml-t-fast)}
   .ml-btn::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--ml-aoi);transform:scaleX(0);transform-origin:left;transition:transform var(--ml-t) var(--ml-ease)}
@@ -44,352 +54,361 @@
   .ml-btn:hover::after,.ml-btn:focus-visible::after{transform:scaleX(1)}
   .ml-btn:focus-visible{outline:1px solid var(--ml-aoi-2);outline-offset:3px}
   .ml-btn--primary{border-color:var(--ml-aoi);color:var(--ml-aoi-2)}
-  .ml-seg{display:inline-flex;gap:14px;font:400 .82rem var(--ml-sans);letter-spacing:.08em}
-  .ml-seg button{appearance:none;background:none;border:0;color:var(--ml-ink-3);padding:6px 0;cursor:pointer;border-bottom:1px solid transparent;min-height:36px}
-  .ml-seg button[aria-pressed="true"]{color:var(--ml-ink);border-bottom-color:var(--ml-aoi)}
-  .ml-panel{background:var(--ml-panel);border:1px solid var(--ml-line-2);border-radius:var(--ml-radius);padding:16px 18px;color:var(--ml-ink-2)}
-  .ml-panel-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px;margin:0 0 8px;color:var(--ml-ink)}
-  .ml-panel--corner{position:relative;border-color:transparent}
-  .ml-panel--corner::before,.ml-panel--corner::after{content:"";position:absolute;width:14px;height:14px;border:1px solid var(--ml-aoi);opacity:.7;pointer-events:none}
-  .ml-panel--corner::before{left:-1px;top:-1px;border-right:0;border-bottom:0}
-  .ml-panel--corner::after{right:-1px;bottom:-1px;border-left:0;border-top:0}
-  .ml-fold{border-top:1px solid var(--ml-line-weak)}
-  .ml-fold > summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;font:400 .88rem var(--ml-sans);letter-spacing:.1em;color:var(--ml-ink-2)}
-  .ml-fold > summary::-webkit-details-marker{display:none}
-  .ml-fold > summary::after{content:"＋";color:var(--ml-aoi);font-size:.9rem}
-  .ml-fold[open] > summary::after{content:"－"}
-  /* 上の帯：HP と同じ高さ・同じ色 */
-  .bar{position:fixed;inset:0 0 auto 0;z-index:20;height:var(--bar-h);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 28px;background:var(--ml-nav);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(150,170,240,.10)}
-  .bar .name{display:flex;align-items:baseline;gap:12px;color:var(--ml-ink);text-decoration:none;min-width:0}
-  .bar .name b{font-family:var(--ml-serif);font-weight:600;font-size:1.05rem;letter-spacing:.2em;white-space:nowrap}
-  /* 高座（いま選んでいる演目）：画面いっぱいの一枚 */
-  .koza{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;display:grid;background:var(--ml-bg)}
-  .koza picture,.koza picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .koza .veil{position:absolute;inset:0;pointer-events:none;background:
-     linear-gradient(180deg,rgba(3,6,15,.55) 0,rgba(3,6,15,0) 22%,rgba(3,6,15,0) 48%,rgba(3,6,15,.86) 82%,var(--ml-bg) 100%),
-     linear-gradient(90deg,rgba(3,6,15,.72) 0,rgba(3,6,15,0) 46%)}
-  .koza svg.lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-  .koza .lines line{stroke:var(--ml-aoi);stroke-width:1;fill:none;vector-effect:non-scaling-stroke}
-  .koza .lines .draw{stroke-dasharray:1600;stroke-dashoffset:1600;animation:draw 2.6s var(--ml-ease) .3s forwards}
-  @keyframes draw{to{stroke-dashoffset:0}}
-  .koza .text{position:relative;align-self:end;padding:0 28px 64px;z-index:2;width:100%}
-  .kicker{margin:0 0 14px}
-  .koza h1{font-family:var(--ml-serif);font-weight:600;font-size:clamp(40px,6.2vw,76px);letter-spacing:.14em;line-height:1.2;margin:0}
-  .koza .yomi{margin:8px 0 0;color:var(--ml-ink-2);font-size:.95rem;letter-spacing:.12em}
-  .koza .lead{font-family:var(--ml-serif);font-size:clamp(17px,1.9vw,21px);letter-spacing:.06em;max-width:30em;margin:22px 0 0;color:var(--ml-ink)}
-  .koza .act{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 0}
-  .koza .dur{color:var(--ml-ink-3);font-size:.85em;font-variant-numeric:tabular-nums}
-  .koza .meta{margin:16px 0 0;font-size:.86rem;color:var(--ml-ink-2);letter-spacing:.06em}
-  /* 再生中：動画は帯の下から画面の底まで。向きは画面の形で選ぶので、PC では横・スマホの縦持ちでは縦 */
-  .koza video{position:absolute;left:0;right:0;top:var(--bar-h);bottom:0;width:100%;height:calc(100% - var(--bar-h));object-fit:contain;background:#000;z-index:3}
-  .koza .close{position:absolute;z-index:4;top:calc(var(--bar-h) + 12px);right:16px;min-height:40px;padding:0 14px;font-size:.85rem}
-  /* めくり（演目の名札）：高座の右に縦書き。寄席のめくりの見立て */
-  .mekuri{position:absolute;right:max(28px,6vw);top:96px;z-index:2;writing-mode:vertical-rl;padding:22px 14px;
-    background:rgba(238,245,251,.92);color:#0b1220;border-radius:1px;box-shadow:0 0 0 1px rgba(3,6,15,.4)}
-  .mekuri .no{font-family:var(--ml-serif);font-size:.82rem;letter-spacing:.3em;color:#3d4a5c}
-  .mekuri .t{font-family:var(--ml-serif);font-weight:600;font-size:clamp(28px,3.4vw,40px);letter-spacing:.2em;margin-top:.6em}
-  /* 番組：縦長のめくり 5 枚 */
-  .bangumi{padding:56px 28px 24px}
-  .bangumi h2,.sec h2{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;font-family:var(--ml-serif);font-weight:600;font-size:1.35rem;letter-spacing:.16em;margin:0 0 22px}
-  .list{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:0;padding:0;list-style:none}
-  .card{appearance:none;display:block;width:100%;text-align:left;background:none;border:1px solid var(--ml-line-2);border-radius:var(--ml-radius);color:var(--ml-ink);padding:0;cursor:pointer;overflow:hidden;position:relative;font:inherit;transition:border-color var(--ml-t-fast)}
-  .card img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;filter:saturate(.85) brightness(.78);transition:filter var(--ml-t)}
-  .card .plate{position:absolute;top:10px;right:10px;writing-mode:vertical-rl;background:rgba(238,245,251,.92);color:#0b1220;padding:10px 6px;border-radius:1px}
-  .card .plate .cno{font-family:var(--ml-serif);font-size:.62rem;letter-spacing:.24em;color:#3d4a5c}
-  .card .plate .ct{font-family:var(--ml-serif);font-weight:600;font-size:1.05rem;letter-spacing:.16em;margin-top:.5em}
-  .card .plate{white-space:nowrap}
-  .card .plate .ct.l5{font-size:.84rem;letter-spacing:.06em}   /* 2026-10-20：5 字・6 字の題（みみずの耳・蜘蛛の留守番ほか）が札の中で二列に折れないように */
-  .card .plate .ct.l6{font-size:.74rem;letter-spacing:.04em}
-  .card .cap{position:absolute;inset:auto 0 0 0;padding:28px 12px 10px;background:linear-gradient(180deg,transparent,rgba(3,6,15,.92) 55%);font-size:.78rem;line-height:1.5}
-  .card .cen{display:block;font-family:var(--ml-latin);font-style:italic;font-size:.92rem;color:var(--ml-ink-2)}
-  .card .cd{color:var(--ml-ink-2);font-size:.86rem;font-variant-numeric:tabular-nums}
-  .card:hover img,.card[aria-current="true"] img{filter:none}
-  .card:focus-visible{outline:1px solid var(--ml-aoi-2);outline-offset:2px}
-  .card[aria-current="true"]{border-color:var(--ml-aoi)}
-  .card[aria-current="true"]::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--ml-aoi)}
-  /* さそい・手がかり */
-  .sec{padding:40px 28px}
-  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:start}
-  .invite p{font-family:var(--ml-serif);font-size:1.12rem;letter-spacing:.05em;line-height:2;margin:0;color:var(--ml-ink)}
-  .clues{color:var(--ml-ink-2);font-size:.92rem}
-  .clues ul{margin:0 0 12px;padding-left:1.1em}
-  .clues li{margin:0 0 10px}
-  .clues .ref{display:block;font-size:.8rem;color:var(--ml-ink-3)}
-  .clues .note{font-size:.82rem;color:var(--ml-ink-3)}
-  .about{color:var(--ml-ink-2);font-size:.9rem;line-height:1.95}
-  .about p{margin:0 0 12px;max-width:44em}
-  .about ul{margin:0 0 12px;padding-left:1.1em}
-  .about li{margin:0 0 8px}
-  .about .fine{color:var(--ml-ink-3);font-size:.82rem}
-  footer{border-top:1px solid var(--ml-line-weak);padding:26px 28px 48px;color:var(--ml-ink-3);font-size:.78rem;line-height:1.9}
+  .ml-kicker{font-family:var(--ml-mono);font-size:.66rem;letter-spacing:.26em;color:var(--ml-ink-3);text-transform:uppercase}
   [hidden]{display:none!important}
-  @media (max-width:860px){ .list{grid-template-columns:repeat(5,minmax(132px,1fr));overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;overscroll-behavior-x:contain} .list li{scroll-snap-align:start} .grid2{grid-template-columns:1fr} }
+
+  /* 上の帯 */
+  .bar{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px var(--g);z-index:5;pointer-events:none;
+    background:linear-gradient(to bottom,rgba(3,5,10,.55),rgba(3,5,10,0))}
+  .bar > *{pointer-events:auto}
+  .mark{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--ml-ink)}
+  .mark b{font:italic 500 1.25rem/1 var(--ml-latin);letter-spacing:.06em}
+  .mark small{font:400 .68rem var(--ml-mono);letter-spacing:.2em;color:var(--ml-ink-3)}
+  .bar .r{display:flex;gap:8px}
+  .bar .ml-btn{min-height:40px;padding:0 14px;font-size:.84rem}
+
+  /* 下のシート（木戸・席・終わり） */
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:6;padding:18px var(--g) calc(18px + var(--sb));
+    background:linear-gradient(to top,rgba(3,5,10,.94) 0%,rgba(3,5,10,.88) 72%,rgba(3,5,10,.55) 90%,rgba(3,5,10,0) 100%);padding-top:34px;transition:opacity .5s var(--ml-ease),transform .5s var(--ml-ease)}
+  .sheet.off{opacity:0;transform:translateY(16px);pointer-events:none}
+  .sheet .in{max-width:1100px;margin:0 auto}
+  .sheet h1,.sheet h2{font-family:var(--ml-serif);font-weight:600;letter-spacing:.14em;margin:.2em 0 .3em;line-height:1.4}
+  .sheet h1{font-size:clamp(1.3rem,3.6vw,2rem)}
+  .sheet h2{font-size:clamp(1.1rem,3vw,1.5rem)}
+  .sheet p{margin:.3em 0;color:var(--ml-ink-2);font-size:.92rem;line-height:1.8}
+  .note{font-size:.78rem!important;color:var(--ml-ink-3)!important}
+  /* めくり（番組の札） */
+  .mekuri{list-style:none;margin:12px 0 4px;padding:4px 2px 10px;display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .mekuri li{flex:0 0 auto;scroll-snap-align:start}
+  .card{appearance:none;cursor:pointer;width:86px;height:188px;border:0;border-radius:1px;padding:10px 0 8px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+    background:#efe9da linear-gradient(#f4efe3,#e6ddc8);color:#121010;box-shadow:0 1px 0 rgba(0,0,0,.4),inset 0 0 0 1px rgba(60,40,20,.25);
+    transition:transform var(--ml-t-fast) var(--ml-ease),box-shadow var(--ml-t-fast)}
+  .card:hover,.card:focus-visible{transform:translateY(-3px);box-shadow:0 0 0 1px var(--ml-aoi),0 6px 18px rgba(0,0,0,.4);outline:none}
+  .card .t{writing-mode:vertical-rl;font:400 1.32rem/1.05 var(--yose);letter-spacing:.02em}
+  .card .no{font:600 .62rem var(--ml-serif);letter-spacing:.12em;color:#7a1e1e;writing-mode:horizontal-tb}
+  .card .d{font:400 .62rem var(--ml-mono);color:#5a4a3a}
+  .card[aria-current="true"]{box-shadow:0 0 0 2px var(--layer-2)}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+  .seats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px;max-width:560px}
+  .seats .ml-btn{flex-direction:column;gap:4px;min-height:64px;padding:8px 6px}
+  .seats .ml-btn small{font:400 .7rem var(--ml-sans);color:var(--ml-ink-3);letter-spacing:.04em}
+
+  /* 高座の最中の操作 */
+  .hud{position:fixed;right:var(--g);bottom:calc(14px + var(--sb));z-index:6;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;transition:opacity .6s}
+  .hud .ml-btn{min-height:46px;min-width:46px;padding:0 14px;font-size:.92rem;background:rgba(3,6,15,.72);border-color:rgba(150,170,240,.4)}
+  .hud .ml-btn[aria-pressed="false"]{color:var(--ml-ink-3)}
+  body.sheeton .hud{display:none}
+  body.quiet .hud{opacity:.62}
+  body.quiet .hud:hover,body.quiet .hud:focus-within{opacity:1}
+  .prog{position:fixed;left:0;bottom:0;height:2px;background:var(--layer-2);opacity:.55;z-index:6;width:0}
+  .qchip{position:fixed;left:var(--g);top:60px;z-index:4;max-width:min(70vw,420px);text-align:left;
+    font:400 .86rem/1.6 var(--ml-sans);letter-spacing:.04em;color:var(--ml-ink);padding:7px 12px;cursor:pointer;border-left:1px solid var(--layer-2);
+    background:rgba(3,5,10,.62);opacity:0;pointer-events:none;transition:opacity 1.2s}
+  .qchip.on{pointer-events:auto}
+  .qchip small{display:block;color:var(--ml-aoi-2);font-size:.74rem}
+  .wait{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;font:400 .82rem var(--ml-sans);letter-spacing:.12em;color:var(--ml-ink-2);
+    padding:10px 16px;background:rgba(3,5,10,.6);border:1px solid var(--ml-line-2)}
+
+  /* 字幕（Klee One・縁取り。顔にかけない＝画面の下） */
+  #subband{position:fixed;left:0;right:0;bottom:0;height:26%;pointer-events:none;opacity:0;z-index:3;
+    background:linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.5) 55%, rgba(0,0,0,0) 100%)}
+  #sub{position:fixed;left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:3;padding:0 6%}
+  #sub span.box{display:inline-block;white-space:nowrap;text-align:center;color:#fffaf0;font-family:"KleeSub","Hiragino Sans",sans-serif;font-weight:600;line-height:1.6;letter-spacing:.08em;
+    text-shadow:1.2px 0 0 rgba(0,0,0,.92),-1.2px 0 0 rgba(0,0,0,.92),0 1.2px 0 rgba(0,0,0,.92),0 -1.2px 0 rgba(0,0,0,.92),1px 1px 0 rgba(0,0,0,.9),-1px 1px 0 rgba(0,0,0,.9),1px -1px 0 rgba(0,0,0,.9),-1px -1px 0 rgba(0,0,0,.9),0 0 8px rgba(0,0,0,.8)}
+  #sub span.box:empty{display:none}
+  #sub .c{display:inline-block}
+  body.v #sub{bottom:calc(84px + var(--sb));font-size:clamp(17px,5.0vw,26px)}
+  body.h #sub{bottom:calc(74px + var(--sb));font-size:clamp(18px,2.3vw,32px)}
+  body.nosub #sub,body.nosub #subband{display:none}
+  #title,#credit{display:none}
+
+  /* 解説の引き出し */
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);z-index:8;background:rgba(5,8,14,.95);border-left:1px solid var(--ml-line-2);
+    overflow-y:auto;padding:64px 22px calc(28px + var(--sb));transform:translateX(102%);transition:transform .45s var(--ml-ease)}
+  .drawer.on{transform:none}
+  .drawer h2{font:600 1.15rem/1.5 var(--ml-serif);letter-spacing:.12em;margin:1.4em 0 .4em}
+  .drawer h2:first-of-type{margin-top:0}
+  .drawer p,.drawer li{font-size:.88rem;line-height:1.85;color:var(--ml-ink-2)}
+  .drawer ul{padding-left:1.1em}
+  .drawer .close{position:absolute;top:12px;right:12px}
+  .drawer .src li{margin-bottom:.7em}
+  .drawer .src small{display:block;color:var(--ml-ink-3);font-size:.76rem}
+  .tabs{display:flex;gap:16px;border-bottom:1px solid var(--ml-line-weak);margin-bottom:14px}
+  .tabs button{appearance:none;background:none;border:0;color:var(--ml-ink-3);padding:10px 0;min-height:44px;cursor:pointer;border-bottom:1px solid transparent;letter-spacing:.1em}
+  .tabs button[aria-selected="true"]{color:var(--ml-ink);border-bottom-color:var(--ml-aoi)}
+  footer.cr{font-size:.72rem;color:var(--ml-ink-3);line-height:1.8;margin-top:22px;border-top:1px solid var(--ml-line-weak);padding-top:12px}
+
+  .fail{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9;background:#05060a;padding:24px;text-align:center}
+  .fail p{max-width:30em;line-height:1.9;color:var(--ml-ink-2)}
+  .loading{position:fixed;left:50%;bottom:45%;transform:translateX(-50%);font:400 .78rem var(--ml-mono);letter-spacing:.3em;color:var(--ml-ink-3);z-index:2}
   @media (max-width:560px){
-    :root{--bar-h:54px}
-    .wrap,.bangumi,.sec,footer{padding-left:var(--ml-gutter);padding-right:var(--ml-gutter)}
-    .bar{padding:0 var(--ml-gutter)} .bar .ml-en{display:none}
-    .koza{min-height:600px} .koza .text{padding:0 var(--ml-gutter) 36px} .koza svg.lines{display:none}
-    .koza .veil{background:linear-gradient(180deg,rgba(3,6,15,.5) 0,rgba(3,6,15,0) 18%,rgba(3,6,15,0) 40%,rgba(3,6,15,.9) 72%,var(--ml-bg) 100%)}
-    .mekuri{top:calc(var(--bar-h) + 18px);right:var(--ml-gutter);padding:14px 9px} .mekuri .t{font-size:26px}
-    .koza .act .ml-btn{flex:1 1 auto}
-    .list{grid-template-columns:repeat(5,128px)}
-    .ml-panel{padding:14px var(--ml-gutter)}
+    #sEnd p{display:none}
+    #sEnd .row .ml-btn{min-height:44px;padding:0 10px;font-size:.82rem}
+    .bar .ml-btn span.lbl{display:none}
+    .card{width:74px;height:168px}
+    .card .t{font-size:1.15rem}
+    .sheet p{font-size:.86rem}
+    .hud .ml-btn{padding:0 9px;font-size:.74rem}
   }
-  @media (prefers-reduced-motion:reduce){ .koza .lines .draw{animation:none;stroke-dashoffset:0} .ml-btn,.ml-btn::after,.card img{transition:none} }
+  @media (prefers-reduced-motion: reduce){ .sheet,.drawer,.card{transition:none} }
 </style>
-<link rel="icon" href="favicon/favicon.ico" sizes="any">
-<link rel="icon" href="favicon/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="favicon/apple-touch-icon.png">
-<link rel="manifest" href="favicon/manifest.webmanifest">
-<meta name="theme-color" content="#03060f">
 </head>
 <body>
-<script src="loader/loader.js" data-title="Qualia/rakugo" data-en="told by Aoi" data-icon="favicon/icon.svg" data-max="8000"></script>   <!-- mitsulab 共通の読み込み画面（01_経営/03_対外書類/12_ブランド/loader・2026-10-09） -->
+<div id="stage"></div>
+<div class="loading" id="loading">寄席へ</div>
+<div id="subband"></div>
+<div id="sub"><span class="box"></span></div>
+<div id="title"></div><div id="credit"></div>
+
 <header class="bar">
-  <a class="name" href="#koza"><b>Qualia/rakugo</b></a>
+  <a class="mark" href="https://mitsulab.jp" aria-label="mitsulab のサイトへ"><b>Qualia/rakugo</b><small>mitsulab</small></a>
+  <div class="r">
+    <button class="ml-btn" id="bProg" type="button" hidden><span aria-hidden="true">≡</span><span class="lbl">番組</span></button>
+    <button class="ml-btn" id="bInfo" type="button"><span aria-hidden="true">i</span><span class="lbl">この噺と寄席のこと</span></button>
+  </div>
 </header>
 
-<main>
-  <section class="koza" id="koza" aria-label="高座">
-    <picture id="poster"><source id="posterV" media="(orientation: portrait)"><img id="posterImg" alt=""></picture>
-    <div class="veil"></div>
-    <svg class="lines" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true">
-      <line class="draw" x1="0" y1="430" x2="1000" y2="430" style="opacity:.35"/>
-      <line class="draw" x1="80" y1="436" x2="920" y2="436" style="opacity:.14"/>
-    </svg>
-    <div class="mekuri" aria-hidden="true"><span class="no" id="mNo"></span><span class="t" id="mT"></span></div>
-    <div class="text">
-      <div style="max-width:1124px;margin:0 auto">
-        <p class="kicker ml-kicker"><span>Qualia Layer ── 語り</span> ／ <span lang="en">told by Aoi</span></p>
-        <h1 id="title"></h1>
-        <p class="yomi" id="yomi"></p>
-        <p class="lead" id="lead"></p>
-        <div class="act">
-          <button class="ml-btn ml-btn--primary" id="play" type="button"><span data-ja>▶ 高座へ</span><span data-en hidden lang="en">▶ Watch</span> <span class="dur" id="dur"></span></button>
-          <a class="ml-btn" href="#bangumi"><span data-ja>番組を見る</span><span data-en hidden lang="en">All stories</span></a>
-        </div>
-        <p class="meta" id="meta"></p>
-      </div>
-    </div>
-    <button class="ml-btn close" id="close" type="button" hidden><span data-ja>× 閉じる</span><span data-en hidden lang="en">× Close</span></button>
-  </section>
-
-  <section class="bangumi" id="bangumi">
-    <div style="max-width:1124px;margin:0 auto">
-      <h2><span data-ja>番組</span><span data-en hidden lang="en">Program</span><span class="ml-en">eight stories</span></h2>
-      <ul class="list" id="list"></ul>
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="grid2" style="max-width:1124px;margin:0 auto">
-      <div class="ml-panel ml-panel--corner invite">
-        <div class="ml-panel-head"><span style="font-family:var(--ml-serif);font-weight:600;letter-spacing:.12em" data-ja>きょうのさそい</span><span style="font-family:var(--ml-serif);font-weight:600;letter-spacing:.08em" data-en hidden lang="en">Try this today</span><span class="ml-en">after the story</span></div>
-        <p id="invite"></p>
-      </div>
-      <div class="clues">
-        <details class="ml-fold"><summary><span data-ja>まくらで話した事実と、その典拠</span><span data-en hidden lang="en">Facts in the opening, and sources</span></summary><p class="note" id="srcNote" hidden lang="en">(notes in Japanese)</p><ul id="src"></ul><p class="note" id="warn"></p></details>
-        <details class="ml-fold"><summary><span data-ja>本題の作り話のこと</span><span data-en hidden lang="en">What is made up</span></summary><p id="fic" style="margin:0 0 14px"></p></details>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec about" id="about">
-    <div style="max-width:1124px;margin:0 auto">
-      <h2><span data-ja>Qualia/rakugo のこと</span><span data-en hidden lang="en">About Qualia/rakugo</span><span class="ml-en">about</span></h2>
-      <div data-ja>
-        <p style="font-family:var(--ml-serif);font-size:1.05rem;color:var(--ml-ink)">蜂の目、みみずの耳、犬の鼻、写真機の目。ほかのものが受けとっている世界を、噺に訳して聞く。聞いたあと、いつもの世界の見え方が変わります。</p>
-        <p>まくらでは本に書いてある事実だけを話し、本題は江戸の作り話、サゲで笑って締めます。事実の典拠は演目ごとに載せています。高座は、森の見える大きな窓のある間に見立てたもので、話の展開で窓の外が町屋や夜空へ静かに移ります。碧はまくらを話しながら羽織を脱ぎ、脱ぎ終えたところで本題に入ります。扇子と手拭いで物を見立てます。</p>
-        <p>mitsulab は、ほかの生き物や機械や環境の受けとり方を、人の感覚へ写した一枚を Qualia Layer と呼んでいます。Qualia/rakugo は、その一枚を「語り」で重ねる層です。語り手の碧（あおい）は、層と層のあいだを渡って訳す役。ほかのものの感じ方そのものは渡せないので、典拠にもとづいて訳した模式として語ります。碧は断定しません。典拠のない事実を作りません。はじめての方は <a href="?e=hachi#koza" data-pick="hachi">《蜂の目》</a>（約 5 分）からどうぞ。動画の向き（横・縦）は、画面の形に合わせて選ばれます。</p>
-      </div>
-      <div data-en hidden lang="en">
-        <p><strong>How rakugo works.</strong> One storyteller sits on a cushion and plays every character. When the head turns to the audience's right, it is the younger, livelier man (Hachi); turned to the left, it is the older, calmer one (the landlord or the old man next door). A folded fan and a small cloth stand in for a pipe, a book, a broom or a door. The talk opens with a few true facts (the <i>makura</i>), slips into a made-up tale, and ends on one punch line (the <i>sage</i>), followed by a bow.</p>
-        <p>Aoi, the storyteller, translates how other creatures and machines take in the world, as told from sources. Aoi does not overstate, and never invents facts without a source.</p>
-      </div>
-      <details class="ml-fold"><summary><span data-ja>この寄席のつくり（声・姿・素材）</span><span data-en hidden lang="en">Credits (voices, figure, materials)</span></summary>
-        <ul>
-          <li>語り：碧（あおい）── ほかのものの受けとり方を、人の言葉に訳して語ります。落語はひとりで全部の役を演じる芸なので、八っつぁんとご隠居、熊さんと大家、与太郎とおじさんも、同じ碧の声で、速さ・高さ・抑揚を変えて分けています。</li>
-          <li>日本語の声：<strong>VOICEVOX:冥鳴ひまり</strong>。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
-          <li>姿：碧の 3D は VRoid Studio で作ったもの。会場（窓の外に森の見える高座の間・袖の幕・行灯・提灯・めくり・座布団・客席、窓の外の町屋と夜空）は three.js で描いたものです。森の写真・樹皮・板・シダの質感は <a href="https://polyhaven.com/">Poly Haven</a> の CC0 素材です。</li>
-          <li>字幕：台本の文をそのまま出しています。書体は <strong>Klee One</strong>（Fontworks・SIL Open Font License 1.1）。字幕は画面の下の真ん中に、縁取りのある字で出します。</li>
-          <li>音：出囃子・受け囃子、扇子で床を打つ音・すする音は、数式から合成した音です（録音や既存の曲は使っていません）。客席の笑い声は入れていません。</li>
-          <li>所作と表情：羽織を脱ぐ、上下（かみしも）、扇子・手拭いの見立て、人物ごとの顔と姿勢、礼は、落語の解説記事から原理を学んで型にしたものです（2026-10-20 に、8 席を同じ高座で書き出しました）。</li>
-          <li lang="en">Voice: VOICEVOX:冥鳴ひまり (Japanese). Figure made with VRoid Studio; the hall is drawn with three.js; forest, bark, wood and fern textures from Poly Haven (CC0). Subtitle typeface: Klee One (OFL). All sounds other than the voices are synthesized; no audience laughter.</li>
-        </ul>
-      </details>
-      <details class="ml-fold"><summary><span data-ja>利用について</span><span data-en hidden lang="en">Terms of use</span></summary>
-        <ul>
-          <li>動画・台本・このページの文は mitsulab の作品です（© 2026 mitsulab. All rights reserved.）。無断の複製・転載・再配布・改変と、AI の学習・生成への利用はお断りします（テキスト・データマイニングの権利を留保します。<a href="https://mitsulab.jp/terms/#ai">利用規約</a>）。紹介のためのリンクは歓迎します。</li>
-          <li>上に書いた他者の素材（声・書体・質感）は、それぞれの条件に従います。</li>
-          <li>碧の 3D モデル（VRM）はこのページでは配布していません。</li>
-          <li lang="en">Videos, scripts and page text © 2026 mitsulab. All rights reserved. Copying, reposting, redistribution or modification without permission, and use for AI training or generation, are not permitted; text and data mining rights are reserved (<a href="https://mitsulab.jp/terms/#ai-en">Terms</a>). Links are welcome.</li>
-        </ul>
-      </details>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div style="max-width:1124px;margin:0 auto">
-    声　VOICEVOX:冥鳴ひまり　字幕の書体　Klee One（OFL）　森・樹皮・板・シダ　Poly Haven（CC0）<br>
-    作　mitsulab（2026）　<a href="https://mitsulab.jp">mitsulab.jp</a>　／　お問い合わせ　official@mitsulab.jp<br>
-    © 2026 mitsulab. All rights reserved.　AI の学習・生成への利用はお断りします（<a href="https://mitsulab.jp/terms/#ai">利用規約</a>）。
+<!-- 木戸 -->
+<section class="sheet off" id="sKido" aria-label="木戸">
+  <div class="in">
+    <p class="ml-kicker">Qualia Layer ── 語り ／ told by Aoi</p>
+    <h1>木戸をくぐって、一席どうぞ。</h1>
+    <p>上のまねきか、下のめくりから演目をえらぶと、中へ入ります。席に座ると、高座で碧が噺をはじめます（一席およそ 5 分・音が出ます）。</p>
+    <ol class="mekuri" id="list" aria-label="番組（8 席）"></ol>
+    <p class="note">ほかの生き物や機械の受けとり方を、典拠にもとづいて噺に訳した 8 席です。3D が重い端末では <a href="douga.html">映像で観る</a> こともできます。</p>
   </div>
-</footer>
+</section>
 
-<script>
-// ---- 演目（台本・科学の線・典拠は mitsulab の台本から写した）
-const W = [
- { slug:"hachi", no:"其 の 一", t:"蜂の目", r:"はちのめ", en:"The Bee's Eyes", kimono:"山吹（やまぶき）",
-   lead:"花は、人には読めない字で看板を出している。蜂の目に映る紫外線と、見えにくい赤の噺。", d:301,
-   fic:"本題のご隠居・八っつぁん・赤い暖簾・赤提灯は作り話です。蜂に赤がどう見えるかは背景や紫外の反射で変わるので、「見えにくい」までにとどめています。まくらの「蜂が、証人に立った」は語りのたとえです。",
-   invite:"黄色い花をひとつ、まん中まで見る。人の目には何もない花びらにも、蜂にだけ読める看板が出ているかもしれない。（蜂がいたら近づきすぎず、そっと離れて見る）",
-   src:[["1914 年、ミュンヘンのフォン・フリッシュが蜂の色の見え方の論文を出した。青い紙の上の甘い水に蜂を通わせ、甘い水のない皿にして明るさのちがう灰色の紙の中に並べても、蜂は青い紙へ来た（色が分かる）。","N. Hempel de Ibarra, M. Vorobyev, R. Menzel (2014) \"Mechanisms, functions and ecology of colour vision in the honeybee\", <i>J. Comp. Physiol. A</i> <a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC4035557/'>PMC</a>／A. G. Dyer ほか (2015) <i>Proc. R. Soc. Victoria</i> <a href='https://doi.org/10.1071/RS15006'>doi.org</a>"],
-        ["同じミュンヘンの大学の眼科の教授ヘスは、1912 年の本で、蜂などは色が分からないと書いた。言い合いはヘスが亡くなる 1923 年まで続いた。","Wikipedia「Carl von Hess」 <a href='https://en.wikipedia.org/wiki/Carl_von_Hess'>en.wikipedia.org</a>／「Karl von Frisch」 <a href='https://en.wikipedia.org/wiki/Karl_von_Frisch'>en.wikipedia.org</a>"],
-        ["フォン・フリッシュは 1973 年にノーベル賞を受けた。授賞の中心は蜂のダンスなど行動の研究。","Wikipedia「Karl von Frisch」 <a href='https://en.wikipedia.org/wiki/Karl_von_Frisch'>en.wikipedia.org</a>"]],
-   warn:"フォン・フリッシュの原著（1914）は未読で、総説と百科事典で確かめた範囲です。" },
- { slug:"mimizu", no:"其 の 二", t:"みみずの耳", r:"みみずのみみ", en:"The Earthworm's Ears", kimono:"赤銅（しゃくどう）",
-   lead:"ミミズに耳はない。からだで地面の震えを受けとる者には、静かな足もとがにぎやかになる噺。", d:313,
-   fic:"本題の八っつぁん・ご隠居・端唄・長屋の連中は作り話です。「聞きほれた」「総立ち」「夜逃げ」は噺の見立てで、ミミズが足音をどう感じているかは分かっていません。",
-   invite:"雨上がりの土の上で、立ち止まって、そっと足を一つ下ろしてみる。その一歩が、土の下では、どんな揺れとして届いているかを思う。（ミミズを掘り出したり、地面を強く叩いたりはしない）",
-   src:[["1881 年、ダーウィンがミミズの本を出した。鉢のミミズは、金物の笛、ファゴットのいちばん低く大きな音、大声、そばの机のピアノにも知らん顔で、ダーウィンはミミズに聴覚はないと書いた。","C. Darwin (1881) <i>The Formation of Vegetable Mould, through the Action of Worms</i> 第一章（Project Gutenberg 版） <a href='https://www.gutenberg.org/files/2355/2355-h/2355-h.htm'>gutenberg.org</a>"],
-        ["鉢をピアノの上にじかに乗せて低いド（低音部記号の C）を叩くと、二匹ともすぐ穴にもぐり、出てきたあと高いソ（G）でもまたもぐった。ダーウィンは、響板から鉢の底・湿った土を通って震えが伝わったと説明した。","同上 <a href='https://www.gutenberg.org/files/2355/2355-h/2355-h.htm'>gutenberg.org</a>"],
-        ["（本題）地面に杭を打って鉄の板でこすりミミズを集めるやり方（worm grunting）の振動は、モグラの掘る振動に似ていて、ミミズは逃げて地表へ出てくる、と確かめた研究がある（フロリダの一種で）。","K. C. Catania (2008) \"Worm Grunting, Fiddling, and Charming—Humans Unknowingly Mimic a Predator to Harvest Bait\", <i>PLoS ONE</i> 3(10): e3472 <a href='https://doi.org/10.1371/journal.pone.0003472'>doi.org</a>"]],
-   warn:"ダーウィンの実験が何年の夜に行われたかは確かめていないので、本の出た年だけを言っています。" },
- { slug:"ga", no:"其 の 三", t:"蛾の恋文", r:"がのこいぶみ", en:"The Moth's Love Letter", kimono:"藤煤竹（ふじすすたけ）",
-   lead:"人の鼻には白紙の手紙を、蛾は読んでいる。同じ匂いでも、受けとる鼻しだいで中身が変わる噺。", d:306,
-   fic:"本題の熊さん・大家さん・お花ちゃん・線香屋は作り話です。「人の鼻には白紙の手紙、蛾には宛名も道順も書いてある」は噺の見立てで、蛾が何を感じているかは言い切っていません。まくらの「この手の匂い」の、蚕の蛾の匂い（ボンビコール）とオオクジャクヤママユの匂いは別の物質です。",
-   invite:"夕方、窓の明かりに来る蛾がいたら、頭を見てみる。櫛のような、羽根のような触角をしていたら、その蛾は、人の鼻には白紙の手紙を、読みに来たのかもしれない。（さわらずに、見るだけで）",
-   src:[["ファーブルが書斎で、オオクジャクヤママユの雌を網の覆いの下に置くと、雄が窓から次々に入ってきた。家じゅうで四十匹近く、雌が生きていた八日で百五十匹ほど。家の者の鼻には何も匂わず、遠いものは二キロ余り先から来たのだろう、と本人が見積もった。","J. H. Fabre, <i>The Life of the Caterpillar</i>（英訳 1916）Ch. XI \"The Great Peacock\" <a href='https://ibiblio.org/eldritch/jhf/c11.html'>ibiblio.org</a>"],
-        ["ブーテナントは蚕の蛾およそ五十万匹ぶんから約 6 mg の匂いの物質を取り出し、1959 年にボンビコールとして同定した。","S. Cotton \"Bombykol — Molecule of the Month\"（University of Bristol） <a href='https://www.chm.bris.ac.uk/motm/bombykol/bombykolh.htm'>chm.bris.ac.uk</a>"],
-        ["蚕の蛾は人に飼われるうちに飛べなくなった。雄はボンビコールを受けとると、羽をふるわせて歩いて雌へ向かう。羽ばたきは、空気を触角へ引き寄せて匂いをよく嗅ぐためと考えられている。","農研機構「遺伝子組換えカイコの 3 年間のモニタリング結果」 <a href='https://www.naro.go.jp/laboratory/nias/gmo/files/besshi4_kumikaekaiko_3nennkann_monitoring_kekka.pdf'>PDF</a>／T. Sakurai ほか (2011) <i>PLoS Genetics</i> <a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC3128102/'>PMC</a>／J. Loudon, M. A. R. Koehl (2000) <i>J. Exp. Biol.</i> <a href='https://escholarship.org/uc/item/6gt523fz'>escholarship.org</a>"]],
-   warn:"ブーテナントの原著（1959）は未読です。蚕の蛾の飛べなさと羽ばたきのはたらきは、下書きのときに確かめた典拠を引き継いだもので、今回は取り直していません。" },
- { slug:"kumo", no:"其 の 四", t:"蜘蛛の留守番", r:"くものるすばん", en:"The Spider on Watch", kimono:"白鼠（しろねず）",
-   lead:"軒先の網は、張られた耳。じっと動かない蜘蛛が、寝ているのではなく、糸で聞いていると見えてくる噺。", d:301,
-   fic:"本題の与太郎・おじさん・寄合・お櫃は作り話です。人が糸の揺れでねずみと猫を聞き分けられるかは問わない噺の見立てで、「耳を向ける」は、糸の張りで注意を向けるという研究をたとえた言い回しです。",
-   invite:"丸い網を見つけたら、さわらずに、まん中の蜘蛛の脚を見てみる。脚の先は、どの糸にかかっているか。その糸の先が、いま蜘蛛の耳を向けている方向かもしれない。（網はこわさず、指でつつかずに）",
-   src:[["丸い網を張る蜘蛛では、網の糸が、獲物などの揺れを蜘蛛へ伝える。脚の殻には細い割れ目の器官が数百あり、殻のわずかなひずみを感じる。","B. Mortimer ほか (2016) \"Tuning the instrument: sonic properties in the spider's web\", <i>J. R. Soc. Interface</i> <a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC5046944/'>PMC</a>／T. E. Miller ほか (2022) <i>Arthropod Struct. Dev.</i> <a href='https://doi.org/10.1016/j.asd.2022.101140'>doi.org</a>"],
-        ["網のまん中で待つゴミグモで、中田（2010）は、上と下にかかった虫には右と左よりよく気づき、蜘蛛が脚で上と下の糸をより強く引いていることを示した。張りを強めると、虫に早く応えた。","K. Nakata (2010) \"Attention focusing in a sit-and-wait forager\", <i>Proc. R. Soc. B</i> <a href='https://doi.org/10.1098/rspb.2009.1583'>doi.org</a>"],
-        ["中田（2013）：右と左で虫をとらせて慣らすと、蜘蛛は右と左の糸を強く引くようになった。","K. Nakata (2013) \"Spatial learning affects thread tension control in orb-web spiders\", <i>Biology Letters</i> <a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC3730619/'>PMC</a>"],
-        ["網の糸と形まで蜘蛛の認知のうちだ、と論じる総説がある（定説ではない）。","H. F. Japyassú, K. N. Laland (2017) \"Extended spider cognition\", <i>Animal Cognition</i> <a href='https://doi.org/10.1007/s10071-017-1069-7'>doi.org</a>"]],
-   warn:"中田（2010）は書誌と要旨で確かめた範囲で、本文は未読です。" },
- { slug:"inu", no:"其 の 五", t:"犬の道しるべ", r:"いぬのみちしるべ", en:"The Dog's Trail", kimono:"栗皮茶（くりかわちゃ）",
-   lead:"いつもの道には、だれが、どちらへ通ったかが書いてある。犬の鼻で読むと、道が帳面に変わる噺。", d:308,
-   fic:"本題の八っつぁん・ご隠居・クロ・かかあ・居酒屋の親父は作り話です。「主人の顔より、靴」「匂いの道には、だれが通ったかと、どっちが先かが書いてある」は噺の見立てで、犬がそれをどう感じているかは分かっていません。",
-   invite:"犬と歩く人に出会ったら、犬が立ち止まってかいでいる所を、少し離れて見てみる。そこには、人の目には何もない「だれか」と「いつ」が書いてあるのかもしれない。（よその犬にはむやみに近づかず、飼い主の許しなく触らない）",
-   src:[["1886 年 12 月、ロマネスがリンネ学会で、八年いっしょに猟をしてきたセッターの実験を読んだ。主人を先頭に十二人が前の者の足跡に足を置いて歩き、二百ヤード（約 180 m）で主人と五人が右へ、七人目からが左へ。犬は分かれ道を少し行き過ぎてから戻り、主人のほうへ曲がった。","G. J. Romanes (1887) \"Experiments on the Sense of Smell in Dogs\", <i>J. Linn. Soc. Zool.</i> 20（BioStor） <a href='https://archive.org/download/biostor-284137/biostor-284137.pdf'>PDF</a>"],
-        ["よその男が主人の猟靴をはくと犬は追い、主人がよその男の靴をはくと追わなかった。靴底に茶色い紙を貼ると追わず、かかとの紙がすり切れた所から追いはじめた。","同上 <a href='https://archive.org/download/biostor-284137/biostor-284137.pdf'>PDF</a>"],
-        ["（本題）慣れた犬は、ほんの五歩ほどの足跡で、どちらへ歩いたかを当てた。","P. G. Hepper, D. L. Wells (2005) \"How many footsteps do dogs need to determine the direction of an odour trail?\", <i>Chemical Senses</i> 30(4): 291–298 <a href='https://doi.org/10.1093/chemse/bji023'>doi.org</a>"]],
-   warn:"ロマネスが調べたのは一頭の犬で、犬一般の結論ではありません。Romanes の読みは日本語の文献で「ロマネス」「ロマーニズ」の両方があります。" },
- { slug:"keyaki", no:"其 の 六", t:"欅の目方", r:"けやきのめかた", en:"The Weight of a Zelkova", kimono:"碧波（あおなみ）",
-   lead:"大きなケヤキは、何でできているのか。地面から生えた幹が、空の光と空気を積み上げたものに見えてくる噺。", d:340,
-   fic:"本題の大家・八っつぁん・路地の欅は作り話です。氷川参道の特定の木のことではありません。「欅が落ち葉で店賃を払う」「百年、空で漁」は噺の見立てで、木がどういうつもりで葉を落とすかは言い切っていません。サゲは、狸が木の葉をお金に化かすという昔話の型を借りています。",
-   invite:"並木の下で、いちばん太い幹を見上げて、「この目方の大半は、空気から来た」と思ってみる。それから、枝の先の葉が、光と風を受けているところを見る。",
-   src:[["大宮の氷川神社の参道は、一の鳥居から北へおよそ 2 km。ケヤキを中心に、およそ 650 本の木が並ぶ。","さいたま市「武蔵一宮氷川神社と氷川参道」 <a href='https://www.city.saitama.lg.jp/004/001/003/001/p009336.html'>city.saitama.lg.jp</a>／環境省 巨樹・巨木林データベース <a href='https://kyoju.biodic.go.jp/files/course/013/omiya_jp.pdf'>PDF</a>"],
-        ["およそ四百年前、ヘルモントの柳の実験：乾かした土 200 ポンドに 5 ポンドの柳を植え、5 年水だけ。柳は 169 ポンドあまり、土の減りは 2 オンスほど。本人は「水からできた」と考えた。","Encyclopedia.com「Jan Van Helmont」 <a href='https://www.encyclopedia.com/people/science-and-technology/botany-biographies/jan-van-helmont'>encyclopedia.com</a>／Britannica <a href='https://www.britannica.com/biography/Jan-Baptista-van-Helmont'>britannica.com</a>／S. Saupe「van Helmont」講義資料 <a href='https://employees.csbsju.edu/SSAUPE/biol115/van_helmont.htm'>csbsju.edu</a>"],
-        ["木の乾いた重さのおよそ半分は炭素（既定値 0.47。樹種で幅がある）。炭素は光合成で空気中の二酸化炭素から取りこまれる。","IPCC (2006) Guidelines for National Greenhouse Gas Inventories, Vol. 4, Ch. 4, Table 4.3"],
-        ["大気中の二酸化炭素はおよそ 0.04%（2020 年代でおよそ 420 ppm）。","NOAA Global Monitoring Laboratory <a href='https://gml.noaa.gov/ccgg/trends/'>gml.noaa.gov</a>"]],
-   warn:"ヘルモントの原著（ラテン語）は未読で、数値は二次資料で確かめた範囲です。キロ・グラムへの換算は、いまのポンド・オンスで直した目安で、当時の単位がいまと同じとは限りません。" },
- { slug:"shashin", no:"其 の 七", t:"写真の留守", r:"しゃしんのるす", en:"Out of the Picture", kimono:"銀鼠（ぎんねず）",
-   lead:"写真機のゆっくりした目には、にぎやかな通りが、がらんとして見える。止まっていたものだけが「いた」噺。", d:311,
-   fic:"本題の熊さん・大家・おかみさん・屏風・お代は作り話です。「写真に撮られると魂を抜かれる」は俗信で、噺の中でも本当とは言っていません。「ゆっくりした目」は露光の長さのたとえです。",
-   invite:"人や車の行き来する道を、一分だけ、同じ所に立って見る。その一分のあいだ、ずっとそこにあったものと、通りすぎたものを、心の中で分けてみる。写真機の「ゆっくりした目」なら、どれが残るだろう。（立つのは歩道の端の、人の流れをじゃましない所で。車道には出ない）",
-   src:[["1838 年（1837 年の説も）の春の朝 8 時ごろ、ダゲールがパリのタンプル大通りを銀の板に写した。露光はおよそ 4〜5 分で、動く人や馬車は写らず、左下で靴をみがかせていた人（とみがいていた人）らしい姿だけが残った。人が写った現存最古の写真と広く考えられている。","Wikipedia「Boulevard du Temple (photograph)」 <a href='https://en.wikipedia.org/wiki/Boulevard_du_Temple_(photograph)'>en.wikipedia.org</a>"],
-        ["ダゲールはもと舞台美術家・パノラマ画家で、1822 年からパリでディオラマを営んだ。1839 年 1 月に発表され、8 月に方法が公開されて広まった。","Wikipedia「Louis Daguerre」 <a href='https://en.wikipedia.org/wiki/Louis_Daguerre'>en.wikipedia.org</a>"],
-        ["上野彦馬が文久二年（1862）に長崎で写真館を開いた。同じころ横浜に下岡蓮杖。","コトバンク「上野彦馬」 <a href='https://kotobank.jp/word/%E4%B8%8A%E9%87%8E%E5%BD%A6%E9%A6%AC'>kotobank.jp</a>"],
-        ["電灯が広まる 1890 年代より前の写真館の露光は、たいてい 5〜10 秒とされる。","LACMA \"Photographer's studio head clamp, before 1900\" <a href='https://www.lacma.org/node/40333'>lacma.org</a>"]],
-   warn:"靴みがきの姿は水のポンプだとする見方もあります。十分ほどの露光とする説明、日本の写真館での頭の支えの使われ方、「魂を抜かれる」の噂の広がりは確かめきれておらず、下岡蓮杖の項は直接は開いていません。" },
- { slug:"hoshi", no:"其 の 八", t:"星の遅刻", r:"ほしのちこく", en:"Late Starlight", kimono:"紺青（こんじょう）",
-   lead:"いま見えている星は、いまの星の姿ではない。夜空が、出た年のばらばらな光の寄せ集めに見えてくる噺。", d:313,
-   fic:"本題のご隠居・八っつぁん・かかあ・寄り合い・五町は作り話です。まくらの「推しの名を並べる」「八分先を歩いている」はたとえです。",
-   invite:"冬の夜、南の空で青白く光るシリウスを見上げて、「この光が出たとき、自分は何をしていたか」を思い出してみる。",
-   src:[["清少納言『枕草子』に「星はすばる。ひこぼし。ゆふづつ。…」。","Wikipedia「プレアデス星団」（原文を引く） <a href='https://ja.wikipedia.org/wiki/%E3%83%97%E3%83%AC%E3%82%A2%E3%83%87%E3%82%B9%E6%98%9F%E5%9B%A3'>ja.wikipedia.org</a>"],
-        ["1676 年、デンマーク生まれのオーレ・レーマーが、パリの天文台で、木星の衛星イオが影に入る時刻のずれ（地球が遠ざかる時期は遅れ、近づく時期は早まる）から、光に速さがあることを示した。すぐには納得されなかった。1676 年は四代将軍・徳川家綱の在職中（1651〜1680）。","Wikipedia「Rømer's determination of the speed of light」 <a href='https://en.wikipedia.org/wiki/R%C3%B8mer%27s_determination_of_the_speed_of_light'>en.wikipedia.org</a>／Wikipedia「徳川家綱」 <a href='https://ja.wikipedia.org/wiki/%E5%BE%B3%E5%B7%9D%E5%AE%B6%E7%B6%B1'>ja.wikipedia.org</a>"],
-        ["月まで約 38 万 km、光で約 1.3 秒。太陽まで約 1 億 5 千万 km、光で約 8 分 20 秒。","JAXA「『月』ってナンだ!?」 <a href='https://www.jaxa.jp/countdown/f13/special/moon_j.html'>jaxa.jp</a>／JAXA 宇宙科学研究所 キッズサイト <a href='https://www.kids.isas.jaxa.jp/faq/solar/000130.html'>kids.isas.jaxa.jp</a>／Wikipedia「Light-second」 <a href='https://en.wikipedia.org/wiki/Light-second'>en.wikipedia.org</a>"],
-        ["織姫（ベガ）と彦星（アルタイル）は 14.4 光年ほど離れ、光でも約 14 年半かかる。","国立天文台「七夕について教えて」 <a href='https://www.nao.ac.jp/faq/a0309.html'>nao.ac.jp</a>"],
-        ["（本題）シリウス（おおいぬ座）はおよそ 8.6 光年（資料により 8.6〜8.7 光年）。","Wikipedia「シリウス」 <a href='https://ja.wikipedia.org/wiki/%E3%82%B7%E3%83%AA%E3%82%A6%E3%82%B9'>ja.wikipedia.org</a>"]],
-   warn:"レーマー・家綱・枕草子の原文は二次資料（Wikipedia）で確かめた範囲です。" },
-];
-// 2026-10-13 画面の作り直し：高座（いまの演目）＋番組（めくり 5 枚）＋さそい＋折りたたみ（典拠・作り話・つくり）。
-// 動画の向きは画面の形で自動（縦持ちは縦・ほかは横。英語は横だけ）。明るい表示の切りかえは外した。
-let LANG = "ja", cur = "hachi";
+<!-- 席をえらぶ -->
+<section class="sheet off" id="sSeat" aria-label="席">
+  <div class="in">
+    <p class="ml-kicker" id="seatKicker"></p>
+    <h2>どこに座りますか。</h2>
+    <div class="seats">
+      <button class="ml-btn" type="button" data-seat="mae">前の席<small>高座の近く</small></button>
+      <button class="ml-btn" type="button" data-seat="naka">まん中<small>全体が見える</small></button>
+      <button class="ml-btn" type="button" data-seat="sajiki">桟敷<small>畳の横の席</small></button>
+    </div>
+  </div>
+</section>
+
+<!-- 終わり -->
+<section class="sheet off" id="sEnd" aria-label="終演">
+  <div class="in">
+    <p class="ml-kicker">Qualia/rakugo</p>
+    <h2 id="endT"></h2>
+    <p id="endInvite"></p>
+    <div class="row">
+      <button class="ml-btn ml-btn--primary" id="bNext" type="button"></button>
+      <button class="ml-btn" id="bAgain" type="button">もう一度聞く</button>
+      <button class="ml-btn" id="bProg2" type="button">番組をひらく</button>
+      <button class="ml-btn" id="bSrc" type="button">まくらの典拠</button>
+    </div>
+  </div>
+</section>
+
+<div class="qchip" id="qchip" aria-live="off"></div>
+<div class="wait" id="wait" hidden>碧が支度をしています…</div>
+<div class="prog" id="prog"></div>
+<nav class="hud" id="hud" hidden aria-label="高座の操作">
+  <button class="ml-btn" id="bPlay" type="button" aria-label="一時停止">❚❚</button>
+  <button class="ml-btn" id="bSub" type="button" aria-pressed="true">字幕</button>
+  <button class="ml-btn" id="bLayer" type="button" aria-pressed="true">層</button>
+  <button class="ml-btn" id="bView" type="button" aria-pressed="true" title="噺に合わせて目が寄る／席から見える広さのまま">寄って観る</button>
+  <button class="ml-btn" id="bSeat" type="button">席</button>
+</nav>
+
+<aside class="drawer" id="drawer" aria-label="この噺と寄席のこと">
+  <button class="ml-btn close" id="bClose" type="button">× 閉じる</button>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="hanashi">この噺</button>
+    <button role="tab" aria-selected="false" data-tab="yose">この寄席</button>
+  </div>
+  <div data-pane="hanashi">
+    <h2 id="dT"></h2>
+    <p id="dLead"></p>
+    <h2>きょうのさそい</h2><p id="dInvite"></p>
+    <h2>まくらで話した事実と、その典拠</h2><ul class="src" id="dSrc"></ul><p class="note" id="dWarn"></p>
+    <h2>本題の作り話のこと</h2><p id="dFic"></p>
+    <h2>重ねている層</h2><p id="dLayer"></p>
+  </div>
+  <div data-pane="yose" hidden>
+    <h2>この寄席のこと</h2>
+    <p>木戸（入口）の上には演目名のまねき、客席の左右には提灯と畳の桟敷。高座には座布団、上手（客席から見て右）に高座の演者の名を出すめくり。噺は江戸の型なので、ふだんは見台と膝隠しを置きません。見台・小拍子・膝隠しは上方（関西）の落語の道具です。下の切りかえで、上方の高座のしつらいも見られます。</p>
+    <p>席に座ると、出囃子が鳴って高座が明るくなり、碧がお辞儀をして話しはじめます。まくらでは本に書いてある事実だけを話し、羽織を脱いで本題（江戸の作り話）へ。人物が替わると顔の向き（上下〈かみしも〉）が替わり、扇子と手拭いで物を見立てます。サゲのあと、正面を向いてお辞儀をします。</p>
+    <p>本題のあいだ、高座の後ろの襖や客席の空気に、その噺の生き物や機械の受けとり方を、淡い模式として重ねます（下の「層」で消せます）。ほかのものの感じ方そのものは渡せないので、典拠にもとづいて人の感覚へ置きかえたものです。</p>
+    <p><button class="ml-btn" id="bKami" type="button" aria-pressed="false">上方の高座にする（見台・膝隠しを置く）</button></p>
+    <h2>見かた</h2>
+    <ul>
+      <li>「寄って観る」：噺に合わせて、自分の目がゆっくり碧へ寄ったり引いたりします。「席から観る」にすると、席から見える広さのままです。</li>
+      <li>画面をなぞると見回せます。二本の指でつまむ（PC はホイール）と寄れます。しばらく触らないと元に戻ります。</li>
+      <li>3D が重い端末では <a href="douga.html">映像で観る</a>（同じ 8 席の動画）をどうぞ。</li>
+    </ul>
+    <h2>この寄席のつくり</h2>
+    <ul>
+      <li>語り：碧（あおい）── ほかのものの受けとり方を、人の言葉に訳して語ります。落語はひとりで全部の役を演じる芸なので、登場する人物も同じ碧の声で、速さ・高さ・抑揚を変えて分けています。</li>
+      <li>声：<strong>VOICEVOX:冥鳴ひまり</strong>。<a href="https://voicevox.hiroshiba.jp/">VOICEVOX</a>／<a href="https://www.meimeihimari.com/terms-of-use">冥鳴ひまりの利用規約</a></li>
+      <li>姿：碧の 3D は VRoid Studio で作ったもの。寄席の建物・高座・提灯・客席は three.js で描いたもので、檜と杉の板の質感は <a href="https://polyhaven.com/">Poly Haven</a> の CC0 素材です。</li>
+      <li>書体：字幕は <strong>Klee One</strong>、めくりとまねきは <strong>Potta One</strong>（どちらも SIL Open Font License 1.1）。寄席文字そのものではなく、太い筆の書体で寄席の札に見立てています。</li>
+      <li>音：出囃子・受け囃子・太鼓・拍手・客席のざわめきは、数式から合成した音です（録音や既存の曲は使っていません）。</li>
+      <li>寄席の道具の言い方は <a href="https://ja.kyoto.travel/traditionalculture/rakugo.php">京都観光Navi「落語」</a> で確かめました。実在の寄席の名前や意匠は写していません。</li>
+    </ul>
+    <h2>利用について</h2>
+    <ul>
+      <li>この寄席・台本・ページの文は mitsulab の作品です（© 2026 mitsulab. All rights reserved.）。無断の複製・転載・再配布・改変と、AI の学習・生成への利用はお断りします（テキスト・データマイニングの権利を留保します。<a href="https://mitsulab.jp/terms/#ai">利用規約</a>）。紹介のためのリンクは歓迎します。</li>
+      <li>上に書いた他者の素材（声・書体・質感）は、それぞれの条件に従います。碧の 3D モデル（VRM）は、この寄席を描くために読み込んでいますが、配布・再利用はお断りします。</li>
+    </ul>
+  </div>
+  <footer class="cr">作　mitsulab（2026）　<a href="https://mitsulab.jp">mitsulab.jp</a>　お問い合わせ　official@mitsulab.jp<br>© 2026 mitsulab. All rights reserved.</footer>
+</aside>
+
+<div class="fail" id="fail" hidden><p>この端末では 3D の寄席をひらけませんでした。<br><a href="douga.html">映像で観る</a>（同じ 8 席の動画）をどうぞ。</p></div>
+
+<script type="module">
+import { ENM, QL } from './enmoku.js';
 const $ = s => document.querySelector(s);
-const mmss = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
-const portrait = () => !!(window.matchMedia && matchMedia("(orientation: portrait)").matches);
-const reduce = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
-const vsrc = slug => `video/${slug}${LANG === "en" ? "_en_h720" : portrait() ? (innerWidth < 700 ? "_v540" : "_v720") : "_h720"}.mp4`;   // 2026-10-19：スマホの縦は軽い版（540p・約 0.6 Mbps）。通信が落ちても止まらないように
-function setLangUI() {
-  document.documentElement.lang = LANG;
-  document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
-  document.querySelectorAll("[data-ja]").forEach(x => x.hidden = LANG === "en");
-  document.querySelectorAll("[data-en]").forEach(x => x.hidden = LANG !== "en");
+const q = new URLSearchParams(location.search);
+if (q.get('lang') === 'en') location.replace('douga.html' + location.search + location.hash);   // 英語は映像版のまま
+const mmss = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
+// WebGL が無い端末は映像へ
+{ const c = document.createElement('canvas'); if (!(c.getContext('webgl2') || c.getContext('webgl'))) { $('#fail').hidden = false; $('#loading').hidden = true; } }
+
+// ---- 音（声は HTMLAudio。太鼓・ざわめき・拍手は WebAudio で合成）
+const audio = new Audio(); audio.preload = 'auto';
+let AC = null;
+const ac = () => { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } if (AC && AC.state === 'suspended') AC.resume(); return AC; };
+function noiseBuf(sec) { const a = ac(); const b = a.createBuffer(1, a.sampleRate * sec, a.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+function taiko(t0, gain = 0.5, f0 = 150) {   // 締め太鼓より低い、胴の太鼓（膜の音の下がり＋皮を打つ音）
+  const a = ac(); if (!a) return;
+  const o = a.createOscillator(), g = a.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(f0, t0); o.frequency.exponentialRampToValueAtTime(f0 * 0.45, t0 + 0.35);
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + 0.006); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.55); o.connect(g).connect(a.destination); o.start(t0); o.stop(t0 + 0.6);
+  const n = a.createBufferSource(); n.buffer = noiseBuf(0.08); const f = a.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 900; f.Q.value = 0.8; const g2 = a.createGain();
+  g2.gain.setValueAtTime(gain * 0.5, t0); g2.gain.exponentialRampToValueAtTime(0.001, t0 + 0.07); n.connect(f).connect(g2).connect(a.destination); n.start(t0);
 }
-function list() {
-  $("#list").innerHTML = W.map(w => `<li><button class="card" type="button" data-slug="${w.slug}" aria-label="${LANG === "en" ? w.en : w.t}">
-    <img src="img/${w.slug}_poster_v.webp" alt="" loading="lazy" width="720" height="1280">
-    <span class="plate" aria-hidden="true"><span class="cno">${w.no.replace(/ /g, "")}</span><span class="ct${w.t.length >= 6 ? " l6" : w.t.length >= 5 ? " l5" : ""}">${w.t}</span></span>
-    <span class="cap">${LANG === "en" ? `<span class="cen">${w.en}</span>` : ""}<span class="cd">${mmss(LANG === "en" ? w.dEn : w.d)}</span></span></button></li>`).join("");
-  document.querySelectorAll(".card").forEach(c => c.setAttribute("aria-current", String(c.dataset.slug === cur)));
+function ichibanDaiko() {   // 入るときの太鼓（このページで書いた短い打ち方）
+  const a = ac(); if (!a) return; const t = a.currentTime + 0.15;
+  [0, 0.5, 1.0, 1.25, 1.5, 2.1, 2.35, 2.6, 3.2].forEach((d, i) => taiko(t + d, i % 3 === 2 ? 0.42 : 0.3, i % 2 ? 165 : 140));
 }
-function show(slug) {
-  const w = W.find(x => x.slug === slug) || W.find(x => x.slug === "hachi"), en = LANG === "en";
-  cur = w.slug; stop();
-  $("#posterImg").src = `img/${cur}_${en ? "en_" : ""}poster.webp`;
-  $("#posterV").srcset = `img/${cur}_poster_v.webp`;   // 縦持ちの高座の絵は縦のポスター（字幕なしのコマ。英語でも同じ絵）
-  $("#mNo").textContent = w.no; $("#mT").textContent = w.t;
-  $("#title").textContent = en ? w.en : w.t;
-  $("#title").lang = en ? "en" : "ja";
-  $("#yomi").innerHTML = en ? `${w.t}　<span class="ml-en">${w.r}</span>` : `${w.r}　<span class="ml-en">${w.en}</span>`;
-  $("#lead").textContent = en ? w.leadEn : w.lead;
-  $("#dur").textContent = mmss(en ? w.dEn : w.d);
-  $("#meta").textContent = en ? "Told by Aoi · the opening is fact, the tale is fiction · mitsulab (2026)" : `着物 ${w.kimono} ／ 語り 碧 ／ まくらは事実、本題は作り話 ／ 作 mitsulab（2026）`;
-  $("#invite").textContent = en ? w.inviteEn : w.invite;
-  $("#fic").textContent = en ? w.ficEn : w.fic;
-  const S = en && w.srcEn ? w.srcEn : w.src;
-  $("#src").innerHTML = S.map(([f, r]) => `<li>${f}<span class="ref">${r}</span></li>`).join("");
-  $("#srcNote").hidden = !(en && !w.srcEn);
-  $("#warn").textContent = w.warn ? "※ " + w.warn : "";
-  document.title = en ? `${w.en} — Qualia/rakugo` : `${w.t} ── Qualia/rakugo`;
-  document.querySelectorAll(".card").forEach(c => c.setAttribute("aria-current", String(c.dataset.slug === cur)));
+let murmur = null;
+function startMurmur() {   // 開演前の客席のざわめき（言葉にならない低い声のかたまり）
+  const a = ac(); if (!a || murmur) return;
+  const n = a.createBufferSource(); n.buffer = noiseBuf(4); n.loop = true;
+  const f = a.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 420; f.Q.value = 0.7;
+  const f2 = a.createBiquadFilter(); f2.type = 'lowpass'; f2.frequency.value = 1100;
+  const g = a.createGain(); g.gain.value = 0;
+  const lfo = a.createOscillator(), lg = a.createGain(); lfo.frequency.value = 0.23; lg.gain.value = 0.012; lfo.connect(lg).connect(g.gain); lfo.start();
+  n.connect(f).connect(f2).connect(g).connect(a.destination); n.start(); g.gain.setTargetAtTime(0.035, a.currentTime, 1.2);
+  murmur = { g, stop() { g.gain.setTargetAtTime(0, a.currentTime, 0.6); setTimeout(() => { try { n.stop(); lfo.stop(); } catch (e) {} }, 3000); } };
 }
-function play() {
-  stop();
-  const v = document.createElement("video");
-  v.id = "vid"; v.controls = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto";
-  v.poster = LANG === "en" ? `img/${cur}_en_poster.webp` : portrait() ? `img/${cur}_poster_v.webp` : `img/${cur}_poster.webp`;
-  v.src = vsrc(cur); v.dataset.src = v.src;
-  $("#koza").appendChild(v); $("#close").hidden = false;
-  v.addEventListener("ended", stop);
-  const p = v.play(); if (p && p.catch) p.catch(() => {});
-  window.scrollTo({ top: 0, behavior: "auto" });   // 再生は高座を画面いっぱいに（閉じるボタンも必ず見える位置に）
+function applause(sec = 4.2) {   // 拍手（手を打つ短い音の集まり。だんだん増えて、まばらに終わる）
+  const a = ac(); if (!a) return; const t0 = a.currentTime + 0.05, buf = noiseBuf(0.05);
+  for (let i = 0; i < 90; i++) {
+    const u = Math.random(), t = t0 + sec * (u < 0.85 ? u * 0.8 : u); const n = a.createBufferSource(); n.buffer = buf; n.playbackRate.value = 0.8 + Math.random() * 0.5;
+    const f = a.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1200 + Math.random() * 1400; f.Q.value = 1.4;
+    const g = a.createGain(), v = 0.07 * (0.5 + Math.random()) * (1 - Math.max(0, (t - t0) / sec - 0.6) * 1.8);
+    g.gain.setValueAtTime(Math.max(0.005, v), t); g.gain.exponentialRampToValueAtTime(0.0008, t + 0.05);
+    const p = a.createStereoPanner ? a.createStereoPanner() : null; if (p) p.pan.value = Math.random() * 1.6 - 0.8;
+    n.connect(f).connect(g); (p ? g.connect(p).connect(a.destination) : g.connect(a.destination)); n.start(t);
+  }
 }
-function stop() { const v = $("#vid"); if (v) { v.pause(); v.removeAttribute("src"); v.load(); v.remove(); } $("#close").hidden = true; }
-// 画面を回しても再生中の動画は保つ。既存の object-fit:contain で新しい画面に収める。
-// 縦・横の動画を選ぶのは play() の時だけ（演目を替えて再生するときも、その向きに合わせる）。
-function pick(slug, scroll) {
-  show(slug);
-  try { history.replaceState(null, "", (LANG === "en" ? "?lang=en" : location.pathname) + "#" + cur); } catch (e) {}
-  if (scroll) $("#koza").scrollIntoView({ behavior: reduce() ? "auto" : "smooth" });
+const unlock = () => { ac(); audio.muted = true; const p = audio.play(); if (p && p.then) p.then(() => { if (!playing) { audio.pause(); audio.currentTime = 0; } audio.muted = false; }).catch(() => { audio.muted = false; }); else { audio.pause(); audio.muted = false; } };
+
+// ---- 画面の状態
+let chosenRes; const chosen = new Promise(r => chosenRes = r);
+let cur = null, seated = false, aoiReady = false, playing = false, ended = false, startFns = [], qualiaOn = true, clapped = false, TLc = null;
+const sheet = (id, on) => { $(id).classList.toggle('off', !on); document.body.classList.toggle('sheeton', !!document.querySelector('.sheet:not(.off)')); };
+function fillList() {
+  $('#list').innerHTML = ENM.map((w, i) => `<li><button class="card" type="button" data-slug="${w.slug}" aria-label="${w.t}（${w.r}・約 ${Math.round(w.d / 60)} 分）">
+    <span class="no">${w.no.replace(/ /g, '')}</span><span class="t">${w.t}</span><span class="d">${mmss(w.d)}</span></button></li>`).join('');
+  document.querySelectorAll('.card').forEach(c => c.setAttribute('aria-current', String(c.dataset.slug === cur)));
 }
-$("#play").addEventListener("click", play);
-$("#close").addEventListener("click", stop);
-$("#list").addEventListener("click", e => { const c = e.target.closest(".card"); if (c) pick(c.dataset.slug, true); });
-document.querySelectorAll("[data-pick]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); pick(a.dataset.pick, true); }));
-document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => {
-  LANG = b.dataset.lang; setLangUI(); list(); show(cur);
-  try { history.replaceState(null, "", (LANG === "en" ? "?lang=en" : location.pathname) + "#" + cur); } catch (e) {}
+function info(w) {
+  $('#dT').textContent = `${w.t}（${w.r}）`; $('#dLead').textContent = w.lead; $('#dInvite').textContent = w.invite; $('#dFic').textContent = w.fic;
+  $('#dSrc').innerHTML = w.src.map(([a, b]) => `<li>${a}<small>${b}</small></li>`).join(''); $('#dWarn').textContent = w.warn || '';
+  $('#dLayer').textContent = QL[w.slug].label + '。噺のじゃまにならないよう、本題のあいだだけ淡く出します。';
+}
+function choose(slug) {
+  if (cur) { // 演目を替える：ページを読みなおして通路から（碧の支度を新しい演目でやり直す）
+    if (slug === cur) return; location.href = `?e=${slug}`; return;
+  }
+  const w = ENM.find(x => x.slug === slug); if (!w) return;
+  cur = slug; fillList(); info(w); unlock(); ichibanDaiko(); startMurmur();
+  audio.src = `yose/enmoku/${slug}/voice.m4a`; audio.load();
+  history.replaceState(null, '', `?e=${slug}`);
+  sheet('#sKido', false); $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`;
+  window.__CAM.walkIn(performance.now() / 1000);
+  chosenRes(slug);
+}
+$('#list').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) { if (!cur) choose(c.dataset.slug); else choose(c.dataset.slug); } });
+document.querySelectorAll('[data-seat]').forEach(b => b.addEventListener('click', () => {
+  unlock(); sheet('#sSeat', false); window.__CAM.sit(b.dataset.seat, performance.now() / 1000);
 }));
-// ?lang=en で英語・#keyaki や ?e=keyaki で演目を選んで開く（前の版の #slug のリンクもそのまま効く）
-try {
-  const q = new URLSearchParams(location.search);
-  // 2026-10-20：英語は保留（本人）。8 席は日本語だけなので ?lang=en でも日本語で開く
-  const h = location.hash.replace("#", ""), e = q.get("e");
-  if (W.some(x => x.slug === h)) cur = h; else if (W.some(x => x.slug === e)) cur = e;
-} catch (e) {}
-setLangUI(); list(); show(cur);
-// 演目・再生操作が実際に用意できた時点で入口を開く。書体や一覧の全画像は待たない。
-requestAnimationFrame(() => requestAnimationFrame(() => window.MLLoader?.done()));
-window.addEventListener("hashchange", () => { const h = location.hash.replace("#", ""); if (W.some(x => x.slug === h)) pick(h, true); });
+function maybeStart() {
+  if (!seated || playing || ended) return;
+  if (!aoiReady) { $('#wait').hidden = false; return; }
+  $('#wait').hidden = true; playing = true; $('#hud').hidden = false; $('#bProg').hidden = false;
+  if (murmur) murmur.stop();
+  audio.muted = false; audio.currentTime = 0; const p = audio.play(); if (p && p.catch) p.catch(() => { playing = false; $('#bPlay').textContent = '▶'; });
+  startFns.forEach(f => f()); document.body.classList.add('quiet');
+}
+// ---- 3D の寄席から呼ばれるところ
+window.__UI = {
+  audio, chosen,
+  hallReady(HL) {
+    $('#loading').hidden = true; window.__tReady = performance.now();
+    // まねき（木戸の上の札）を押しても演目を選べる
+    const ray = new (window.__THREE.Raycaster)(), v = new (window.__THREE.Vector2)();
+    document.getElementById('stage').addEventListener('click', e => {
+      if (cur) return; v.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(v, window.__camera);
+      const h = ray.intersectObjects(HL.boards, false)[0]; if (h) choose(h.object.userData.slug);
+    });
+    const e0 = q.get('e') || location.hash.replace('#', '');   // 前の版の #slug のリンクも効く
+    if (e0 && ENM.some(x => x.slug === e0)) { cur = e0; const w = ENM.find(x => x.slug === e0); fillList(); info(w); audio.src = `yose/enmoku/${e0}/voice.m4a`; audio.load();
+      $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); sheet('#sSeat', true); }
+    else { fillList(); sheet('#sKido', true); }
+  },
+  atAisle() { sheet('#sSeat', true); },
+  seated() { seated = true; maybeStart(); },
+  aoiReady(TL) { aoiReady = true; TLc = TL; maybeStart(); },
+  onStart(f) { startFns.push(f); },
+  qualiaOn: () => qualiaOn,
+  qualia(label, L) { const el = $('#qchip'); if (el._l !== label) { el._l = label; el.innerHTML = label + '<small>典拠を読む ›</small>'; } const o = L > 0.42 ? 1 : 0; if (el._o !== o) { el.style.opacity = o; el._o = o; el.classList.toggle('on', !!o); } },
+  tick(t, TL) {
+    if (!playing) return;
+    $('#prog').style.width = (100 * Math.min(1, t / TL.duration)).toFixed(2) + '%';
+    const se = TL.lines[TL.lines.length - 1].end;
+    if (!clapped && t > se + 1.6) { clapped = true; applause(); }
+    if (!ended && (audio.ended || t >= TL.duration - 0.3)) { ended = true; endPanel(); }
+  },
+};
+function endPanel() {
+  const i = ENM.findIndex(x => x.slug === cur), w = ENM[i], nx = ENM[(i + 1) % ENM.length];
+  $('#endT').textContent = `${w.t}　おしまい`; $('#endInvite').textContent = w.invite;
+  $('#bNext').textContent = `次の一席　${nx.t}`; $('#bNext').onclick = () => location.href = `?e=${nx.slug}`;
+  document.body.classList.remove('quiet'); sheet('#sEnd', true);
+}
+$('#bAgain').onclick = () => { sheet('#sEnd', false); ended = false; clapped = false; playing = false; audio.currentTime = 0; maybeStart(); };
+const openProg = () => { sheet('#sEnd', false); sheet('#sSeat', false); sheet('#sKido', true); $('#sKido h1').textContent = '番組'; $('#sKido p').textContent = 'めくりをえらぶと、その一席へ替わります。'; };
+$('#bProg').onclick = () => { if ($('#sKido').classList.contains('off')) openProg(); else sheet('#sKido', false); };
+$('#bProg2').onclick = openProg;
+$('#bSrc').onclick = () => { $('#drawer').classList.add('on'); };
+$('#bInfo').onclick = () => $('#drawer').classList.toggle('on');
+$('#qchip').onclick = () => $('#drawer').classList.add('on');
+$('#bKami').onclick = e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); e.currentTarget.textContent = on ? '江戸の高座にもどす（見台・膝隠しを外す）' : '上方の高座にする（見台・膝隠しを置く）'; window.__HL && window.__HL.setKamigata(on); };
+$('#bClose').onclick = () => $('#drawer').classList.remove('on');
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+  document.querySelectorAll('[data-pane]').forEach(p => p.hidden = p.dataset.pane !== b.dataset.tab);
+});
+$('#bPlay').onclick = () => { if (audio.paused) { audio.play(); $('#bPlay').textContent = '❚❚'; $('#bPlay').setAttribute('aria-label', '一時停止'); } else { audio.pause(); $('#bPlay').textContent = '▶'; $('#bPlay').setAttribute('aria-label', '再生'); } };
+$('#bSub').onclick = e => { const on = document.body.classList.toggle('nosub'); e.currentTarget.setAttribute('aria-pressed', String(!on)); };
+$('#bLayer').onclick = e => { qualiaOn = !qualiaOn; e.currentTarget.setAttribute('aria-pressed', String(qualiaOn)); };
+$('#bView').onclick = e => { const b = e.currentTarget, yoru = b.textContent === '寄って観る'; b.textContent = yoru ? '席から観る' : '寄って観る'; window.__CAM.setMode(yoru ? 'seki' : 'yoru'); };
+$('#bSeat').onclick = () => { const order = ['mae', 'naka', 'sajiki'], n = order[(order.indexOf(window.__CAM.seatName()) + 1) % 3]; window.__CAM.sit(n, performance.now() / 1000); };
+addEventListener('keydown', e => { if (e.code === 'Space' && playing && !e.target.closest('button')) { e.preventDefault(); $('#bPlay').click(); } if (e.key === 'Escape') $('#drawer').classList.remove('on'); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && playing && !audio.paused) $('#bPlay').click(); });
+// 3D の寄席を読む（three.js が読めなければ映像へ）
+import('./yose.js').catch(err => { console.error(err); window.__errs = (window.__errs || []).concat(String(err)); $('#fail').hidden = false; });
 </script>
 </body>
 </html>
