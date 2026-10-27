@@ -18,7 +18,7 @@
   var m = function (u) { return '-webkit-mask:url(' + u + ') center/contain no-repeat;mask:url(' + u + ') center/contain no-repeat;'; };
   var css = '.mlq{position:fixed;inset:0;z-index:2147483000;background:' + bg + ';display:grid;place-items:center;transition:opacity .3s ease,visibility .3s,transform .3s ease}' +
     '.mlq.out{opacity:0;visibility:hidden;pointer-events:none}.mlq.out .g{transform:scale(.9);transition:transform .3s ease}.mlq.soft{background:' + (light ? 'rgba(246,248,246,.92)' : 'rgba(3,6,15,.9)') + '}' +
-    '.mlq .g{position:relative;width:min(44vmin,220px);aspect-ratio:250/260;margin-top:8px}' +
+    '.mlq .g{position:relative;width:min(58vmin,300px);aspect-ratio:250/260;margin-top:8px}' +
     '.mlq .h{position:absolute;inset:0;background:' + c2 + ';opacity:0;animation:mlqIn .4s ease-out forwards}' +
     '.mlq .g{animation:mlqHue 7s ease-in-out infinite alternate}' +
     '.mlq .a{' + m(B) + '}.mlq .b{' + m(C) + '}' +
