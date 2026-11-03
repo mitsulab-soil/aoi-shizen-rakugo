@@ -152,9 +152,10 @@
   @media (prefers-reduced-motion: reduce){ .sheet,.drawer,.card{transition:none} }
 </style>
 <link rel="stylesheet" href="ui.css?v=20261103">
+<style>.bar.mu-top{z-index:5}/* 引き出し・重ね窓より下に（閉じるが隠れないように） */</style>
 </head>
 <body>
-<script src="loader/loader.js" data-auto="load"></script>
+<script src="loader/loader.js"></script>
 <div id="stage"></div>
 <div class="loading" id="loading">寄席へ</div>
 <div id="subband"></div>
@@ -272,7 +273,7 @@ const q = new URLSearchParams(location.search);
 if (q.get('lang') === 'en') location.replace('douga.html' + location.search + location.hash);   // 英語は映像版のまま
 const mmss = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
 // WebGL が無い端末は映像へ
-{ const c = document.createElement('canvas'); if (!(c.getContext('webgl2') || c.getContext('webgl'))) { $('#fail').hidden = false; $('#loading').hidden = true; } }
+{ const c = document.createElement('canvas'); if (!(c.getContext('webgl2') || c.getContext('webgl'))) { $('#fail').hidden = false; $('#loading').hidden = true; window.MLLoader?.done(); } }
 
 // ---- 音（声は HTMLAudio。太鼓・ざわめき・拍手は WebAudio で合成）
 const audio = new Audio(); audio.preload = 'auto';
@@ -356,7 +357,7 @@ function maybeStart() {
 window.__UI = {
   audio, chosen,
   hallReady(HL) {
-    $('#loading').hidden = true; window.__tReady = performance.now();
+    $('#loading').hidden = true; window.__tReady = performance.now(); window.MLLoader?.done();   // 2026-11-03：寄席の準備ができたら閉じる（最長 5 秒）
     // まねき（木戸の上の札）を押しても演目を選べる
     const ray = new (window.__THREE.Raycaster)(), v = new (window.__THREE.Vector2)();
     document.getElementById('stage').addEventListener('click', e => {
@@ -409,7 +410,7 @@ $('#bSeat').onclick = () => { const order = ['mae', 'naka', 'sajiki'], n = order
 addEventListener('keydown', e => { if (e.code === 'Space' && playing && !e.target.closest('button')) { e.preventDefault(); $('#bPlay').click(); } if (e.key === 'Escape') $('#drawer').classList.remove('on'); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && playing && !audio.paused) $('#bPlay').click(); });
 // 3D の寄席を読む（three.js が読めなければ映像へ）
-import('./yose.js').catch(err => { console.error(err); window.__errs = (window.__errs || []).concat(String(err)); $('#fail').hidden = false; });
+import('./yose.js').catch(err => { console.error(err); window.__errs = (window.__errs || []).concat(String(err)); $('#fail').hidden = false; window.MLLoader?.done(); });
 </script>
 </body>
 </html>
