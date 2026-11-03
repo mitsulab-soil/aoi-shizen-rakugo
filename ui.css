@@ -1,0 +1,120 @@
+/* mitsulab 共通 GUI（ui.css v1・2026-11-03）
+   土台＝../tokens.css（先に読む）。見た目の基準＝Qualium 大宮の GUI（.ib・.brand・字幕）。
+   クラスは .mu- だけ。読み込み画面は kit/loader_qualium.js を使う（ここでは作らない）。 */
+:root{
+  --mu-ink:var(--ml-ink,#eef5fb);
+  --mu-ink-2:var(--ml-ink-2,#c3cce0);
+  --mu-ink-3:var(--ml-ink-3,#8f9bb4);
+  --mu-aoi:var(--ml-aoi,#5cc8e0);
+  --mu-aoi-2:var(--ml-aoi-2,#9bdcf0);
+  --mu-panel:var(--ml-panel,rgba(6,10,18,.72));
+  --mu-line:var(--ml-line-2,rgba(150,170,240,.18));
+  --mu-line-on:var(--ml-line,rgba(92,200,224,.32));
+  --mu-serif:var(--ml-serif,"Shippori Mincho","Hiragino Mincho ProN",serif);
+  --mu-sans:var(--ml-sans,"Hiragino Sans",sans-serif);
+  --mu-r:2px;          /* 角丸（角） */
+  --mu-r-round:999px;  /* 丸（アイコンボタン・チップだけ） */
+  --mu-hit:44px;       /* 押せる高さ */
+  --mu-icon:20px;      /* アイコンの大きさ */
+  --mu-stroke:1.5;     /* アイコンの線の太さ（SVG stroke-width） */
+  --mu-g:max(12px,env(safe-area-inset-left));  /* 端の余白 */
+  --mu-gt:max(12px,env(safe-area-inset-top));
+  --mu-gb:max(14px,env(safe-area-inset-bottom));
+  --mu-shadow:0 1px 8px rgba(3,6,15,.7);  /* 字の影（面の影は付けない） */
+  --mu-blur:blur(8px);
+  --mu-t:200ms;        /* 150〜250ms */
+  --mu-t-fast:150ms;
+  --mu-ease:var(--ml-ease,cubic-bezier(.22,.61,.36,1));
+}
+
+/* ---- ボタン：角（既定）と丸の二種だけ。明朝の札 ---- */
+.mu-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:.5em;
+  min-height:var(--mu-hit);min-width:var(--mu-hit);padding:0 16px;
+  font:600 13.5px/1 var(--mu-serif);letter-spacing:.1em;color:var(--mu-ink);
+  background:var(--mu-panel);border:1px solid var(--mu-line);border-radius:var(--mu-r);
+  backdrop-filter:var(--mu-blur);-webkit-backdrop-filter:var(--mu-blur);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;white-space:nowrap;
+  transition:border-color var(--mu-t) var(--mu-ease),color var(--mu-t) var(--mu-ease),transform var(--mu-t-fast) var(--mu-ease)}
+.mu-btn--round{border-radius:var(--mu-r-round);padding:0 20px}
+.mu-btn:hover{border-color:var(--mu-line-on)}
+.mu-btn:active{transform:scale(.97)}
+.mu-btn[aria-pressed="true"],.mu-btn.is-on{border-color:var(--mu-aoi);color:var(--mu-aoi-2)}
+.mu-btn:focus-visible,.mu-icon:focus-visible,.mu-chip:focus-visible{outline:1px solid var(--mu-aoi);outline-offset:2px}
+.mu-btn:disabled{opacity:.45;cursor:default}
+
+/* ---- アイコンボタン：44px の丸・線は 1.5・絵は 20px ---- */
+.mu-icon{appearance:none;display:inline-grid;place-items:center;width:var(--mu-hit);height:var(--mu-hit);padding:0;
+  color:var(--mu-ink);background:var(--mu-panel);border:1px solid var(--mu-line);border-radius:var(--mu-r-round);
+  backdrop-filter:var(--mu-blur);-webkit-backdrop-filter:var(--mu-blur);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:border-color var(--mu-t) var(--mu-ease),transform var(--mu-t-fast) var(--mu-ease)}
+.mu-icon svg{width:var(--mu-icon);height:var(--mu-icon);fill:none;stroke:currentColor;stroke-width:var(--mu-stroke);stroke-linecap:round;stroke-linejoin:round}
+.mu-icon:hover{border-color:var(--mu-line-on)}
+.mu-icon:active{transform:scale(.94)}
+
+/* ---- 上端：左上に mitsulab・右上に閉じる（全アプリ同じ位置） ---- */
+.mu-top{position:fixed;z-index:40;top:var(--mu-gt);left:var(--mu-g);right:max(12px,env(safe-area-inset-right));
+  display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none}
+.mu-top > *{pointer-events:auto}
+.mu-logo{display:inline-flex;align-items:center;min-height:var(--mu-hit);padding:0 4px;
+  font:600 15px/1 var(--mu-serif);letter-spacing:.12em;color:#eaf8fc;text-decoration:none;
+  text-shadow:var(--mu-shadow);white-space:nowrap}
+.mu-top-r{display:flex;gap:8px;margin-left:auto}
+
+/* ---- 字幕（碧のナレーション）：下部に小さく・帯なし・文節で折る ---- */
+.mu-cap{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:calc(var(--mu-gb) + 64px);
+  width:min(640px,calc(100% - 32px));margin:0;text-align:center;pointer-events:none;
+  font:400 13.5px/1.75 var(--mu-serif);letter-spacing:.04em;color:var(--mu-ink);
+  text-shadow:0 0 2px rgba(3,6,15,.95),0 1px 10px rgba(3,6,15,.85);
+  background:none;border:0;
+  word-break:auto-phrase;line-break:strict;overflow-wrap:anywhere;text-wrap:balance;
+  opacity:0;transition:opacity var(--mu-t) var(--mu-ease)}
+.mu-cap.is-on{opacity:1}
+.mu-cap .mu-cap-who{color:var(--mu-aoi-2);margin-right:.6em;font-size:.86em;letter-spacing:.12em}
+/* 予備の区切り：auto-phrase の効かない端末向けに、文節ごとに <span class="mu-p"> で包むと塊で折れる */
+.mu-cap .mu-p{display:inline-block}
+@supports (word-break:auto-phrase){.mu-cap .mu-p{display:inline}}
+
+/* ---- トースト（知らせ）：上端の下に短く出て消える ---- */
+.mu-toast{position:fixed;z-index:50;left:50%;top:calc(var(--mu-gt) + 56px);transform:translate(-50%,-6px);
+  max-width:calc(100% - 32px);padding:10px 16px;font:400 13px/1.6 var(--mu-sans);color:var(--mu-ink);
+  background:var(--mu-panel);border:1px solid var(--mu-line);border-radius:var(--mu-r);
+  backdrop-filter:var(--mu-blur);-webkit-backdrop-filter:var(--mu-blur);
+  word-break:auto-phrase;overflow-wrap:anywhere;text-align:center;
+  opacity:0;pointer-events:none;transition:opacity var(--mu-t) var(--mu-ease),transform var(--mu-t) var(--mu-ease)}
+.mu-toast.is-on{opacity:1;transform:translate(-50%,0)}
+
+/* ---- 選択肢のチップ：横に並び、はみ出たら横へ流す（ページは動かさない） ---- */
+.mu-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:100%}
+.mu-chips--scroll{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
+.mu-chips--scroll::-webkit-scrollbar{display:none}
+.mu-chip{appearance:none;flex:0 0 auto;display:inline-flex;align-items:center;gap:.45em;min-height:var(--mu-hit);padding:0 14px;
+  font:600 12.5px/1 var(--mu-serif);letter-spacing:.08em;color:var(--mu-ink-2);
+  background:var(--mu-panel);border:1px solid var(--mu-line);border-radius:var(--mu-r-round);cursor:pointer;
+  backdrop-filter:var(--mu-blur);-webkit-backdrop-filter:var(--mu-blur);-webkit-tap-highlight-color:transparent;
+  transition:border-color var(--mu-t) var(--mu-ease),color var(--mu-t) var(--mu-ease)}
+.mu-chip i{width:6px;height:6px;border-radius:50%;background:var(--c,var(--mu-aoi));flex:none}
+.mu-chip[aria-pressed="true"],.mu-chip.is-on{color:var(--mu-ink);border-color:var(--c,var(--mu-aoi))}
+
+/* ---- スライダー：細い線と小さな丸。押せる高さは 44px ---- */
+.mu-range{-webkit-appearance:none;appearance:none;width:100%;height:var(--mu-hit);background:transparent;margin:0;cursor:pointer;--v:50%}
+.mu-range::-webkit-slider-runnable-track{height:2px;border-radius:2px;background:linear-gradient(90deg,var(--mu-aoi) var(--v),var(--mu-line) var(--v))}
+.mu-range::-moz-range-track{height:2px;background:var(--mu-line)}
+.mu-range::-moz-range-progress{height:2px;background:var(--mu-aoi)}
+.mu-range::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;margin-top:-8px;border-radius:50%;background:var(--mu-bg-thumb,#eaf8fc);border:1px solid var(--mu-aoi)}
+.mu-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#eaf8fc;border:1px solid var(--mu-aoi)}
+.mu-range:focus-visible{outline:1px solid var(--mu-aoi);outline-offset:2px}
+
+/* ---- 下端の操作の並び（字幕より下） ---- */
+.mu-dock{position:fixed;z-index:35;left:var(--mu-g);right:max(12px,env(safe-area-inset-right));bottom:var(--mu-gb);
+  display:flex;justify-content:center;gap:8px;pointer-events:none}
+.mu-dock > *{pointer-events:auto}
+
+@media (max-width:420px){
+  .mu-logo{font-size:12.5px;letter-spacing:.06em}
+  .mu-btn{padding:0 12px;font-size:12.5px;letter-spacing:.06em}
+  .mu-cap{font-size:12.8px;line-height:1.7}
+}
+@media (prefers-reduced-motion:reduce){
+  .mu-btn,.mu-icon,.mu-chip,.mu-cap,.mu-toast{transition:none!important}
+  .mu-btn:active,.mu-icon:active{transform:none}
+}
