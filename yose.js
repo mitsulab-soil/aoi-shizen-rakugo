@@ -30,6 +30,7 @@ const vrmBuf = fetch(BASE + 'aoi/aoi_kouza.vrm').then(r => { if (!r.ok) throw ne
 let W = innerWidth, H = innerHeight;
 const DPR = Math.min(devicePixelRatio || 1, LITE ? 1.75 : 1.5);   // スマホの髪先のざらつきを抑える
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.debug.checkShaderErrors = false;   // 2026-11-03：影の計算の確かめで止まらない（コマ落ちをなくす）
 renderer.setPixelRatio(DPR); renderer.setSize(W, H);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -60,6 +61,7 @@ window.__HL = HL;
 let AUD_SEAT = null;
 const CAM = window.__CAM = createCamera();
 let fullRender = null;
+try { await renderer.compileAsync(scene, camera); } catch (e) {}   // 2026-11-03：影の計算を並列で先に（最初の一枚で止まらない）
 (function early(now) {
   if (fullRender) return;
   CAM.update(now / 1000, null);
