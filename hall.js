@@ -296,7 +296,7 @@ export async function buildHall(ctx) {
     const noren = canvasTex(512, 384, (g, w, h) => {
       g.fillStyle = '#1b2a44'; g.fillRect(0, 0, w, h);
       g.globalAlpha = 0.12; for (let i = 0; i < 4000; i++) { g.fillStyle = rnd(i + 51) > 0.5 ? '#000' : '#4a6a9a'; g.fillRect(rnd(i + 53) * w, rnd(i + 55) * h, 2, 2); } g.globalAlpha = 1;
-      g.fillStyle = '#efe9da'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = 'italic 500 58px "Cormorant Garamond", serif'; g.fillText('Qualia/rakugo', w / 2, h * 0.42);
+      g.fillStyle = '#efe9da'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = 'italic 500 58px "Cormorant Garamond", serif'; g.fillText(document.documentElement.classList.contains('embed') ? 'Qualia/yose' : 'Qualia/rakugo', w / 2, h * 0.42);  // 2026-11-09：yose の中では集約の名
       g.font = '400 30px PottaOne, serif'; g.fillText('寄 席', w / 2, h * 0.68);
     });
     out.norenTex = noren;
