@@ -166,8 +166,8 @@
 <header class="bar mu-top">
   <a class="mark mu-logo" href="https://mitsulab.jp" aria-label="mitsulab のサイトへ"><b>Qualia/rakugo</b><small>mitsulab</small></a>
   <div class="r mu-top-r">
-    <button class="ml-btn" id="bProg" type="button" hidden><span aria-hidden="true">≡</span><span class="lbl">番組</span></button>
-    <button class="ml-btn" id="bInfo" type="button"><span aria-hidden="true">i</span><span class="lbl">この噺と寄席のこと</span></button>
+    <button class="ml-btn" id="bProg" type="button" aria-label="番組をひらく" hidden><span aria-hidden="true">≡</span><span class="lbl">番組</span></button>
+    <button class="ml-btn" id="bInfo" type="button" aria-label="この噺と寄席のこと"><span aria-hidden="true">i</span><span class="lbl">この噺と寄席のこと</span></button>
   </div>
 </header>
 
@@ -354,6 +354,8 @@ function maybeStart() {
   audio.muted = false; audio.currentTime = 0; const p = audio.play(); if (p && p.catch) p.catch(() => { playing = false; $('#bPlay').textContent = '▶'; });
   startFns.forEach(f => f()); document.body.classList.add('quiet');
 }
+// 2026-11-09：?go=1（Qualia/yose から題を押したとき）は席を選ぶ画面を飛ばし、まん中の席へ
+let AUTO_SEAT = /[?&]go=1(&|$)/.test(location.search);
 // ---- 3D の寄席から呼ばれるところ
 window.__UI = {
   audio, chosen,
@@ -367,7 +369,7 @@ window.__UI = {
     });
     const e0 = q.get('e') || location.hash.replace('#', '');   // 前の版の #slug のリンクも効く
     if (e0 && ENM.some(x => x.slug === e0)) { cur = e0; const w = ENM.find(x => x.slug === e0); fillList(); info(w); audio.src = `yose/enmoku/${e0}/voice.m4a`; audio.load();
-      $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); sheet('#sSeat', true); }
+      $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); if (!AUTO_SEAT) sheet('#sSeat', true); else { AUTO_SEAT = false; setTimeout(() => document.querySelector('[data-seat="naka"]')?.click(), 60); } }
     else { fillList(); sheet('#sKido', true); }
   },
   atAisle() { sheet('#sSeat', true); },
