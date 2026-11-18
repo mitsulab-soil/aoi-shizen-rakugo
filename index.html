@@ -358,7 +358,7 @@ function choose(slug) {
 }
 $('#list').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) { if (!cur) choose(c.dataset.slug); else choose(c.dataset.slug); } });
 const showTags = on => { for (const t of (window.__HL?.seatTags || [])) if (t.geometry.type === 'PlaneGeometry') t.visible = on; };
-function sitAt(k) { sheet('#sSeat', false); showTags(false); if (window.__HL?.andon) window.__HL.andon.group.visible = true; hint(''); window.__CAM.sit(k, performance.now() / 1000); }
+function sitAt(k) { sheet('#sSeat', false); showTags(false); if (window.__HL?.andon) { const g = window.__HL.andon.group; g.visible = true; } hint(''); window.__CAM.sit(k, performance.now() / 1000); }
 document.querySelectorAll('[data-seat]').forEach(b => b.addEventListener('click', () => { unlock(); sitAt(b.dataset.seat); }));
 function maybeStart() {
   if (!seated || playing || ended) return;
@@ -394,7 +394,7 @@ window.__UI = {
     const e0 = q.get('e') || location.hash.replace('#', '');   // 前の版の #slug のリンクも効く
     if (e0 && ENM.some(x => x.slug === e0)) { cur = e0; const w = ENM.find(x => x.slug === e0); fillList(); info(w); audio.src = `yose/enmoku/${e0}/voice.m4a`; audio.load();
       $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); if (!AUTO_SEAT) window.__UI.atAisle(); else { AUTO_SEAT = false; setTimeout(() => document.querySelector('[data-seat="naka"]')?.click(), 60); } }
-    else { fillList(); sheet('#sKido', true); hint('まねきの札を押すと、その一席へ', '一席およそ 5 分・音が出ます'); }
+    else { fillList(); sheet('#sKido', true); hint('まねきの札を押すと、その一席へ', '音が出ます'); }
   },
   atAisle() { sheet('#sSeat', true); showTags(true); hint('木札の下がった席を押して、座る', '前・中・桟敷'); },
   seated() { seated = true; maybeStart(); },
@@ -416,7 +416,7 @@ function endPanel() {
   $('#bNext').textContent = `次の一席　${nx.t}`; $('#bNext').onclick = () => location.href = `?e=${nx.slug}`;
   document.body.classList.remove('quiet'); sheet('#sEnd', true); window.__ended = true; window.__CAM.setMode('seki');   // 引いて、めくりと行灯が見えるように
   window.__HL.mekuri.set(nx.t, '次の一席'); if (window.__HL.mekuriHit) window.__HL.mekuriHit.userData.next = nx.slug;
-  const r = ROOM[cur]; hint(`右のめくりを押すと、次の一席「${nx.t}」`, r ? `行灯を押すと、館の${r[0]}へ` : '');
+  const r = ROOM[cur]; hint('めくりを押すと、次の一席', `「${nx.t}」${r ? `・行灯で館の${r[0]}へ` : ''}`);
 }
 $('#bAgain').onclick = () => { sheet('#sEnd', false); hint(''); window.__ended = false; ended = false; clapped = false; playing = false; audio.currentTime = 0; maybeStart(); };
 const openProg = () => { sheet('#sEnd', false); sheet('#sSeat', false); sheet('#sKido', true); $('#sKido h1').textContent = '番組'; $('#sKido p').textContent = 'めくりをえらぶと、その一席へ替わります。'; };

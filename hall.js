@@ -306,7 +306,7 @@ export async function buildHall(ctx) {
     box(W + 0.05, 0.03, W + 0.05, darkWood, 0, H + 0.12, 0, g); box(W + 0.05, 0.03, W + 0.05, darkWood, 0, 0.08, 0, g);
     const lamp = new THREE.PointLight(0xffc98a, 0.5, 2.4, 2); lamp.position.set(0, H / 2 + 0.08, 0); g.add(lamp);
     const hit = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.85, 0.42), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 0.4; hit.userData.andon = true; hit.userData.mat = paper; g.add(hit);
-    g.position.set(0.85, 0, 1.3); g.rotation.y = -0.3; g.visible = false; scene.add(g);   // 座ってから灯す   // 上手の手前（めくりの手前）
+    g.position.set(0.6, 0.45, 0.45); g.scale.setScalar(0.8); g.rotation.y = -0.3; g.visible = false; scene.add(g);   // 高座の上・座布団の上手の手前（前幕に隠れず、座って観ている間も入る）。座ってから灯す
     out.andon = {
       group: g, hit,
       set(room, why) {
@@ -347,17 +347,18 @@ export async function buildHall(ctx) {
       const p = new THREE.Mesh(g, nm); p.position.set((i - 1) * 0.505, HALL_Y + 2.12 - 0.5, FZ + 0.12); scene.add(p); out.noren.push(p);
     }
     // まねき（演目名の木の札を、入口の上に横一列）
-    const boardTex = (title, yomi) => canvasTex(160, 640, (g, w, h) => {
+    const boardTex = (title, mins) => canvasTex(160, 640, (g, w, h) => {
       g.fillStyle = '#d8c4a0'; g.fillRect(0, 0, w, h);
       g.globalAlpha = 0.25; for (let y = 0; y < h; y += 2) { g.fillStyle = rnd(y + 3) > 0.5 ? '#8a6a40' : '#efe2c8'; g.fillRect(0, y, w, 1 + rnd(y) * 2); } g.globalAlpha = 1;
       g.fillStyle = '#121010'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      const cs = [...title], fs = Math.min(118, (h - 60) / cs.length * 0.95); g.font = `400 ${fs}px PottaOne, serif`;
-      const y0 = h / 2 - (cs.length - 1) * fs * 0.95 / 2; cs.forEach((c, i) => g.fillText(c, w / 2, y0 + i * fs * 0.95));
+      const cs = [...title], fs = Math.min(112, (h - 120) / cs.length * 0.95); g.font = `400 ${fs}px PottaOne, serif`;
+      const y0 = h / 2 - 22 - (cs.length - 1) * fs * 0.95 / 2;
+      if (mins) { g.save(); g.fillStyle = '#7a1e1e'; g.font = '400 34px PottaOne, serif'; g.fillText(`約${mins}分`, w / 2, h - 42); g.restore(); }   /* 2026-11-19：一席の長さ */ cs.forEach((c, i) => g.fillText(c, w / 2, y0 + i * fs * 0.95));
       g.strokeStyle = '#3a2416'; g.lineWidth = 6; g.strokeRect(3, 3, w - 6, h - 6);
     });
     const bw = 0.42, gap = 0.12, total = ENM.length * bw + (ENM.length - 1) * gap;
     ENM.forEach((e, i) => {
-      const m = new THREE.MeshStandardMaterial({ map: boardTex(e.t), roughness: 0.75, emissive: 0xffffff, emissiveIntensity: 0.0 });
+      const m = new THREE.MeshStandardMaterial({ map: boardTex(e.t, Math.round(e.d / 60)), roughness: 0.75, emissive: 0xffffff, emissiveIntensity: 0.0 });
       m.emissiveMap = m.map;
       const b = new THREE.Mesh(new THREE.BoxGeometry(bw, 1.6, 0.05), [darkWood, darkWood, darkWood, darkWood, m, darkWood]);
       b.position.set(-total / 2 + bw / 2 + i * (bw + gap), HALL_Y + 3.65, FZ + 0.2); b.rotation.x = -0.08; b.userData.slug = e.slug; b.userData.mat = m; scene.add(b); out.boards.push(b);
