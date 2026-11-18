@@ -151,6 +151,13 @@
     .hud .ml-btn{padding:0 9px;font-size:.74rem}
   }
   @media (prefers-reduced-motion: reduce){ .sheet,.drawer,.card{transition:none} }
+  /* 2026-11-19：演目・席・終わりの選びは 3D の札と行灯で。2D の並びは読み上げ用に残す */
+  #sKido,#sSeat,#sEnd{position:fixed!important;left:0;top:0;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;padding:0!important;opacity:1!important;transform:none!important}
+  #hint{position:fixed;left:0;right:0;bottom:calc(22px + var(--sb,0px));z-index:4;text-align:center;pointer-events:none;padding:0 var(--g,16px);color:#fff6e4;font-family:var(--ml-serif,serif);font-size:clamp(.95rem,2.6vw,1.15rem);letter-spacing:.12em;line-height:1.7;text-shadow:0 1px 3px #000,0 0 14px #000,0 0 28px rgba(0,0,0,.8);transition:opacity .4s}
+  #hint small{display:block;font-size:.78em;letter-spacing:.08em;color:#e9dcc2}
+  #hint:empty{opacity:0}
+  body.quiet #hint{bottom:calc(84px + var(--sb,0px))}
+  #stage.pick canvas{cursor:pointer}
 </style>
 <link rel="stylesheet" href="ui.css?v=20261103">
 <style>.bar.mu-top{z-index:5}/* 引き出し・重ね窓より下に（閉じるが隠れないように） */</style>
@@ -162,11 +169,12 @@
 <div id="subband"></div>
 <div id="sub"><span class="box"></span></div>
 <div id="title"></div><div id="credit"></div>
+<div id="hint" aria-live="polite"></div>
 
 <header class="bar mu-top">
   <a class="mark mu-logo" href="https://mitsulab.jp" aria-label="mitsulab のサイトへ"><b>Qualia/rakugo</b><small>mitsulab</small></a>
   <div class="r mu-top-r">
-    <button class="ml-btn" id="bProg" type="button" aria-label="番組をひらく" hidden><span aria-hidden="true">≡</span><span class="lbl">番組</span></button>
+    <button class="ml-btn" id="bProg" type="button" aria-label="木戸へもどって演目を替える" hidden><span aria-hidden="true">≡</span><span class="lbl">木戸へ</span></button>
     <button class="ml-btn" id="bInfo" type="button" aria-label="この噺と寄席のこと"><span aria-hidden="true">i</span><span class="lbl">この噺と寄席のこと</span></button>
   </div>
 </header>
@@ -270,6 +278,11 @@
 <script type="module">
 import { ENM, QL } from './enmoku.js';
 const $ = s => document.querySelector(s);
+// 2026-11-19 本人「rakugo と yose が同じようなので統合して」：旧 Qualia/yose の「あわせて訪ねる館の部屋」を高座の下手の行灯に
+const MUSEUM = 'https://mitsulab-soil.github.io/museum/';
+const ROOM = { hachi: ['やさい百景', '花と受粉', 'yasai'], mimizu: ['つち百景', '土の中', 'tsuchi'], ga: ['かぜ百景', '夜風に乗る匂い', 'kaze'], kumo: ['あめ百景', '雨粒と獲物の揺れを糸で聞く', 'ame'], inu: ['かぜ百景', '地面と風の匂い', 'kaze'], keyaki: ['つち百景', '土から来ない目方', 'tsuchi'], shashin: ['たいよう百景', '光で写す', 'taiyo'], hoshi: ['つき百景', '月の光も約 1.3 秒前', 'tsuki'] };
+const hint = (a, b) => { $('#hint').innerHTML = a ? a + (b ? `<small>${b}</small>` : '') : ''; };
+const toKan = () => { const r = ROOM[cur]; if (r) window.open(MUSEUM + '?room=' + r[2], '_blank', 'noopener'); };
 const q = new URLSearchParams(location.search);
 if (q.get('lang') === 'en') location.replace('douga.html' + location.search + location.hash);   // 英語は映像版のまま
 const mmss = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
@@ -326,6 +339,7 @@ function fillList() {
   document.querySelectorAll('.card').forEach(c => c.setAttribute('aria-current', String(c.dataset.slug === cur)));
 }
 function info(w) {
+  const r = ROOM[w.slug]; if (r && window.__HL?.andon) window.__HL.andon.set(r[0], r[1]);
   $('#dT').textContent = `${w.t}（${w.r}）`; $('#dLead').textContent = w.lead; $('#dInvite').textContent = w.invite; $('#dFic').textContent = w.fic;
   $('#dSrc').innerHTML = w.src.map(([a, b]) => `<li>${a}<small>${b}</small></li>`).join(''); $('#dWarn').textContent = w.warn || '';
   $('#dLayer').textContent = QL[w.slug].label + '。噺のじゃまにならないよう、本題のあいだだけ淡く出します。';
@@ -343,12 +357,13 @@ function choose(slug) {
   chosenRes(slug);
 }
 $('#list').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) { if (!cur) choose(c.dataset.slug); else choose(c.dataset.slug); } });
-document.querySelectorAll('[data-seat]').forEach(b => b.addEventListener('click', () => {
-  unlock(); sheet('#sSeat', false); window.__CAM.sit(b.dataset.seat, performance.now() / 1000);
-}));
+const showTags = on => { for (const t of (window.__HL?.seatTags || [])) if (t.geometry.type === 'PlaneGeometry') t.visible = on; };
+function sitAt(k) { sheet('#sSeat', false); showTags(false); if (window.__HL?.andon) window.__HL.andon.group.visible = true; hint(''); window.__CAM.sit(k, performance.now() / 1000); }
+document.querySelectorAll('[data-seat]').forEach(b => b.addEventListener('click', () => { unlock(); sitAt(b.dataset.seat); }));
 function maybeStart() {
   if (!seated || playing || ended) return;
   if (!aoiReady) { $('#wait').hidden = false; return; }
+  hint('');
   $('#wait').hidden = true; playing = true; $('#hud').hidden = false; $('#bProg').hidden = false;
   if (murmur) murmur.stop();
   audio.muted = false; audio.currentTime = 0; const p = audio.play(); if (p && p.catch) p.catch(() => { playing = false; $('#bPlay').textContent = '▶'; });
@@ -361,18 +376,27 @@ window.__UI = {
   audio, chosen,
   hallReady(HL) {
     $('#loading').hidden = true; window.__tReady = performance.now(); window.MLLoader?.done();   // 2026-11-03：寄席の準備ができたら閉じる（最長 5 秒）
-    // まねき（木戸の上の札）を押しても演目を選べる
-    const ray = new (window.__THREE.Raycaster)(), v = new (window.__THREE.Vector2)();
-    document.getElementById('stage').addEventListener('click', e => {
-      if (cur) return; v.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(v, window.__camera);
-      const h = ray.intersectObjects(HL.boards, false)[0]; if (h) choose(h.object.userData.slug);
+    // 2026-11-19：選ぶのはすべて 3D の物＝木戸のまねき（演目）・通路の木札（席）・高座の下手の行灯（館へ）・終わりのめくり（次の一席）
+    const ray = new (window.__THREE.Raycaster)(), v = new (window.__THREE.Vector2)(), stEl = document.getElementById('stage');
+    HL.mekuriHit = (() => { const T = window.__THREE, m = new T.Mesh(new T.BoxGeometry(0.9, 1.3, 0.4), new T.MeshBasicMaterial({ visible: false })); m.position.set(0, 0.5, 0); HL.mekuri.group.add(m); return m; })();
+    const targets = () => { const P = window.__CAM.phaseName(); if (!cur && P === 'kido') return HL.boardHits; if (P === 'aisle' && !seated) return HL.seatTags; const t = HL.andon.group.visible ? [HL.andon.hit] : []; if (ended) t.push(HL.mekuriHit); return t; };
+    const pick = e => { v.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(v, window.__camera); return ray.intersectObjects(targets(), false)[0]; };
+    let down = null, lit = null;
+    const glow = m => { if (lit === m) return; if (lit) lit.emissiveIntensity = lit.userData.e0; lit = m || null; if (lit) { if (lit.userData.e0 === undefined) lit.userData.e0 = lit.emissiveIntensity; lit.emissiveIntensity = lit.userData.e0 + 0.35; } stEl.classList.toggle('pick', !!lit); };
+    stEl.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; if (e.pointerType !== 'mouse') { const h = pick(e); if (h) glow(h.object.userData.mat); } }, true);
+    stEl.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' && !e.buttons) { const h = pick(e); glow(h ? h.object.userData.mat : null); } });
+    stEl.addEventListener('click', e => {
+      if (down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 10) return;   // なぞって見回したときは選ばない
+      const h = pick(e); if (!h) return; const u = h.object.userData; glow(null);
+      if (u.slug) choose(u.slug); else if (u.seat) { unlock(); sitAt(u.seat); } else if (u.andon) toKan(); else if (u.next) location.href = `?e=${u.next}`;
     });
+    window.__pick3d = (x, y) => { const h = pick({ clientX: x, clientY: y }); return h ? Object.keys(h.object.userData).join(',') : ''; };   // 確かめ用
     const e0 = q.get('e') || location.hash.replace('#', '');   // 前の版の #slug のリンクも効く
     if (e0 && ENM.some(x => x.slug === e0)) { cur = e0; const w = ENM.find(x => x.slug === e0); fillList(); info(w); audio.src = `yose/enmoku/${e0}/voice.m4a`; audio.load();
-      $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); if (!AUTO_SEAT) sheet('#sSeat', true); else { AUTO_SEAT = false; setTimeout(() => document.querySelector('[data-seat="naka"]')?.click(), 60); } }
-    else { fillList(); sheet('#sKido', true); }
+      $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); if (!AUTO_SEAT) window.__UI.atAisle(); else { AUTO_SEAT = false; setTimeout(() => document.querySelector('[data-seat="naka"]')?.click(), 60); } }
+    else { fillList(); sheet('#sKido', true); hint('まねきの札を押すと、その一席へ', '一席およそ 5 分・音が出ます'); }
   },
-  atAisle() { sheet('#sSeat', true); },
+  atAisle() { sheet('#sSeat', true); showTags(true); hint('木札の下がった席を押して、座る', '前・中・桟敷'); },
   seated() { seated = true; maybeStart(); },
   aoiReady(TL) { aoiReady = true; TLc = TL; maybeStart(); },
   onStart(f) { startFns.push(f); },
@@ -390,11 +414,13 @@ function endPanel() {
   const i = ENM.findIndex(x => x.slug === cur), w = ENM[i], nx = ENM[(i + 1) % ENM.length];
   $('#endT').textContent = `${w.t}　おしまい`; $('#endInvite').textContent = w.invite;
   $('#bNext').textContent = `次の一席　${nx.t}`; $('#bNext').onclick = () => location.href = `?e=${nx.slug}`;
-  document.body.classList.remove('quiet'); sheet('#sEnd', true);
+  document.body.classList.remove('quiet'); sheet('#sEnd', true); window.__ended = true; window.__CAM.setMode('seki');   // 引いて、めくりと行灯が見えるように
+  window.__HL.mekuri.set(nx.t, '次の一席'); if (window.__HL.mekuriHit) window.__HL.mekuriHit.userData.next = nx.slug;
+  const r = ROOM[cur]; hint(`右のめくりを押すと、次の一席「${nx.t}」`, r ? `行灯を押すと、館の${r[0]}へ` : '');
 }
-$('#bAgain').onclick = () => { sheet('#sEnd', false); ended = false; clapped = false; playing = false; audio.currentTime = 0; maybeStart(); };
+$('#bAgain').onclick = () => { sheet('#sEnd', false); hint(''); window.__ended = false; ended = false; clapped = false; playing = false; audio.currentTime = 0; maybeStart(); };
 const openProg = () => { sheet('#sEnd', false); sheet('#sSeat', false); sheet('#sKido', true); $('#sKido h1').textContent = '番組'; $('#sKido p').textContent = 'めくりをえらぶと、その一席へ替わります。'; };
-$('#bProg').onclick = () => { if ($('#sKido').classList.contains('off')) openProg(); else sheet('#sKido', false); };
+$('#bProg').onclick = () => { location.href = location.pathname + (document.documentElement.classList.contains('embed') ? '?embed=1' : ''); };   // 木戸へもどり、まねきで選び直す
 $('#bProg2').onclick = openProg;
 $('#bSrc').onclick = () => { $('#drawer').classList.add('on'); };
 $('#bInfo').onclick = () => $('#drawer').classList.toggle('on');
@@ -405,7 +431,7 @@ document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
   document.querySelectorAll('[data-pane]').forEach(p => p.hidden = p.dataset.pane !== b.dataset.tab);
 });
-$('#bPlay').onclick = () => { if (audio.paused) { audio.play(); $('#bPlay').textContent = '❚❚'; $('#bPlay').setAttribute('aria-label', '一時停止'); } else { audio.pause(); $('#bPlay').textContent = '▶'; $('#bPlay').setAttribute('aria-label', '再生'); } };
+$('#bPlay').onclick = () => { if (ended) { $('#bAgain').click(); return; } if (audio.paused) { audio.play(); $('#bPlay').textContent = '❚❚'; $('#bPlay').setAttribute('aria-label', '一時停止'); } else { audio.pause(); $('#bPlay').textContent = '▶'; $('#bPlay').setAttribute('aria-label', '再生'); } };
 $('#bSub').onclick = e => { const on = document.body.classList.toggle('nosub'); e.currentTarget.setAttribute('aria-pressed', String(!on)); };
 $('#bLayer').onclick = e => { qualiaOn = !qualiaOn; e.currentTarget.setAttribute('aria-pressed', String(qualiaOn)); };
 $('#bView').onclick = e => { const b = e.currentTarget, yoru = b.textContent === '寄って観る'; b.textContent = yoru ? '席から観る' : '寄って観る'; window.__CAM.setMode(yoru ? 'seki' : 'yoru'); };

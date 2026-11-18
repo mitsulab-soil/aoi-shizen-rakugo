@@ -1940,13 +1940,16 @@ window.__ready = true; UI.aoiReady(TL);
 // 客席の目（木戸 → 通路 → 席。席では、噺の画の種類に合わせて、ゆっくり寄ったり引いたりする。指で見回し・つまんで寄れる）
 // ============================================================================================
 function createCamera() {
+  // 入場と着席は短く。OS の減動設定では次の描画で移り、待ちと視点の揺れをなくす。
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const WALK_SECONDS = 0.8, SIT_SECONDS = 0.5;
   const V3 = (x, y, z) => new THREE.Vector3(x, y, z); const _cv = new THREE.Vector3(); const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
   const Y = HL.HALL_Y, FZ = HL.FZ;
   const st = { phase: 'kido', t0: 0, yaw: 0, pitch: 0, zoom: 1, input: -1e9, mode: 'yoru', seat: null, from: null,
     pos: HL.kidoCam.pos.clone(), look: HL.kidoCam.look.clone(), h: 1.3, fov: 50, lastNow: 0, seatName: null };
   const walk = new THREE.CatmullRomCurve3([HL.kidoCam.pos.clone(), V3(0, Y + 1.58, FZ + 2.4), V3(0, Y + 1.58, FZ + 0.5), V3(0, Y + 1.58, FZ - 1.0), HL.aisle.clone()]);
   const STAGE = V3(0, 1.0, 0);
-  const curLook = st.look.clone(); let curH = 1.3;
+  const curLook = st.look.clone(); let curH = 1.3; const ended3d = () => !!window.__ended; const _kidoLook = new THREE.Vector3();
   const el = renderer.domElement; el.style.touchAction = 'none';
   const ptrs = new Map(); let pinch0 = 0, zoom0 = 1;
   el.addEventListener('pointerdown', e => { ptrs.set(e.pointerId, [e.clientX, e.clientY]); el.setPointerCapture(e.pointerId); st.input = performance.now() / 1000;
@@ -1968,29 +1971,29 @@ function createCamera() {
     update(now, att) {
       const dt = Math.max(0, Math.min(0.1, now - (st.lastNow || now))); st.lastNow = now;
       let look, h = 1.3, tau = 0.9;
-      if (st.phase === 'kido') { st.pos.copy(HL.kidoCam.pos).add(_cv.set(Math.sin(now * 0.21) * 0.05, Math.sin(now * 0.33) * 0.02, 0)); look = HL.kidoCam.look; h = 1.6; }
+      if (st.phase === 'kido') { st.pos.copy(HL.kidoCam.pos).add(_cv.set(reducedMotion.matches ? 0 : Math.sin(now * 0.21) * 0.05, reducedMotion.matches ? 0 : Math.sin(now * 0.33) * 0.02, 0)); look = _kidoLook.set(0, Y + (camera.aspect < 0.8 ? 2.55 : 3.15), FZ); h = camera.aspect < 0.8 ? 3.05 : 2.0; }   // 2026-11-19：まねきの 8 枚が縦長の画面でも全部入る（札を押して選ぶ）
       else if (st.phase === 'walk') {
-        const u = Math.min(1, (now - st.t0) / 5.2), e = u * u * (3 - 2 * u);
-        st.pos.copy(walk.getPointAt(e)); st.pos.y += 0.012 * Math.sin(u * 5.2 * 2 * Math.PI * 0.9) * Math.sin(Math.PI * u);
+        const u = reducedMotion.matches ? 1 : Math.min(1, (now - st.t0) / WALK_SECONDS), e = u * u * (3 - 2 * u);
+        st.pos.copy(walk.getPointAt(e)); st.pos.y += (reducedMotion.matches ? 0 : 0.012) * Math.sin(u * WALK_SECONDS * 2 * Math.PI * 0.9) * Math.sin(Math.PI * u);
         const ahead = walk.getPointAt(Math.min(1, e + 0.12)).clone(); ahead.y = st.pos.y - 0.1;
         look = ahead.lerp(STAGE, ease((u - 0.35) / 0.5)); h = 1.5; tau = 0.35;
         if (u >= 1) { st.phase = 'aisle'; UI.atAisle(); }
-      } else if (st.phase === 'aisle') { st.pos.copy(HL.aisle); look = STAGE; h = 1.7; }
+      } else if (st.phase === 'aisle') { st.pos.copy(HL.aisle); look = STAGE; h = camera.aspect < 0.8 ? 2.9 : 1.7; }   // 2026-11-19：縦長でも三つの席の札が入る広さ
       else if (st.phase === 'sit' || st.phase === 'seat') {
         if (st.phase === 'sit') {
-          const u = Math.min(1, (now - st.t0) / 2.6), e = u * u * (3 - 2 * u);
+          const u = reducedMotion.matches ? 1 : Math.min(1, (now - st.t0) / SIT_SECONDS), e = u * u * (3 - 2 * u);
           const mid = V3(st.seat.x * 0.75 + st.from.x * 0.25, st.from.y, st.seat.z + 0.5);
           const a = st.from.clone().lerp(mid, Math.min(1, e * 1.6)), b = mid.clone().lerp(st.seat, ease((e - 0.45) / 0.55));
           st.pos.copy(e < 0.45 ? a : b);
           if (u >= 1) { st.phase = 'seat'; UI.seated(st.seatName); }
-        } else st.pos.copy(st.seat).add(_cv.set(0, 0.004 * Math.sin(now * 1.1), 0));
+        } else st.pos.copy(st.seat).add(_cv.set(0, reducedMotion.matches ? 0 : 0.004 * Math.sin(now * 1.1), 0));
         look = att ? att.p : STAGE; h = att ? att.h : 1.2;
-        if (st.mode === 'seki') { look = _cv.set(0.3, 1.0, 0.2).clone(); h = 1.15; }
+        if (st.mode === 'seki') { look = ended3d() ? _cv.set(camera.aspect < 0.8 ? 1.3 : 0.9, 0.85, 0.6).clone() : _cv.set(0.35, 1.0, 0.2).clone(); h = ended3d() ? (camera.aspect < 0.8 ? 1.9 : 1.3) : (camera.aspect < 0.8 ? 2.2 : 1.15); }   // 終わりはめくりと行灯へ目を向ける   // 2026-11-19：縦長でもめくりと行灯が入る
         tau = 1.1;
       }
       // しばらく触らなければ、見回しと寄りを元へ戻す
       if (now - st.input > 7) { const k = 1 - Math.exp(-dt / 1.6); st.yaw *= 1 - k; st.pitch *= 1 - k; st.zoom += (1 - st.zoom) * k; }
-      const k = 1 - Math.exp(-dt / tau);
+      const k = reducedMotion.matches ? 1 : 1 - Math.exp(-dt / tau);
       curLook.lerp(look, st.phase === 'walk' ? 1 : k); curH += (h - curH) * k;
       const dir = curLook.clone().sub(st.pos); const dist = dir.length(); dir.normalize();
       dir.applyAxisAngle(V3(0, 1, 0), st.yaw);
