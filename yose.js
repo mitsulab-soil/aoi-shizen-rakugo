@@ -1988,7 +1988,7 @@ function createCamera() {
           if (u >= 1) { st.phase = 'seat'; UI.seated(st.seatName); }
         } else st.pos.copy(st.seat).add(_cv.set(0, reducedMotion.matches ? 0 : 0.004 * Math.sin(now * 1.1), 0));
         look = att ? att.p : STAGE; h = att ? att.h : 1.2;
-        if (st.mode === 'seki') { look = ended3d() ? _cv.set(camera.aspect < 0.8 ? 1.3 : 0.9, 0.85, 0.6).clone() : _cv.set(0.35, 1.0, 0.2).clone(); h = ended3d() ? (camera.aspect < 0.8 ? 1.9 : 1.3) : (camera.aspect < 0.8 ? 2.2 : 1.15); }   // 終わりはめくりと行灯へ目を向ける   // 2026-11-19：縦長でもめくりと行灯が入る
+        if (st.mode === 'seki') { look = ended3d() ? _cv.set(camera.aspect < 0.8 ? 0.75 : 0.9, 0.85, 0.6).clone() : _cv.set(0.35, 1.0, 0.2).clone(); h = ended3d() ? (camera.aspect < 0.8 ? 1.75 : 1.3) : (camera.aspect < 0.8 ? 1.8 : 1.15); }   /* 2026-11-20：縦長で碧を大きく・終わりに碧が切れない */   // 終わりはめくりと行灯へ目を向ける   // 2026-11-19：縦長でもめくりと行灯が入る
         tau = 1.1;
       }
       // しばらく触らなければ、見回しと寄りを元へ戻す

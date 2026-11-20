@@ -156,6 +156,8 @@
   #hint{position:fixed;left:0;right:0;bottom:calc(22px + var(--sb,0px));z-index:4;text-align:center;pointer-events:none;padding:0 var(--g,16px);color:#fff6e4;font-family:var(--ml-serif,serif);font-size:clamp(.95rem,2.6vw,1.15rem);letter-spacing:.12em;line-height:1.7;text-shadow:0 1px 3px #000,0 0 14px #000,0 0 28px rgba(0,0,0,.8);transition:opacity .4s}
   #hint small{display:block;font-size:.78em;letter-spacing:.08em;color:#e9dcc2}
   #hint:empty{opacity:0}
+  #hint .inv{display:block;max-width:34em;margin:0 auto .7em;font-size:.9em;letter-spacing:.06em;line-height:1.85}
+  #hint .inv b{display:block;font-size:.78em;font-weight:600;letter-spacing:.32em;color:#f0cf8e;margin-bottom:.3em}
   body.quiet #hint{bottom:calc(84px + var(--sb,0px))}
   #stage.pick canvas{cursor:pointer}
 </style>
@@ -394,7 +396,7 @@ window.__UI = {
     const e0 = q.get('e') || location.hash.replace('#', '');   // 前の版の #slug のリンクも効く
     if (e0 && ENM.some(x => x.slug === e0)) { cur = e0; const w = ENM.find(x => x.slug === e0); fillList(); info(w); audio.src = `yose/enmoku/${e0}/voice.m4a`; audio.load();
       $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); if (!AUTO_SEAT) window.__UI.atAisle(); else { AUTO_SEAT = false; setTimeout(() => document.querySelector('[data-seat="naka"]')?.click(), 60); } }
-    else { fillList(); sheet('#sKido', true); hint('まねきの札を押すと、その一席へ', '音が出ます'); }
+    else { fillList(); sheet('#sKido', true); hint('まねきの札を押すと、その一席へ', '生き物や機械の受けとり方を噺にした八席・音が出ます'); }
   },
   atAisle() { sheet('#sSeat', true); showTags(true); hint('木札の下がった席を押して、座る', '前・中・桟敷'); },
   seated() { seated = true; maybeStart(); },
@@ -416,7 +418,7 @@ function endPanel() {
   $('#bNext').textContent = `次の一席　${nx.t}`; $('#bNext').onclick = () => location.href = `?e=${nx.slug}`;
   document.body.classList.remove('quiet'); sheet('#sEnd', true); window.__ended = true; window.__CAM.setMode('seki');   // 引いて、めくりと行灯が見えるように
   window.__HL.mekuri.set(nx.t, '次の一席'); if (window.__HL.mekuriHit) window.__HL.mekuriHit.userData.next = nx.slug;
-  const r = ROOM[cur]; hint('めくりを押すと、次の一席', `「${nx.t}」${r ? `・行灯で館の${r[0]}へ` : ''}`);
+  const r = ROOM[cur]; hint(`<span class="inv"><b>きょうのさそい</b>${w.invite}</span>`, `めくりを押すと、次の一席「${nx.t}」${r ? `・行灯で館の${r[0]}へ` : ''}`);   // 2026-11-20：終わりは、まず外の景色へのさそいを読ませる
 }
 $('#bAgain').onclick = () => { sheet('#sEnd', false); hint(''); window.__ended = false; ended = false; clapped = false; playing = false; audio.currentTime = 0; maybeStart(); };
 const openProg = () => { sheet('#sEnd', false); sheet('#sSeat', false); sheet('#sKido', true); $('#sKido h1').textContent = '番組'; $('#sKido p').textContent = 'めくりをえらぶと、その一席へ替わります。'; };
