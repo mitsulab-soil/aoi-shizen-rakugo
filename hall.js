@@ -34,6 +34,32 @@ export async function buildHall(ctx) {
   out.HALL_Y = HALL_Y; out.BACK_Z = BACK_Z;
   const lacq = new THREE.MeshStandardMaterial({ color: 0x140c08, roughness: 0.32 });
   const darkWood = new THREE.MeshStandardMaterial({ color: 0x2a1a10, roughness: 0.55 });
+  // 2026-11-21 本人「演目の紙もかっこよく」：めくり・まねき・行灯の字＝Yuji Boku（OFL・太い筆の字。既存の寄席文字の意匠は写さず、
+  // 太らせて詰めた縦組みと墨のにじみで寄席の札らしく）。紙は楮の繊維とむらを描いた和紙
+  const YF = 'YujiBoku';
+  try { const ff = new FontFace(YF, `url(${BASE}fonts/yuji-boku.woff2)`); document.fonts.add(await ff.load()); } catch (e) { /* 読めなければ PottaOne */ }
+  const washi = (g, w, h, s0, base = '#f0e7d2') => {
+    g.fillStyle = base; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 36; i++) { const x = rnd(s0 + i) * w, y = rnd(s0 + i + 50) * h, r = (0.12 + rnd(s0 + i + 99) * 0.3) * w, a = 0.03 + 0.05 * rnd(s0 + i + 7);
+      const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, rnd(s0 + i + 3) > 0.5 ? `rgba(150,118,76,${a})` : `rgba(255,252,242,${a * 1.5})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r); }
+    g.lineCap = 'round';
+    const N = Math.round(w * h / 240);
+    for (let i = 0; i < N; i++) { const x = rnd(s0 + i * 3 + 1) * w, y = rnd(s0 + i * 3 + 2) * h, L = 6 + rnd(s0 + i * 3 + 3) ** 2 * 46, a = rnd(s0 + i * 7) * 6.28, c = (rnd(s0 + i * 5) - 0.5) * 0.9;
+      g.strokeStyle = rnd(s0 + i * 11) > 0.3 ? 'rgba(255,253,246,0.38)' : 'rgba(118,94,60,0.11)'; g.lineWidth = 0.5 + rnd(s0 + i * 13) * 0.9;
+      g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a + c) * L * 0.5, y + Math.sin(a + c) * L * 0.5, x + Math.cos(a) * L, y + Math.sin(a) * L); g.stroke(); }
+    const v = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.3, w / 2, h / 2, Math.max(w, h) * 0.72); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(112,80,40,0.24)'); g.fillStyle = v; g.fillRect(0, 0, w, h);
+  };
+  // 縦組みの太い筆の字（太らせ＝同じ色の縁取り・墨のにじみ＝わずかな影・少し横に張って詰める）
+  const yoseText = (g, text, cx, y0, y1, maxFs, color = '#0e0b09', maxW = 1e9) => {
+    const cs = [...text], n = cs.length, fs = Math.min(maxFs, (y1 - y0) / (n * 0.9 + 0.12), maxW / 1.14), step = fs * 0.9, yc = (y0 + y1) / 2 - (n - 1) * step / 2;
+    g.save(); g.font = `400 ${fs}px ${YF}, PottaOne, serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillStyle = color; g.strokeStyle = color; g.lineJoin = 'round'; g.lineWidth = fs * 0.06;
+    cs.forEach((ch, i) => { g.save(); g.translate(cx, yc + i * step); g.scale(1.14, 1);
+      if (ch === '欅') g.font = `400 ${fs * 0.94}px PottaOne, serif`;   /* 筆の字形では「樗」に見えるため、この字だけ読みやすい書体に */
+      g.shadowColor = 'rgba(24,16,10,0.6)'; g.shadowBlur = fs * 0.035; g.strokeText(ch, 0, 0); g.shadowBlur = 0; g.fillText(ch, 0, 0); g.restore(); });
+    g.restore(); return fs;
+  };
+  const yoseLine = (g, text, cx, cy, fs, color) => { g.save(); g.font = `400 ${fs}px ${YF}, PottaOne, serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = color; g.strokeStyle = color; g.lineWidth = fs * 0.05; g.lineJoin = 'round'; g.strokeText(text, cx, cy); g.fillText(text, cx, cy); g.restore(); };
 
   // ---- 環境光（部屋の反射だけ。暗い寄席なので弱く）
   {
@@ -43,6 +69,9 @@ export async function buildHall(ctx) {
     scene.environmentIntensity = 0.2;
   }
   scene.background = new THREE.Color(0x05060a);
+  // 2026-11-21：画の四隅を夜の暗さに沈める（灯の届く高座が浮かぶように。押す操作はさえぎらない）
+  { const st = document.getElementById('stage'); if (st && !st.querySelector('.yose-vig')) { const v = document.createElement('div'); v.className = 'yose-vig';
+      v.style.cssText = 'position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 70% at 50% 52%,rgba(0,0,0,0) 55%,rgba(4,3,2,.5) 100%)'; st.appendChild(v); } }
   scene.fog = new THREE.Fog(0x07080c, 10, 26);
 
   // ==== 舞台と高座 ===========================================================================
@@ -55,6 +84,16 @@ export async function buildHall(ctx) {
     const k = new THREE.Mesh(new THREE.BoxGeometry(2.0, KOZA_Y, 1.6), [side, side, top, side, side, side]);
     k.position.set(0, KOZA_Y / 2, -0.05); k.receiveShadow = true; k.castShadow = true; scene.add(k);
     box(2.04, 0.05, 0.06, new THREE.MeshStandardMaterial({ color: 0x24170e, roughness: 0.35 }), 0, KOZA_Y - 0.025, 0.76);
+    // 2026-11-21：高座に緋毛氈（毛羽の粒と光沢の弱いフェルト。前の縁へ少し垂らす）
+    const mosen = canvasTex(512, 512, (g, w, h) => {
+      g.fillStyle = '#7c1a15'; g.fillRect(0, 0, w, h);
+      for (let i = 0; i < 30000; i++) { g.fillStyle = rnd(i + 1200) > 0.5 ? `rgba(236,96,70,${0.05 + 0.09 * rnd(i + 1300)})` : `rgba(36,2,2,${0.07 + 0.12 * rnd(i + 1400)})`; g.fillRect(rnd(i + 1500) * w, rnd(i + 1600) * h, 1.4, 1.4); }
+    });
+    mosen.wrapS = mosen.wrapT = THREE.RepeatWrapping; mosen.repeat.set(2.5, 2);
+    const mm = new THREE.MeshPhysicalMaterial({ map: mosen, roughness: 0.95, sheen: 0.45, sheenColor: new THREE.Color(0xd8604a), sheenRoughness: 0.7 });
+    const mt = new THREE.Mesh(new THREE.PlaneGeometry(2.03, 1.62), mm); mt.rotation.x = -Math.PI / 2; mt.position.set(0, KOZA_Y + 0.003, -0.05); mt.receiveShadow = true; scene.add(mt);
+    const md = new THREE.Mesh(new THREE.PlaneGeometry(2.03, 0.075), mm); md.position.set(0, KOZA_Y - 0.035, 0.792); md.receiveShadow = true; scene.add(md);
+    const mr = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 2.03, 8, 1, false, 0, Math.PI / 2), mm); mr.rotation.z = Math.PI / 2; mr.position.set(0, KOZA_Y - 0.005, 0.784); scene.add(mr);
     // 高座の前に掛けた紫の布（台の前の面を隠す・寄席の高座の前幕に見立てたもの）
     const cloth = canvasTex(512, 128, (g, w, h) => {
       const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#3b2238'); gr.addColorStop(1, '#22121f'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
@@ -89,13 +128,27 @@ export async function buildHall(ctx) {
   }
   // ---- 高座の後ろ：襖（鳥の子に金の砂子）と欄間、奥の杉の板壁・袖の幕
   {
+    // 2026-11-21 本人「もっと雰囲気のある場所で」：高座の後ろを古びた金屏風に（箔一枚ずつの色むら・箔足の線・くもり）
     const fusuma = canvasTex(512, 1024, (g, w, h) => {
-      g.fillStyle = '#b9ae95'; g.fillRect(0, 0, w, h);
-      for (let i = 0; i < 9000; i++) { const y = rnd(i + 3) ** 1.7 * h * 0.5, x = rnd(i + 7) * w; g.fillStyle = `rgba(186,146,62,${0.10 + 0.25 * rnd(i + 11)})`; g.fillRect(x, y, 1.6, 1.6); }
-      for (let i = 0; i < 3000; i++) { const y = h - rnd(i + 13) ** 2 * h * 0.3, x = rnd(i + 17) * w; g.fillStyle = `rgba(186,146,62,${0.1 + 0.2 * rnd(i + 19)})`; g.fillRect(x, y, 1.4, 1.4); }
-      g.globalAlpha = 0.05; for (let y = 0; y < h; y += 2) { g.fillStyle = rnd(y) > 0.5 ? '#000' : '#fff'; g.fillRect(0, y, w, 1); } g.globalAlpha = 1;
+      const S = 60;
+      for (let y = 0; y < h; y += S) for (let x = 0; x < w; x += S) { const k = rnd(x * 7.1 + y * 13.3 + 5), k2 = rnd(x * 3.3 + y * 5.7 + 9);
+        g.fillStyle = `rgb(${(164 + k * 16 - k2 * 6) | 0},${(124 + k * 13 - k2 * 7) | 0},${(50 + k * 8) | 0})`; g.fillRect(x, y, S, S); }
+      for (let i = 0; i < 14000; i++) { g.fillStyle = rnd(i + 21) > 0.5 ? `rgba(255,226,150,${0.06 * rnd(i + 23)})` : `rgba(70,46,14,${0.08 * rnd(i + 25)})`; g.fillRect(rnd(i + 27) * w, rnd(i + 29) * h, 1.5, 1.5); }
+      g.strokeStyle = 'rgba(96,64,22,0.28)'; g.lineWidth = 1.1;
+      for (let y = 0; y <= h; y += S) { g.beginPath(); g.moveTo(0, y + 0.5); g.lineTo(w, y + 0.5); g.stroke(); }
+      for (let x = 0; x <= w; x += S) { g.beginPath(); g.moveTo(x + 0.5, 0); g.lineTo(x + 0.5, h); g.stroke(); }
+      for (let i = 0; i < 26; i++) { const x = rnd(i + 41) * w, y = rnd(i + 43) * h, r = 40 + rnd(i + 45) * 160; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(58,36,12,${0.10 + 0.12 * rnd(i + 47)})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r); }
+      const b = g.createLinearGradient(0, h * 0.7, 0, h); b.addColorStop(0, 'rgba(40,24,8,0)'); b.addColorStop(1, 'rgba(40,24,8,0.35)'); g.fillStyle = b; g.fillRect(0, 0, w, h);
     });
-    const fm = new THREE.MeshStandardMaterial({ map: fusuma, roughness: 0.85 });
+    const fm = new THREE.MeshStandardMaterial({ map: fusuma, roughness: 0.5, metalness: 0.35, envMapIntensity: 1.2 });
+    // 袖の障子（向こうの灯が透ける）
+    const shoji = canvasTex(256, 512, (g, w, h) => {
+      const gr = g.createRadialGradient(w * 0.5, h * 0.62, 10, w * 0.5, h * 0.62, h * 0.75); gr.addColorStop(0, '#ffdca4'); gr.addColorStop(0.6, '#c98f4c'); gr.addColorStop(1, '#5a3418'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+      g.globalAlpha = 0.25; for (let i = 0; i < 600; i++) { g.strokeStyle = '#fff6e0'; g.lineWidth = 0.6; const x = rnd(i + 61) * w, y = rnd(i + 63) * h, a = rnd(i + 65) * 6.28, L = 4 + rnd(i + 67) * 20; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * L, y + Math.sin(a) * L); g.stroke(); } g.globalAlpha = 1;
+      g.fillStyle = '#20140c'; for (let i = 1; i < 3; i++) g.fillRect(i * w / 3 - 3, 0, 6, h); for (let i = 1; i < 7; i++) g.fillRect(0, i * h / 7 - 3, w, 6);
+      g.fillRect(0, 0, w, 12); g.fillRect(0, h - 16, w, 16); g.fillRect(0, 0, 12, h); g.fillRect(w - 12, 0, 12, h);
+    });
+    const shm = new THREE.MeshStandardMaterial({ map: shoji, emissive: 0xffffff, emissiveMap: shoji, emissiveIntensity: 0.5, roughness: 0.9 }); shm.userData.k = 0.5; out.lanternMats.push(shm);
     const PW = 0.95, PH = 1.95, Z = -1.15, N = 4;
     for (let i = 0; i < N; i++) {
       const x = (i - (N - 1) / 2) * PW;
@@ -118,25 +171,20 @@ export async function buildHall(ctx) {
       box(0.24, 3.3 - HALL_Y, 0.24, darkWood, sx * 3.15, (3.3 + HALL_Y) / 2, 1.35);   // 舞台の柱
       const cur = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 3.4), new THREE.MeshStandardMaterial({ color: 0x1a0d0b, roughness: 0.95 }));
       cur.position.set(sx * 4.3, 1.7, 1.1); scene.add(cur);
-      const w2 = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 2.0), fm); w2.position.set(sx * 2.85, 1.0, Z - 0.3); scene.add(w2);
+      const w2 = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 2.0), shm); w2.position.set(sx * 2.85, 1.0, Z - 0.3); scene.add(w2);
+      const sl = new THREE.PointLight(0xffb870, 0.35, 2.6, 2); sl.position.set(sx * 2.6, 1.1, Z - 0.1); scene.add(sl); out.flickerLights.push([sl, 0.04]);
     }
   }
   // ---- めくり（上手＝客席から見て右。紙の札をめくって演目名を出す）
   {
-    const W_ = 384, H_ = 704;
+    const W_ = 448, H_ = 822;
     const cv = document.createElement('canvas'); cv.width = W_; cv.height = H_;
     const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = maxAniso;
     const draw = (main, small) => {
       const g = cv.getContext('2d');
-      g.fillStyle = '#f2ede0'; g.fillRect(0, 0, W_, H_);
-      g.globalAlpha = 0.06; for (let i = 0; i < 2600; i++) { g.fillStyle = rnd(i + 31) > 0.5 ? '#6a5a40' : '#fff'; g.fillRect(rnd(i + 33) * W_, rnd(i + 35) * H_, 2, 1); } g.globalAlpha = 1;
-      g.fillStyle = '#111'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      const chars = [...main]; const n = chars.length;
-      const fs = Math.min(230, (H_ - (small ? 150 : 60)) / n * 0.98);
-      g.font = `400 ${fs}px PottaOne, serif`;
-      const y0 = (small ? (H_ - 120) : H_) / 2 - (n - 1) * fs * 0.96 / 2;
-      chars.forEach((ch, i) => g.fillText(ch, W_ / 2, y0 + i * fs * 0.96));
-      if (small) { g.font = `400 64px PottaOne, serif`; g.fillStyle = '#7a1e1e'; g.fillText(small, W_ / 2, H_ - 70); }
+      washi(g, W_, H_, 400 + main.length * 17);
+      yoseText(g, main, W_ / 2, 34, small ? H_ - 150 : H_ - 34, 250, '#0e0b09', W_ * 0.8);
+      if (small) { g.fillStyle = 'rgba(150,40,26,0.85)'; g.fillRect(W_ * 0.2, H_ - 132, W_ * 0.6, 3); yoseLine(g, small, W_ / 2, H_ - 72, 66, '#9c2a1c'); }
       tex.needsUpdate = true;
     };
     const grp = new THREE.Group();
@@ -150,9 +198,11 @@ export async function buildHall(ctx) {
     const fpb = new THREE.Mesh(new THREE.PlaneGeometry(PWm, PHm), back); fpb.position.y = -PHm / 2; fpb.rotation.y = Math.PI; fpb.position.z = -0.001;
     const oldTex = new THREE.CanvasTexture(document.createElement('canvas')); const oldMat = new THREE.MeshStandardMaterial({ roughness: 0.9 }); fp.material = oldMat;
     flipG.add(fp, fpb); flipG.visible = false;
-    for (const sx of [-1, 1]) box(0.03, 1.0, 0.03, darkWood, sx * 0.2, 0.5, 0, grp);
-    box(0.46, 0.035, 0.04, darkWood, 0, 0.96, 0, grp);
-    grp.position.set(1.72, 0, 0.98); grp.rotation.y = -0.38; scene.add(grp);
+    box(PWm, PHm, 0.026, back, 0, 0.6, -0.003, grp);   // 重ねた紙の束の厚み
+    for (const sx of [-1, 1]) { box(0.032, 1.0, 0.032, lacq, sx * 0.2, 0.5, 0, grp); box(0.06, 0.02, 0.3, lacq, sx * 0.2, 0.01, -0.06, grp); }
+    box(0.46, 0.036, 0.042, lacq, 0, 0.96, 0, grp);
+    // 2026-11-21：めくりを高座の上手の角の前へ寄せた（PC の席から観た画に入るように。前は画面の外だった）
+    grp.position.set(1.12, 0, 0.98); grp.rotation.y = -0.26; scene.add(grp);
     let cur = null;
     out.mekuri = {
       set(main, small) { cur = [main, small]; draw(main, small); flipG.visible = false; },
@@ -173,8 +223,8 @@ export async function buildHall(ctx) {
     key.castShadow = true; key.shadow.mapSize.set(LITE ? 1024 : 2048, LITE ? 1024 : 2048); key.shadow.bias = -0.0003; key.shadow.normalBias = 0.02;
     const fill = new THREE.SpotLight(0xfff0dc, 0.32, 0, THREE.MathUtils.degToRad(24), 0.8, 0); fill.position.set(-2.4, 2.6, 3.2); fill.target.position.set(0, 1.0, 0); scene.add(fill, fill.target);
     const back = new THREE.SpotLight(0xffe2bd, 0.75, 0, THREE.MathUtils.degToRad(20), 0.6, 0); back.position.set(0.3, 3.6, -1.0); back.target.position.set(0, 1.2, 0.1); scene.add(back, back.target);
-    const wash = new THREE.SpotLight(0xffd6a0, 0.24, 0, THREE.MathUtils.degToRad(36), 0.9, 0); wash.position.set(0, 3.0, 1.6); wash.target.position.set(0, 0.9, -1.15); scene.add(wash, wash.target);
-    const mk = new THREE.SpotLight(0xffe6c0, 0.5, 0, THREE.MathUtils.degToRad(12), 0.6, 0); mk.position.set(2.4, 3.2, 3.0); mk.target.position.set(1.72, 0.6, 0.98); scene.add(mk, mk.target);
+    const wash = new THREE.SpotLight(0xffd6a0, 0.15, 0, THREE.MathUtils.degToRad(36), 0.9, 0); wash.position.set(0, 3.0, 1.6); wash.target.position.set(0, 0.9, -1.15); scene.add(wash, wash.target);
+    const mk = new THREE.SpotLight(0xffe6c0, 0.5, 0, THREE.MathUtils.degToRad(12), 0.6, 0); mk.position.set(2.0, 3.2, 3.0); mk.target.position.set(1.12, 0.6, 0.98); scene.add(mk, mk.target);
     out.stageLights = [key, fill, back, wash, mk]; for (const l of out.stageLights) l.userData.k0 = l.intensity;
     out.keyLight = key;
   }
@@ -310,10 +360,10 @@ export async function buildHall(ctx) {
     out.andon = {
       group: g, hit,
       set(room, why) {
-        const c = cv.getContext('2d'), w = cv.width, h = cv.height; c.fillStyle = '#efe4cc'; c.fillRect(0, 0, w, h);
-        c.globalAlpha = 0.18; for (let y = 0; y < h; y += 3) { c.fillStyle = rnd(y + 77) > 0.5 ? '#b89a68' : '#fff6e2'; c.fillRect(0, y, w, 1); } c.globalAlpha = 1;
-        c.fillStyle = '#7a1e1e'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '400 44px PottaOne, serif'; c.fillText('館へ', w / 2, 54);
-        c.fillStyle = '#16110c'; const cs = [...room], fs = Math.min(64, 330 / cs.length); c.font = `400 ${fs}px PottaOne, serif`; cs.forEach((ch, i) => c.fillText(ch, w / 2, 112 + fs / 2 + i * fs * 0.96));
+        const c = cv.getContext('2d'), w = cv.width, h = cv.height; washi(c, w, h, 700, '#efe4cc');
+        yoseLine(c, '館へ', w / 2, 54, 46, '#8a2216');
+        yoseText(c, room, w / 2, 96, h - 96, 72, '#16110c', w * 0.5);
+        c.textAlign = 'center'; c.textBaseline = 'middle';
         c.fillStyle = '#4a3220'; c.font = '400 22px "Klee One", serif'; const ws = [...why]; const ln = []; for (let i = 0; i < ws.length; i += 10) ln.push(ws.slice(i, i + 10).join('')); ln.slice(0, 2).forEach((l, i) => c.fillText(l, w / 2, h - 58 + i * 28));
         tex.needsUpdate = true;
       },
@@ -351,9 +401,8 @@ export async function buildHall(ctx) {
       g.fillStyle = '#d8c4a0'; g.fillRect(0, 0, w, h);
       g.globalAlpha = 0.25; for (let y = 0; y < h; y += 2) { g.fillStyle = rnd(y + 3) > 0.5 ? '#8a6a40' : '#efe2c8'; g.fillRect(0, y, w, 1 + rnd(y) * 2); } g.globalAlpha = 1;
       g.fillStyle = '#121010'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      const cs = [...title], fs = Math.min(112, (h - 120) / cs.length * 0.95); g.font = `400 ${fs}px PottaOne, serif`;
-      const y0 = h / 2 - 22 - (cs.length - 1) * fs * 0.95 / 2;
-      if (mins) { g.save(); g.fillStyle = '#7a1e1e'; g.font = '400 34px PottaOne, serif'; g.fillText(`約${mins}分`, w / 2, h - 42); g.restore(); }   /* 2026-11-19：一席の長さ */ cs.forEach((c, i) => g.fillText(c, w / 2, y0 + i * fs * 0.95));
+      yoseText(g, title, w / 2, 22, h - 92, 118, '#110d0b', w * 0.84);   // 2026-11-21：筆の字に
+      if (mins) yoseLine(g, `約${mins}分`, w / 2, h - 44, 36, '#8a2216');   /* 2026-11-19：一席の長さ */
       g.strokeStyle = '#3a2416'; g.lineWidth = 6; g.strokeRect(3, 3, w - 6, h - 6);
     });
     const bw = 0.42, gap = 0.12, total = ENM.length * bw + (ENM.length - 1) * gap;
