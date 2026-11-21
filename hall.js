@@ -20,8 +20,12 @@ export async function buildHall(ctx) {
     roughnessMap: loadTex(`sozai/${name}/${name}_rough_1k.jpg`, false),
   });
   const HINOKI = pbr('hinoki_planks'), SUGI = pbr('japanese_cedar_planks');
-  function texMat(T, rx, ry, color, rough = 0.6) {
-    const m = new THREE.MeshStandardMaterial({ color, roughness: rough, envMapIntensity: 0.5, normalScale: new THREE.Vector2(0.7, 0.7) });
+  // 2026-11-21 本人「木は歴史のひだを重ねた趣深いものに」：床と壁は年月を経た古材（Poly Haven CC0 の old_wood_floor・dark_wooden_planks）
+  const OLD = pbr('old_wood_floor'), DARK = pbr('dark_wooden_planks');
+  function texMat(T, rx, ry, color, rough = 0.6, gloss = 0) {
+    // 古材の艶（手と足に磨かれた上澄み）は薄い clearcoat で。スマホは軽い材質のまま
+    const m = gloss && !LITE ? new THREE.MeshPhysicalMaterial({ color, roughness: rough, envMapIntensity: 0.5, normalScale: new THREE.Vector2(1.0, 1.0), clearcoat: gloss, clearcoatRoughness: 0.42 })
+      : new THREE.MeshStandardMaterial({ color, roughness: rough, envMapIntensity: 0.5, normalScale: new THREE.Vector2(0.9, 0.9) });
     for (const k of ['map', 'normalMap', 'roughnessMap']) { m[k] = T[k].clone(); m[k].repeat.set(rx, ry); m[k].needsUpdate = true; }
     return m;
   }
@@ -66,21 +70,21 @@ export async function buildHall(ctx) {
     const { RoomEnvironment } = ctx.RoomEnvironment;
     const pm = new THREE.PMREMGenerator(renderer);
     scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
-    scene.environmentIntensity = 0.2;
+    scene.environmentIntensity = 0.12;
   }
   scene.background = new THREE.Color(0x05060a);
   // 2026-11-21：画の四隅を夜の暗さに沈める（灯の届く高座が浮かぶように。押す操作はさえぎらない）
   { const st = document.getElementById('stage'); if (st && !st.querySelector('.yose-vig')) { const v = document.createElement('div'); v.className = 'yose-vig';
-      v.style.cssText = 'position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 70% at 50% 52%,rgba(0,0,0,0) 55%,rgba(4,3,2,.5) 100%)'; st.appendChild(v); } }
-  scene.fog = new THREE.Fog(0x07080c, 10, 26);
+      v.style.cssText = 'position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 70% at 50% 52%,rgba(0,0,0,0) 42%,rgba(3,2,1,.72) 100%)'; st.appendChild(v); } }
+  scene.fog = new THREE.Fog(0x060403, 7, 21);
 
   // ==== 舞台と高座 ===========================================================================
   {
-    const fl = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, STAGE_Z1 + 3.2), texMat(HINOKI, 5, 2.4, 0x9a7a58, 0.55));
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, STAGE_Z1 + 3.2), texMat(OLD, 3.2, 1.6, 0x8a6a4c, 0.62, 0.35));
     fl.rotation.x = -Math.PI / 2; fl.position.set(0, 0, (STAGE_Z1 - 3.2) / 2); fl.receiveShadow = true; scene.add(fl);
-    box(2 * WALL_X, -HALL_Y, 0.08, texMat(HINOKI, 5, 0.4, 0x4a3726, 0.6), 0, HALL_Y / 2, STAGE_Z1 + 0.04);
+    box(2 * WALL_X, -HALL_Y, 0.08, texMat(DARK, 5, 0.4, 0x5a4636, 0.7), 0, HALL_Y / 2, STAGE_Z1 + 0.04);
     // 高座（檜の台）
-    const top = texMat(HINOKI, 1.1, 0.9, 0x8e6c4c, 0.5), side = texMat(HINOKI, 1.2, 0.3, 0x5a412c, 0.55);
+    const top = texMat(OLD, 0.9, 0.7, 0x7a5a3e, 0.5, 0.4), side = texMat(DARK, 1.2, 0.3, 0x6a5240, 0.6, 0.3);
     const k = new THREE.Mesh(new THREE.BoxGeometry(2.0, KOZA_Y, 1.6), [side, side, top, side, side, side]);
     k.position.set(0, KOZA_Y / 2, -0.05); k.receiveShadow = true; k.castShadow = true; scene.add(k);
     box(2.04, 0.05, 0.06, new THREE.MeshStandardMaterial({ color: 0x24170e, roughness: 0.35 }), 0, KOZA_Y - 0.025, 0.76);
@@ -169,7 +173,7 @@ export async function buildHall(ctx) {
     for (let i = 0; i <= 24; i++) box(0.018, 0.46, 0.03, rm, -N * PW / 2 + i * (N * PW / 24), PH + 0.25, Z);
     box(N * PW, 0.018, 0.03, rm, 0, PH + 0.25, Z);
     out.fusumaZ = Z; out.fusumaW = N * PW; out.fusumaH = PH;
-    const wall = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, 4.6), texMat(SUGI, 5, 2.2, 0x5a4434, 0.7)); wall.position.set(0, 2.3, -3.2); scene.add(wall);
+    const wall = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, 4.6), texMat(DARK, 3, 1.6, 0x6a5444, 0.78)); wall.position.set(0, 2.3, -3.2); scene.add(wall);
     box(2 * WALL_X, 0.34, 0.36, darkWood, 0, 3.3, 1.2);   // 舞台の上の梁
     for (const sx of [-1, 1]) {
       box(0.24, 3.3 - HALL_Y, 0.24, darkWood, sx * 3.15, (3.3 + HALL_Y) / 2, 1.35);   // 舞台の柱
@@ -187,8 +191,12 @@ export async function buildHall(ctx) {
     const draw = (main, small) => {
       const g = cv.getContext('2d');
       washi(g, W_, H_, 400 + main.length * 17);
-      yoseText(g, main, W_ / 2, 34, small ? H_ - 150 : H_ - 34, 250, '#0e0b09', W_ * 0.8);
-      if (small) { g.fillStyle = 'rgba(150,40,26,0.85)'; g.fillRect(W_ * 0.2, H_ - 132, W_ * 0.6, 3); yoseLine(g, small, W_ / 2, H_ - 72, 66, '#9c2a1c'); }
+      // 2026-11-21 本人「題目の紙をもっとかっこよく」：墨の二重の罫で囲み、上に朱の帯、紙の縁は年月で焼けて黒ずむ
+      { const e = g.createLinearGradient(0, 0, W_, 0); e.addColorStop(0, 'rgba(70,40,14,.28)'); e.addColorStop(0.07, 'rgba(0,0,0,0)'); e.addColorStop(0.93, 'rgba(0,0,0,0)'); e.addColorStop(1, 'rgba(70,40,14,.28)'); g.fillStyle = e; g.fillRect(0, 0, W_, H_); }
+      g.strokeStyle = '#17110c'; g.lineWidth = 7; g.strokeRect(16, 16, W_ - 32, H_ - 32); g.lineWidth = 2; g.strokeRect(28, 28, W_ - 56, H_ - 56);
+      g.fillStyle = '#8e2418'; g.fillRect(28, 28, W_ - 56, 14);
+      yoseText(g, main, W_ / 2, 62, small ? H_ - 160 : H_ - 50, 250, '#0e0b09', W_ * 0.74);
+      if (small) { g.fillStyle = 'rgba(150,40,26,0.85)'; g.fillRect(W_ * 0.22, H_ - 140, W_ * 0.56, 3); yoseLine(g, small, W_ / 2, H_ - 86, 62, '#9c2a1c'); }
       tex.needsUpdate = true;
     };
     const grp = new THREE.Group();
@@ -220,14 +228,38 @@ export async function buildHall(ctx) {
       group: grp,
     };
   }
+  // ---- 燭台（2026-11-21 本人「照明はゆらめく火の照明に」）：高座の左右の前に二基。炎は芯から立つ涙形の光、灯は火のゆらぎで揺れる
+  {
+    out.flames = [];
+    const fg = new THREE.SphereGeometry(1, 14, 10); fg.translate(0, 1, 0);
+    const fcol = new THREE.Color(0xffa040);
+    const flameMat = (c, o) => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: o, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
+    const brass = new THREE.MeshStandardMaterial({ color: 0x3a2412, metalness: 0.6, roughness: 0.45 });
+    const wax = new THREE.MeshStandardMaterial({ color: 0xe6dcc6, roughness: 0.6, emissive: 0x6a3a10, emissiveIntensity: 0.35 });
+    for (const sx of [-1, 1]) {
+      const g = new THREE.Group();
+      const st = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.02, 0.62, 10), brass); st.position.y = 0.31; g.add(st);
+      const ft = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.03, 18), brass); ft.position.y = 0.015; g.add(ft);
+      const dish = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.03, 0.025, 18), brass); dish.position.y = 0.63; g.add(dish);
+      const cd = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.02, 0.12, 12), wax); cd.position.y = 0.70; g.add(cd);
+      const f1 = new THREE.Mesh(fg, flameMat(0xffd890, 0.95)); f1.scale.set(0.009, 0.026, 0.009); f1.position.y = 0.765;
+      const f2 = new THREE.Mesh(fg, flameMat(fcol, 0.35)); f2.scale.set(0.02, 0.05, 0.02); f2.position.y = 0.755;
+      g.add(f1, f2);
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(64, 64, (c, w, h) => { const r = c.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); r.addColorStop(0, 'rgba(255,190,110,.55)'); r.addColorStop(1, 'rgba(255,140,60,0)'); c.fillStyle = r; c.fillRect(0, 0, w, h); }), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false }));
+      halo.scale.setScalar(0.32); halo.position.y = 0.79; g.add(halo);
+      const pl = new THREE.PointLight(0xff9a48, 0.9, 3.6, 2); pl.position.y = 0.82; g.add(pl);
+      g.position.set(sx * 1.26, 0, sx < 0 ? 0.55 : 0.25); scene.add(g);
+      out.flames.push({ f1, f2, halo, pl, base: 0.9, s: sx * 3.1 + 7 });
+    }
+  }
   // ---- 舞台の灯（上手前の主光・下手前の補い・後ろ上の縁・襖を洗う灯）
   {
-    const key = new THREE.SpotLight(0xffd9ad, 1.05, 0, THREE.MathUtils.degToRad(19), 0.7, 0);
+    const key = new THREE.SpotLight(0xffcf98, 1.1, 0, THREE.MathUtils.degToRad(19), 0.7, 0);
     key.position.set(1.2, 4.3, 3.8); key.target.position.set(0, 1.0, 0); scene.add(key, key.target);
     key.castShadow = true; key.shadow.mapSize.set(LITE ? 1024 : 2048, LITE ? 1024 : 2048); key.shadow.bias = -0.0003; key.shadow.normalBias = 0.02;
-    const fill = new THREE.SpotLight(0xfff0dc, 0.32, 0, THREE.MathUtils.degToRad(24), 0.8, 0); fill.position.set(-2.4, 2.6, 3.2); fill.target.position.set(0, 1.0, 0); scene.add(fill, fill.target);
+    const fill = new THREE.SpotLight(0xffd8b0, 0.24, 0, THREE.MathUtils.degToRad(24), 0.8, 0); fill.position.set(-2.4, 2.6, 3.2); fill.target.position.set(0, 1.0, 0); scene.add(fill, fill.target);
     const back = new THREE.SpotLight(0xffe2bd, 0.75, 0, THREE.MathUtils.degToRad(20), 0.6, 0); back.position.set(0.3, 3.6, -1.0); back.target.position.set(0, 1.2, 0.1); scene.add(back, back.target);
-    const wash = new THREE.SpotLight(0xffd6a0, 0.15, 0, THREE.MathUtils.degToRad(36), 0.9, 0); wash.position.set(0, 3.0, 1.6); wash.target.position.set(0, 0.9, -1.15); scene.add(wash, wash.target);
+    const wash = new THREE.SpotLight(0xffc888, 0.1, 0, THREE.MathUtils.degToRad(36), 0.9, 0); wash.position.set(0, 3.0, 1.6); wash.target.position.set(0, 0.9, -1.15); scene.add(wash, wash.target);
     const mk = new THREE.SpotLight(0xffe6c0, 0.5, 0, THREE.MathUtils.degToRad(12), 0.6, 0); mk.position.set(2.0, 3.2, 3.0); mk.target.position.set(1.12, 0.6, 0.98); scene.add(mk, mk.target);
     out.stageLights = [key, fill, back, wash, mk]; for (const l of out.stageLights) l.userData.k0 = l.intensity;
     out.keyLight = key;
@@ -235,11 +267,11 @@ export async function buildHall(ctx) {
 
   // ==== 客席 =================================================================================
   {
-    const fl = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, BACK_Z - STAGE_Z1), texMat(HINOKI, 4, 3, 0x3a2a1e, 0.7));
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, BACK_Z - STAGE_Z1), texMat(OLD, 3, 2.4, 0x5a4634, 0.7, 0.25));
     fl.rotation.x = -Math.PI / 2; fl.position.set(0, HALL_Y, (BACK_Z + STAGE_Z1) / 2); fl.receiveShadow = true; scene.add(fl);
     // 左右の壁（杉の板）・腰板・天井（格天井）
     for (const sx of [-1, 1]) {
-      const w = new THREE.Mesh(new THREE.PlaneGeometry(BACK_Z - 1.0, CEIL_Y - HALL_Y), texMat(SUGI, 4, 2, 0x5c4636, 0.75));
+      const w = new THREE.Mesh(new THREE.PlaneGeometry(BACK_Z - 1.0, CEIL_Y - HALL_Y), texMat(DARK, 3, 1.6, 0x6a5444, 0.8));
       w.rotation.y = -sx * Math.PI / 2; w.position.set(sx * WALL_X, (CEIL_Y + HALL_Y) / 2, (BACK_Z + 1.0) / 2); scene.add(w);
       box(0.06, 0.12, BACK_Z - 1.0, darkWood, sx * (WALL_X - 0.03), 1.55, (BACK_Z + 1.0) / 2);   // 長押
       for (let z = 1.6; z < BACK_Z; z += 1.4) box(0.14, CEIL_Y - HALL_Y, 0.14, darkWood, sx * (WALL_X - 0.07), (CEIL_Y + HALL_Y) / 2, z);   // 柱
@@ -249,7 +281,7 @@ export async function buildHall(ctx) {
     for (let x = -WALL_X + 0.9; x < WALL_X; x += 0.9) box(0.06, 0.07, BACK_Z - 1.0, darkWood, x, CEIL_Y - 0.035, (BACK_Z + 1.0) / 2);
     for (let z = 1.5; z <= BACK_Z; z += 0.9) box(2 * WALL_X, 0.07, 0.06, darkWood, 0, CEIL_Y - 0.035, z);
     // 後ろの壁（真ん中が木戸からの入口）
-    const bw = texMat(SUGI, 2, 2, 0x4e3a2c, 0.75);
+    const bw = texMat(DARK, 2, 2, 0x5a4636, 0.8);
     for (const sx of [-1, 1]) { const p = new THREE.Mesh(new THREE.PlaneGeometry(WALL_X - 0.75, CEIL_Y - HALL_Y), bw); p.rotation.y = Math.PI; p.position.set(sx * (WALL_X + 0.75) / 2, (CEIL_Y + HALL_Y) / 2, BACK_Z); scene.add(p); }
     { const p = new THREE.Mesh(new THREE.PlaneGeometry(1.5, CEIL_Y - 1.4), bw); p.rotation.y = Math.PI; p.position.set(0, (CEIL_Y + 1.4) / 2, BACK_Z); scene.add(p); }
   }
@@ -281,8 +313,8 @@ export async function buildHall(ctx) {
     let i = 0;
     for (const sx of [-1, 1]) for (let z = 2.2; z < BACK_Z - 0.4; z += 1.05) chochin(sx * (WALL_X - 0.38), 2.65, z, 0.9, i % 2 ? '#7a1e1e' : '#1e1e1e', rnd(i++ + 70), 0.9);
     for (const sx of [-1, 1]) chochin(sx * 2.7, 2.5, 1.55, 1.1, '#7a1e1e', rnd(sx + 90), 1.15);   // 舞台の左右の大きい提灯
-    for (const [x, z] of [[-3.6, 4.5], [3.6, 4.5]]) { const p = new THREE.PointLight(0xffc98a, 1.2, 7, 2); p.position.set(x, 2.4, z); scene.add(p); out.flickerLights.push([p, 0.06]); }
-    const hemi = new THREE.HemisphereLight(0xb8a088, 0x1a120a, 0.26); scene.add(hemi); out.hemi = hemi; hemi.userData.k0 = hemi.intensity;
+    for (const [x, z] of [[-3.6, 4.5], [3.6, 4.5]]) { const p = new THREE.PointLight(0xffa860, 0.9, 6, 2); p.position.set(x, 2.4, z); scene.add(p); out.flickerLights.push([p, 0.12]); }
+    const hemi = new THREE.HemisphereLight(0xa88a68, 0x120c06, 0.13); scene.add(hemi); out.hemi = hemi; hemi.userData.k0 = hemi.intensity;
   }
   // ---- 椅子の列（真ん中に通路）と、左右の桟敷（畳に座布団）。客は黒い影（舞台を向いて座る）
   const tatami = canvasTex(256, 512, (g, w, h) => {

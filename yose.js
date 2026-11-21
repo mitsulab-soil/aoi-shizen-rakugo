@@ -1836,6 +1836,9 @@ function world(t, now) {
   particles.material.uniforms.uScale.value = H * DPR / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
   // 提灯の火のゆらぎ（ゆっくり・小さく・明滅しない）
   for (const [i, m] of lanternMats.entries()) m.emissiveIntensity = m.userData.k * (1 + 0.07 * flick(now, i * 1.7));
+  // 燭台の火（風のない座敷の火：ゆっくりした呼吸に、ときどき細かくはためく）
+  if (HL.flames) for (const fl of HL.flames) { const a = flick(now * 1.6, fl.s), b = flick(now * 5.3, fl.s * 1.7); const k = 1 + 0.14 * a + 0.06 * b;
+    fl.pl.intensity = fl.base * k; fl.f1.scale.y = 0.026 * (1 + 0.18 * a + 0.1 * b); fl.f2.scale.y = 0.05 * (1 + 0.15 * a); fl.f1.rotation.z = fl.f2.rotation.z = 0.06 * b; fl.halo.material.opacity = 0.8 + 0.2 * a; }
   for (const [i, [Lt, A]] of flickerLights.entries()) { if (Lt.userData.base === undefined) Lt.userData.base = Lt.intensity; Lt.intensity = Lt.userData.base * (1 + A * flick(now, i * 2.3 + 0.5)); }
   // 客の小さな揺れ（呼吸）。笑いどころでは少し肩が揺れる
   for (const p of audience) { p.userData.h.position.y = (p.userData.h0 ?? 0.80) + 0.004 * Math.sin(now * 1.4 + p.userData.ph); p.rotation.z = 0.01 * Math.sin(now * 0.5 + p.userData.ph); }
