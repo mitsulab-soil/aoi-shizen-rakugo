@@ -50,11 +50,11 @@ export async function buildHall(ctx) {
     const v = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.3, w / 2, h / 2, Math.max(w, h) * 0.72); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(112,80,40,0.24)'); g.fillStyle = v; g.fillRect(0, 0, w, h);
   };
   // 縦組みの太い筆の字（太らせ＝同じ色の縁取り・墨のにじみ＝わずかな影・少し横に張って詰める）
-  const yoseText = (g, text, cx, y0, y1, maxFs, color = '#0e0b09', maxW = 1e9) => {
-    const cs = [...text], n = cs.length, fs = Math.min(maxFs, (y1 - y0) / (n * 0.9 + 0.12), maxW / 1.14), step = fs * 0.9, yc = (y0 + y1) / 2 - (n - 1) * step / 2;
+  const yoseText = (g, text, cx, y0, y1, maxFs, color = '#0e0b09', maxW = 1e9, wt = 0.06, sx = 1.14) => {
+    const cs = [...text], n = cs.length, fs = Math.min(maxFs, (y1 - y0) / (n * 0.9 + 0.12), maxW / sx), step = fs * 0.9, yc = (y0 + y1) / 2 - (n - 1) * step / 2;
     g.save(); g.font = `400 ${fs}px ${YF}, PottaOne, serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillStyle = color; g.strokeStyle = color; g.lineJoin = 'round'; g.lineWidth = fs * 0.06;
-    cs.forEach((ch, i) => { g.save(); g.translate(cx, yc + i * step); g.scale(1.14, 1);
+    g.fillStyle = color; g.strokeStyle = color; g.lineJoin = 'round'; g.lineWidth = fs * wt;
+    cs.forEach((ch, i) => { g.save(); g.translate(cx, yc + i * step); g.scale(sx, 1);
       if (ch === '欅') g.font = `400 ${fs * 0.94}px PottaOne, serif`;   /* 筆の字形では「樗」に見えるため、この字だけ読みやすい書体に */
       g.shadowColor = 'rgba(24,16,10,0.6)'; g.shadowBlur = fs * 0.035; g.strokeText(ch, 0, 0); g.shadowBlur = 0; g.fillText(ch, 0, 0); g.restore(); });
     g.restore(); return fs;
@@ -130,15 +130,19 @@ export async function buildHall(ctx) {
   {
     // 2026-11-21 本人「もっと雰囲気のある場所で」：高座の後ろを古びた金屏風に（箔一枚ずつの色むら・箔足の線・くもり）
     const fusuma = canvasTex(512, 1024, (g, w, h) => {
-      const S = 60;
-      for (let y = 0; y < h; y += S) for (let x = 0; x < w; x += S) { const k = rnd(x * 7.1 + y * 13.3 + 5), k2 = rnd(x * 3.3 + y * 5.7 + 9);
-        g.fillStyle = `rgb(${(164 + k * 16 - k2 * 6) | 0},${(124 + k * 13 - k2 * 7) | 0},${(50 + k * 8) | 0})`; g.fillRect(x, y, S, S); }
-      for (let i = 0; i < 14000; i++) { g.fillStyle = rnd(i + 21) > 0.5 ? `rgba(255,226,150,${0.06 * rnd(i + 23)})` : `rgba(70,46,14,${0.08 * rnd(i + 25)})`; g.fillRect(rnd(i + 27) * w, rnd(i + 29) * h, 1.5, 1.5); }
-      g.strokeStyle = 'rgba(96,64,22,0.28)'; g.lineWidth = 1.1;
-      for (let y = 0; y <= h; y += S) { g.beginPath(); g.moveTo(0, y + 0.5); g.lineTo(w, y + 0.5); g.stroke(); }
-      for (let x = 0; x <= w; x += S) { g.beginPath(); g.moveTo(x + 0.5, 0); g.lineTo(x + 0.5, h); g.stroke(); }
-      for (let i = 0; i < 26; i++) { const x = rnd(i + 41) * w, y = rnd(i + 43) * h, r = 40 + rnd(i + 45) * 160; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(58,36,12,${0.10 + 0.12 * rnd(i + 47)})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r); }
-      const b = g.createLinearGradient(0, h * 0.7, 0, h); b.addColorStop(0, 'rgba(40,24,8,0)'); b.addColorStop(1, 'rgba(40,24,8,0.35)'); g.fillStyle = b; g.fillRect(0, 0, w, h);
+      // 箔は少しずつずらして重ねて貼る（段ごとに横へずれ、継ぎ目は細く不揃い）。一枚ごとに淡い斜めの照りと色の差
+      g.fillStyle = '#a98236'; g.fillRect(0, 0, w, h);
+      const S = 58;
+      for (let r = 0, y = 0; y < h; r++, y += S - 2) { const off = (rnd(r + 701) * S) | 0;
+        for (let x = -off; x < w; x += S - 1.5) { const k = rnd(x * 7.1 + y * 13.3 + 5), k2 = rnd(x * 3.3 + y * 5.7 + 9), dx = (rnd(x + y * 3 + 17) - 0.5) * 2.2, dy = (rnd(x * 5 + y + 19) - 0.5) * 2.2;
+          const gr = g.createLinearGradient(x, y, x + S, y + S); const c0 = [176 + k * 10 - k2 * 5, 136 + k * 8 - k2 * 6, 56 + k * 6], c1 = [164 + k * 8, 124 + k * 7 - k2 * 4, 50 + k * 5];
+          gr.addColorStop(0, `rgb(${c0.map(v => v | 0)})`); gr.addColorStop(1, `rgb(${c1.map(v => v | 0)})`); g.fillStyle = gr; g.fillRect(x + dx, y + dy, S, S);
+          g.strokeStyle = `rgba(92,62,20,${0.10 + 0.14 * k2})`; g.lineWidth = 0.6 + k * 0.8; g.strokeRect(x + dx + 0.5, y + dy + 0.5, S, S); } }
+      // 細かい粒（箔の皺・擦れ）
+      for (let i = 0; i < 22000; i++) { g.fillStyle = rnd(i + 21) > 0.55 ? `rgba(255,232,165,${0.07 * rnd(i + 23)})` : `rgba(60,38,10,${0.09 * rnd(i + 25)})`; const x = rnd(i + 27) * w, y = rnd(i + 29) * h; g.fillRect(x, y, 1 + rnd(i + 31) * 2.5, 1); }
+      // くすみ（大小の雲のような曇り・下ほど煤ける）
+      for (let i = 0; i < 60; i++) { const x = rnd(i + 41) * w, y = rnd(i + 43) * h, r = 30 + rnd(i + 45) * 220; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, rnd(i + 49) > 0.3 ? `rgba(52,32,10,${0.06 + 0.12 * rnd(i + 47)})` : `rgba(255,226,150,${0.05 + 0.06 * rnd(i + 47)})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r); }
+      const b = g.createLinearGradient(0, h * 0.55, 0, h); b.addColorStop(0, 'rgba(36,22,8,0)'); b.addColorStop(1, 'rgba(36,22,8,0.42)'); g.fillStyle = b; g.fillRect(0, 0, w, h);
     });
     const fm = new THREE.MeshStandardMaterial({ map: fusuma, roughness: 0.5, metalness: 0.35, envMapIntensity: 1.2 });
     // 袖の障子（向こうの灯が透ける）
@@ -401,8 +405,8 @@ export async function buildHall(ctx) {
       g.fillStyle = '#d8c4a0'; g.fillRect(0, 0, w, h);
       g.globalAlpha = 0.25; for (let y = 0; y < h; y += 2) { g.fillStyle = rnd(y + 3) > 0.5 ? '#8a6a40' : '#efe2c8'; g.fillRect(0, y, w, 1 + rnd(y) * 2); } g.globalAlpha = 1;
       g.fillStyle = '#121010'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      yoseText(g, title, w / 2, 22, h - 92, 118, '#110d0b', w * 0.84);   // 2026-11-21：筆の字に
-      if (mins) yoseLine(g, `約${mins}分`, w / 2, h - 44, 36, '#8a2216');   /* 2026-11-19：一席の長さ */
+      yoseText(g, title, w / 2, 16, h - 86, 140, '#110d0b', w * 0.94, 0.018, 1.0);   // 2026-11-21：筆の字に（小さい画面で読めるよう、太らせを弱め字を大きく）
+      if (mins) { g.save(); g.fillStyle = '#8a2216'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = '400 38px PottaOne, serif'; g.fillText(`約${mins}分`, w / 2, h - 42); g.restore(); }   /* 2026-11-19：一席の長さ */
       g.strokeStyle = '#3a2416'; g.lineWidth = 6; g.strokeRect(3, 3, w - 6, h - 6);
     });
     const bw = 0.42, gap = 0.12, total = ENM.length * bw + (ENM.length - 1) * gap;

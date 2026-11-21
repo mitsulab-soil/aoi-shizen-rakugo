@@ -1949,7 +1949,7 @@ function createCamera() {
     pos: HL.kidoCam.pos.clone(), look: HL.kidoCam.look.clone(), h: 1.3, fov: 50, lastNow: 0, seatName: null };
   const walk = new THREE.CatmullRomCurve3([HL.kidoCam.pos.clone(), V3(0, Y + 1.58, FZ + 2.4), V3(0, Y + 1.58, FZ + 0.5), V3(0, Y + 1.58, FZ - 1.0), HL.aisle.clone()]);
   const STAGE = V3(0, 1.0, 0);
-  const curLook = st.look.clone(); let curH = 1.3; const ended3d = () => !!window.__ended; const _kidoLook = new THREE.Vector3();
+  const curLook = st.look.clone(); let curH = 1.3, curWF = 0.8; const ended3d = () => !!window.__ended; const _kidoLook = new THREE.Vector3();
   const el = renderer.domElement; el.style.touchAction = 'none';
   const ptrs = new Map(); let pinch0 = 0, zoom0 = 1;
   el.addEventListener('pointerdown', e => { ptrs.set(e.pointerId, [e.clientX, e.clientY]); el.setPointerCapture(e.pointerId); st.input = performance.now() / 1000;
@@ -1970,7 +1970,7 @@ function createCamera() {
       AUD_SEAT = s.pos.clone(); },
     update(now, att) {
       const dt = Math.max(0, Math.min(0.1, now - (st.lastNow || now))); st.lastNow = now;
-      let look, h = 1.3, tau = 0.9;
+      let look, h = 1.3, tau = 0.9, wfT = 0.8;
       if (st.phase === 'kido') { st.pos.copy(HL.kidoCam.pos).add(_cv.set(reducedMotion.matches ? 0 : Math.sin(now * 0.21) * 0.05, reducedMotion.matches ? 0 : Math.sin(now * 0.33) * 0.02, 0)); look = _kidoLook.set(0, Y + (camera.aspect < 0.8 ? 2.55 : 3.15), FZ); h = camera.aspect < 0.8 ? 3.05 : 2.0; }   // 2026-11-19：まねきの 8 枚が縦長の画面でも全部入る（札を押して選ぶ）
       else if (st.phase === 'walk') {
         const u = reducedMotion.matches ? 1 : Math.min(1, (now - st.t0) / WALK_SECONDS), e = u * u * (3 - 2 * u);
@@ -1990,17 +1990,19 @@ function createCamera() {
         look = att ? att.p : STAGE; h = att ? att.h : 1.2;
         if (st.mode === 'seki') { look = ended3d() ? _cv.set(camera.aspect < 0.8 ? 0.75 : 0.9, 0.85, 0.6).clone() : _cv.set(0.35, 1.0, 0.2).clone(); h = ended3d() ? (camera.aspect < 0.8 ? 1.75 : 1.3) : (camera.aspect < 0.8 ? 1.8 : 1.15); }   /* 2026-11-20：縦長で碧を大きく・終わりに碧が切れない */   // 終わりはめくりと行灯へ目を向ける   // 2026-11-19：縦長でもめくりと行灯が入る
         tau = 1.1;
+        // 2026-11-21：縦長の席は横幅で画角を決めず、碧と行灯の幅（約 1.2 m）に合わせて寄る（上下の暗い空白を減らす）
+        if (camera.aspect < 0.8 && !ended3d()) { if (st.mode === 'seki') { look = _cv.set(0.3, 0.95, 0.2).clone(); h = 1.8; wfT = 0.36; } else { look = look.clone().add(_cv.set(0.24, 0, 0)); wfT = 0.55; } }   // 寄って観るときも行灯（館へ）が右に入る
       }
       // しばらく触らなければ、見回しと寄りを元へ戻す
       if (now - st.input > 7) { const k = 1 - Math.exp(-dt / 1.6); st.yaw *= 1 - k; st.pitch *= 1 - k; st.zoom += (1 - st.zoom) * k; }
       const k = reducedMotion.matches ? 1 : 1 - Math.exp(-dt / tau);
-      curLook.lerp(look, st.phase === 'walk' ? 1 : k); curH += (h - curH) * k;
+      curLook.lerp(look, st.phase === 'walk' ? 1 : k); curH += (h - curH) * k; curWF += (wfT - curWF) * k;
       const dir = curLook.clone().sub(st.pos); const dist = dir.length(); dir.normalize();
       dir.applyAxisAngle(V3(0, 1, 0), st.yaw);
       const side = V3(0, 1, 0).cross(dir).normalize(); dir.applyAxisAngle(side, -st.pitch);
       camera.position.copy(st.pos); camera.lookAt(st.pos.clone().add(dir));
       // 画角：見たい高さ（h）と、その 0.8 倍の幅が、縦長の画面でも入るように
-      const hh = Math.max(camera.aspect < 0.8 ? 0.5 : 0, curH) * st.zoom, tv = Math.max(hh / dist, (hh * 0.8) / dist / camera.aspect);
+      const hh = Math.max(camera.aspect < 0.8 ? 0.5 : 0, curH) * st.zoom, tv = Math.max(hh / dist, (hh * curWF) / dist / camera.aspect);
       camera.fov = Math.max(6, Math.min(72, THREE.MathUtils.radToDeg(2 * Math.atan(tv))));
       camera.updateProjectionMatrix(); camera.updateMatrixWorld(true);
       return { dist, h: hh };
