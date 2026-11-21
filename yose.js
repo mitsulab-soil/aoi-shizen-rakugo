@@ -1973,7 +1973,7 @@ function createCamera() {
       let look, h = 1.3, tau = 0.9, wfT = 0.8;
       if (st.phase === 'kido') { st.pos.copy(HL.kidoCam.pos).add(_cv.set(reducedMotion.matches ? 0 : Math.sin(now * 0.21) * 0.05, reducedMotion.matches ? 0 : Math.sin(now * 0.33) * 0.02, 0)); look = _kidoLook.set(0, Y + (camera.aspect < 0.8 ? 2.55 : 3.15), FZ); h = camera.aspect < 0.8 ? 3.05 : 2.0; }   // 2026-11-19：まねきの 8 枚が縦長の画面でも全部入る（札を押して選ぶ）
       else if (st.phase === 'walk') {
-        const u = reducedMotion.matches ? 1 : Math.min(1, (now - st.t0) / WALK_SECONDS), e = u * u * (3 - 2 * u);
+        const u = reducedMotion.matches ? 1 : Math.min(1, Math.max(0, (now - st.t0) / WALK_SECONDS) || 0), e = u * u * (3 - 2 * u);
         st.pos.copy(walk.getPointAt(e)); st.pos.y += (reducedMotion.matches ? 0 : 0.012) * Math.sin(u * WALK_SECONDS * 2 * Math.PI * 0.9) * Math.sin(Math.PI * u);
         const ahead = walk.getPointAt(Math.min(1, e + 0.12)).clone(); ahead.y = st.pos.y - 0.1;
         look = ahead.lerp(STAGE, ease((u - 0.35) / 0.5)); h = 1.5; tau = 0.35;
