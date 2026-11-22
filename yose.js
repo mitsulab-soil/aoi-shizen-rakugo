@@ -278,7 +278,8 @@ function yawAt(t) {
 const END = (() => { const se = L[L.length - 1].end, room = TL.bow_end - se;
   const k = Math.min(1, room / 6.4);
   const turn0 = se + 0.5 * k, turn1 = turn0 + 0.8 * Math.max(0.6, k), bow0 = turn1 - 0.15, bowDn = bow0 + 1.1 * Math.max(0.6, k);
-  const bowUp0 = bowDn + 1.4 * k, bowUp1 = bowUp0 + 1.2 * k;
+  const bowUp0 = bowDn + 1.0 * k,   /* 2026-11-22 頭を下げきって髪が顔をすべて隠す時間が長い → 1.4→1.0 秒 */
+ bowUp1 = bowUp0 + 1.2 * k;
   return { se, turn0, turn1, bow0, bowDn, bowUp0, bowUp1 }; })();
 window.__END = END;
 function bowAt(t) {

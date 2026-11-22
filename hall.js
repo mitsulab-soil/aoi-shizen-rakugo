@@ -379,7 +379,7 @@ export async function buildHall(ctx) {
       const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.4), m); tag.position.set(tx, out.aisle.y - 0.47, 4.45);   /* 2026-11-22 札が高座の碧の顔を隠していた → 少し下げる */ tag.lookAt(out.aisle.x, out.aisle.y, out.aisle.z);
       const cord = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.5, 0.008), string); cord.position.set(0, 0.5, 0); tag.add(cord);
       const hit = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.6, 0.2), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(0, -0.03, 0); tag.add(hit);
-      tag.userData.seat = k; hit.userData.seat = k; tag.userData.mat = m; hit.userData.mat = m; tag.visible = false; scene.add(tag); out.seatTags.push(tag, hit);
+      if (innerWidth / innerHeight < .8) tag.scale.setScalar(.72);   /* 2026-11-22 スマホで席の札が高座を大きく隠した → 小さく（押せる範囲 hit はそのまま） */ tag.userData.seat = k; hit.userData.seat = k; tag.userData.mat = m; hit.userData.mat = m; tag.visible = false; scene.add(tag); out.seatTags.push(tag, hit);
     }
   }
   // 2026-11-19：館への置き行灯（旧 Qualia/yose の「あわせて訪ねる館の部屋」を、高座の下手の行灯にした。押すと Qualia Museum のその部屋へ）
