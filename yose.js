@@ -125,7 +125,7 @@ vrm.scene.traverse(o => { o.frustumCulled = false; if (o.isMesh) { o.castShadow 
   } } });
 // 髪先の切り抜き（alphaTest）の縁を、MSAA の覆いでなめらかに（スマホの寄りで点状のざらつきが出たため）
 vrm.scene.traverse(o => { if (o.isMesh) for (const mt of [].concat(o.material)) if (mt && mt.alphaTest > 0 && !mt.transparent) { mt.alphaToCoverage = true; mt.needsUpdate = true; } });
-scene.add(vrm.scene);
+vrm.scene.visible = false; scene.add(vrm.scene);   // 2026-11-22 席を選ぶあいだに T ポーズの碧が奥に見えた → 動きがそろうまで出さない（下の __ready の直前で出す）
 // 2026-10-07 試し版《蜂の目》（検証役まさひろ「羽織が肩から抜ける 1 秒ほど、半分透けてベージュの羽根のように見える」）：
 // 羽織の生地は紗（透ける布）の絵で、肩から抜けて裏が見えると羽根のように透けた。着ているあいだの紗の見え方はそのままにし、
 // 衿を持って体から離した羽織（haoriSnap の写し）だけを、透けない布の材質（両面・不透明・色を一段落とす）で描く。?haorisolid=0 で前の見え方
@@ -776,13 +776,13 @@ function reiHands(t, ch) {
   const floorY = KOZA_Y + Number(q.get('reiy') ?? 0.115), z = Number(q.get('reiz') ?? 0.335);   // 扇子の手前（膝との間）の座布団の上
   const R_fl = { p: v3(-0.075, floorY + 0.012, z), q: handQuatW('right', v3(1, 0, 0.25), v3(0, -1, 0)), pole: Cd(-0.6, -0.2, -0.8) };
   const L_fl = { p: v3(0.075, floorY + 0.012, z), q: handQuatW('left', v3(-1, 0, 0.25), v3(0, -1, 0)), pole: Cd(0.6, -0.2, -0.8) };
-  // 右手：扇子の上へ（hov）→ 置く（con）→ 床の手の形へ
+  // 右手：扇子の上へ（hov）→ 置く（con）→ 床の手の形へ（2026-11-22 扇子から床へ下ろす途中で手が膝の着物にめり込んだ → 弧を描いて膝の上を越える。左手も上から下ろす）
   let R;
   if (put < 1) { const a = ease(put / 0.6), b = ease((put - 0.6) / 0.4);
     R = { p: hov.p.clone().lerp(con.p, b), q: hov.q.clone().slerp(con.q, b), pole: Cd(-0.75, -0.55, -0.25) };
     if (a < 1) R.w0 = a; }
-  else R = { p: con.p.clone().lerp(R_fl.p, down), q: con.q.clone().slerp(R_fl.q, down), pole: Cd(-0.75, -0.55, -0.25).lerp(R_fl.pole, down) };
-  const L = down > 0.001 ? { p: L_fl.p.clone(), q: L_fl.q.clone(), pole: L_fl.pole, w0: down } : null;
+  else R = { p: con.p.clone().lerp(R_fl.p, down).add(v3(0, Math.sin(Math.PI * down) * 0.06, 0.02 * Math.sin(Math.PI * down))), q: con.q.clone().slerp(R_fl.q, down), pole: Cd(-0.75, -0.55, -0.25).lerp(R_fl.pole, down) };
+  const L = down > 0.001 ? { p: L_fl.p.clone().add(v3(0, (1 - down) * 0.05, 0)), q: L_fl.q.clone(), pole: L_fl.pole, w0: down } : null;
   return { R, L };
 }
 let reiPut = false;
@@ -1941,6 +1941,7 @@ for (let i = 0; i < 60; i++) { pose(0); vrm.update(1 / 30); }
 window.__P = P; window.__TL = TL; window.__vrm = vrm; window.__scene = scene; window.__frames = () => frames;
 window.__renderT = t => { renderLive(t, performance.now() / 1000, 1 / 30); };
 requestAnimationFrame(fullRender);
+pose(0); vrm.update(0); vrm.scene.updateMatrixWorld(true); vrm.scene.visible = true;   // 2026-11-22 座った形を当ててから出す
 window.__ready = true; UI.aoiReady(TL);
 
 // ============================================================================================
