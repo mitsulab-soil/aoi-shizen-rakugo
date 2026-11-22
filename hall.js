@@ -214,7 +214,7 @@ export async function buildHall(ctx) {
     for (const sx of [-1, 1]) { box(0.032, 1.0, 0.032, lacq, sx * 0.2, 0.5, 0, grp); box(0.06, 0.02, 0.3, lacq, sx * 0.2, 0.01, -0.06, grp); }
     box(0.46, 0.036, 0.042, lacq, 0, 0.96, 0, grp);
     // 2026-11-21：めくりを高座の上手の角の前へ寄せた（PC の席から観た画に入るように。前は画面の外だった）
-    grp.position.set(1.12, 0, 0.98); grp.rotation.y = -0.26; scene.add(grp);
+    grp.position.set(1.0, 0, 0.98); grp.rotation.y = -0.26;   // 2026-11-22：座った画で右の縁に切れないよう少し内へ scene.add(grp);
     let cur = null;
     out.mekuri = {
       set(main, small) { cur = [main, small]; draw(main, small); flipG.visible = false; },

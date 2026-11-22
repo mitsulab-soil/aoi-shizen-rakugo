@@ -26,7 +26,7 @@ const BASE = 'yose/';
 const MOBILE = matchMedia('(pointer: coarse)').matches || Math.min(innerWidth, innerHeight) < 600;
 const LITE = q.get('lite') ? q.get('lite') === '1' : MOBILE;
 // 碧の VRM は先に読みはじめる（木戸を見ているあいだに届く）
-const vrmBuf = fetch(BASE + 'aoi/aoi_kouza.vrm').then(r => { if (!r.ok) throw new Error('vrm ' + r.status); return r.arrayBuffer(); });
+// 2026-11-22：碧の VRM は木戸が出てから読む（初めの読み込みを床・壁の質感に譲る）
 let W = innerWidth, H = innerHeight;
 const DPR = Math.min(devicePixelRatio || 1, LITE ? 1.75 : 1.5);   // スマホの髪先のざらつきを抑える
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -70,6 +70,7 @@ try { await renderer.compileAsync(scene, camera); } catch (e) {}   // 2026-11-03
   requestAnimationFrame(early);
 })(performance.now());
 window.__hallReady = true; UI.hallReady(HL);
+const vrmBuf = fetch(BASE + 'aoi/aoi_kouza.vrm').then(r => { if (!r.ok) throw new Error('vrm ' + r.status); return r.arrayBuffer(); });
 // 碧と仕上げの部品は、木戸が動きだしてから読む（起動を軽く）
 const [{ GLTFLoader }, { EffectComposer }, { RenderPass }, { BokehPass }, { UnrealBloomPass }, { ShaderPass }, { OutputPass }, { MeshoptDecoder }, { VRMLoaderPlugin, VRMUtils }, RK, HC] = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/postprocessing/EffectComposer.js'), import('three/addons/postprocessing/RenderPass.js'), import('three/addons/postprocessing/BokehPass.js'), import('three/addons/postprocessing/UnrealBloomPass.js'), import('three/addons/postprocessing/ShaderPass.js'), import('three/addons/postprocessing/OutputPass.js'), import('three/addons/libs/meshopt_decoder.module.js'), import('@pixiv/three-vrm'), import('./yose/kit/rakugo.js'), import('./yose/kit/haori_cloth.js')]);
 // 2026-11-22：碧の読み込みは演目を選ぶあいだに先に始める（座ってからの待ちを短く）
