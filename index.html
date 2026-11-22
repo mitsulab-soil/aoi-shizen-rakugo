@@ -399,7 +399,7 @@ window.__UI = {
     const e0 = q.get('e') || location.hash.replace('#', '');   // 前の版の #slug のリンクも効く
     if (e0 && ENM.some(x => x.slug === e0)) { cur = e0; const w = ENM.find(x => x.slug === e0); fillList(); info(w); audio.src = `yose/enmoku/${e0}/voice.m4a`; audio.load();
       $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); if (!AUTO_SEAT) window.__UI.atAisle(); else { AUTO_SEAT = false; setTimeout(() => document.querySelector('[data-seat="naka"]')?.click(), 60); } }
-    else { fillList(); sheet('#sKido', true); document.getElementById('kidoAsk')?.classList.add('on'); hint('まねきの札を押すと、その一席へ', innerWidth < 600 ? '八席・音が出ます' : '生き物や機械の受けとり方を噺にした八席・音が出ます');   /* 2026-11-22 スマホは詰まって見えた → 短く */ }
+    else { fillList(); sheet('#sKido', true); if (innerWidth < 900) document.getElementById('kidoAsk')?.classList.add('on'); hint('まねきの札を押すと、その一席へ', innerWidth < 600 ? '八席・音が出ます' : innerWidth < 900 ? '生き物や機械の受けとり方を噺にした八席・音が出ます' : '八席・音が出ます ── 寄席を出たら、帰り道で、いちばん小さな音を探してみて');   /* 2026-11-22 PC は問いと案内を下の一か所にまとめる（上の問いは出さない） */   /* 2026-11-22 スマホは詰まって見えた → 短く */ }
   },
   atAisle() { sheet('#sSeat', true); showTags(true); hint('木札の下がった席を押して、座る', '前・中・桟敷'); },
   seated() { seated = true; maybeStart(); },
