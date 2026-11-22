@@ -185,17 +185,18 @@ if (!SELF_LIT) vrm.scene.traverse(o => { if (!o.isMesh) return;
 async function recolorKimono(K) {
   if (!K || !K.hue) return;
   const done = new Map();
-  const conv = (tex) => {
+  const conv = (tex, haori) => {
     if (!tex || !tex.image) return tex;
     if (done.has(tex)) return done.get(tex);
     const img = tex.image, w = img.width, h = img.height;
     const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
     g.drawImage(img, 0, 0); const d = g.getImageData(0, 0, w, h), px = d.data;
     const H = K.hue / 360, SK = K.sat ?? 1, LK = K.light ?? 1, GOLD = K.keepGold !== false;
+    const WT = K.white && !haori ? new THREE.Color(K.white) : null;   // 2026-11-22 白い花の柄を灯りに合う生成りへ落とす（明るすぎて膝が塊に見えた）
     for (let i = 0; i < px.length; i += 4) {
       let r = px[i] / 255, gg = px[i + 1] / 255, b = px[i + 2] / 255;
       const mx = Math.max(r, gg, b), mn = Math.min(r, gg, b), l = (mx + mn) / 2, dd = mx - mn;
-      if (dd < 0.06) continue;                                   // 白・灰・黒はそのまま
+      if (dd < 0.06) { if (WT && l > 0.55) { px[i] *= WT.r; px[i + 1] *= WT.g; px[i + 2] *= WT.b; } continue; }   // 白・灰・黒はそのまま（white の指定があれば白だけ生成りへ）
       const sat = dd / (1 - Math.abs(2 * l - 1) + 1e-6);
       let hh = mx === r ? ((gg - b) / dd) % 6 : mx === gg ? (b - r) / dd + 2 : (r - gg) / dd + 4; hh /= 6; if (hh < 0) hh += 1;
       if (GOLD && hh > 0.06 && hh < 0.16) continue;             // 金茶の筋・重ね衿の金は残す
@@ -212,7 +213,7 @@ async function recolorKimono(K) {
   };
   vrm.scene.traverse(o => { if (!o.isMesh) return; for (const mt of [].concat(o.material)) {
     if (!mt || !/Tops_01_CLOTH|Haori|Obi/i.test(mt.name || '')) continue;
-    for (const k of ['map', 'shadeMultiplyTexture', 'emissiveMap']) if (mt[k]) mt[k] = conv(mt[k]);
+    for (const k of ['map', 'shadeMultiplyTexture', 'emissiveMap']) if (mt[k]) mt[k] = conv(mt[k], /Haori/i.test(mt.name || ''));
     if (mt.uniforms) for (const k of ['map', 'shadeMultiplyTexture', 'emissiveMap']) if (mt.uniforms[k]) mt.uniforms[k].value = mt[k];
     if (mt.shadeColorFactor && K.shade) mt.shadeColorFactor.set(K.shade);
     mt.needsUpdate = true;
