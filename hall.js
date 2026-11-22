@@ -396,7 +396,7 @@ export async function buildHall(ctx) {
     box(W + 0.05, 0.03, W + 0.05, darkWood, 0, H + 0.12, 0, g); box(W + 0.05, 0.03, W + 0.05, darkWood, 0, 0.08, 0, g);
     const lamp = new THREE.PointLight(0xffc98a, 0.5, 2.4, 2); lamp.position.set(0, H / 2 + 0.08, 0); g.add(lamp);
     const hit = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.85, 0.42), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 0.4; hit.userData.andon = true; hit.userData.mat = paper; g.add(hit);
-    g.position.set(-0.62, 0.45, 0.45); g.scale.setScalar(0.8); g.rotation.y = 0.3; g.visible = false; scene.add(g);   // 高座の上・座布団の上手の手前（前幕に隠れず、座って観ている間も入る）。座ってから灯す
+    g.position.set(-0.62, 0.45, 0.45); g.scale.setScalar(0.8); g.rotation.y = 0.3; if (innerWidth < innerHeight) { g.position.set(-0.33, 0.45, -0.4); g.scale.setScalar(0.7); g.rotation.y = 0.2; }   /* 2026-11-23 スマホは碧の左うしろへ（画の左端で切れていた） */ g.visible = false; scene.add(g);   // 高座の上・座布団の上手の手前（前幕に隠れず、座って観ている間も入る）。座ってから灯す
     out.andon = {
       group: g, hit,
       set(room, why) {
