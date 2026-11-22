@@ -72,6 +72,9 @@ try { await renderer.compileAsync(scene, camera); } catch (e) {}   // 2026-11-03
 window.__hallReady = true; UI.hallReady(HL);
 // 碧と仕上げの部品は、木戸が動きだしてから読む（起動を軽く）
 const [{ GLTFLoader }, { EffectComposer }, { RenderPass }, { BokehPass }, { UnrealBloomPass }, { ShaderPass }, { OutputPass }, { MeshoptDecoder }, { VRMLoaderPlugin, VRMUtils }, RK, HC] = await Promise.all([import('three/addons/loaders/GLTFLoader.js'), import('three/addons/postprocessing/EffectComposer.js'), import('three/addons/postprocessing/RenderPass.js'), import('three/addons/postprocessing/BokehPass.js'), import('three/addons/postprocessing/UnrealBloomPass.js'), import('three/addons/postprocessing/ShaderPass.js'), import('three/addons/postprocessing/OutputPass.js'), import('three/addons/libs/meshopt_decoder.module.js'), import('@pixiv/three-vrm'), import('./yose/kit/rakugo.js'), import('./yose/kit/haori_cloth.js')]);
+// 2026-11-22：碧の読み込みは演目を選ぶあいだに先に始める（座ってからの待ちを短く）
+const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder); loader.register(p => new VRMLoaderPlugin(p));
+const gltfP = vrmBuf.then(b => loader.parseAsync(b, BASE + 'aoi/'));
 // 演目が決まるまで待つ（木戸のまねき・番組のめくり・?e=）
 const SLUG = await UI.chosen;
 const ENMO = ENM.find(e => e.slug === SLUG) || ENM[0];
@@ -106,8 +109,7 @@ const TL_URL = EBASE + 'timeline.json';
 // 碧（第 4 版と同じ。MToon のまま）
 // ============================================================================================
 const NOSPRING = q.get('spring') !== '1';   // 髪のばねは既定で切る（正座に下げると毛先が跳ねるため。2026-10-02 確かめ）
-const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder); loader.register(p => new VRMLoaderPlugin(p));
-const gltf = await loader.parseAsync(await vrmBuf, BASE + 'aoi/');
+const gltf = await gltfP;
 const vrm = gltf.userData.vrm;
 VRMUtils.removeUnnecessaryVertices(gltf.scene); VRMUtils.combineSkeletons(gltf.scene); VRMUtils.rotateVRM0(vrm);
 // 夜の会場なので、衣・髪の自発光（昼の場面に合わせた明るさ）を弱める。トゥーンの塗り分けはそのまま
