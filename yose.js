@@ -52,7 +52,7 @@ let tenugui = null;
 await document.fonts.load('400 40px PottaOne').catch(() => {});
 const HL = await buildHall({ THREE, scene, renderer, KOZA_Y, rnd, ENM, BASE, lite: LITE, RoomEnvironment: { RoomEnvironment } });
 const { particles, audience, lanternMats, flickerLights } = HL;
-HL.mekuri.set('碧');
+HL.mekuri.set('');   // 2026-11-23 本人：碧の名の紙は外す（はじめは白い紙、噺が始まるとめくって演目名）
 // 見台・膝隠しは上方の道具。既定は江戸の高座（置かない）。?kendai=1／この寄席の欄の切りかえで上方の高座
 HL.setKamigata = on => HL.kendai.forEach(o => o.visible = on);
 HL.setKamigata(q.get('kendai') === '1');
@@ -1919,7 +1919,7 @@ function clock(now) {
   if (Math.abs(p - a) > 0.15) p = a;
   clockT = p; clockPerf = now; return p;
 }
-UI.onStart(() => { started = true; startAt = performance.now() / 1000; HL.mekuri.flipTo('碧'); clockT = 0; clockPerf = startAt; });
+UI.onStart(() => { started = true; startAt = performance.now() / 1000; HL.mekuri.flipTo(ENMO.t); clockT = 0; clockPerf = startAt; });
 let lastNow = performance.now() / 1000, frames = 0;
 fullRender = (ms) => {
   const now = ms / 1000, dt = Math.max(1 / 240, Math.min(0.1, now - lastNow)); lastNow = now;

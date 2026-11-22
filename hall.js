@@ -190,13 +190,11 @@ export async function buildHall(ctx) {
     const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = maxAniso;
     const draw = (main, small) => {
       const g = cv.getContext('2d');
-      washi(g, W_, H_, 400 + main.length * 17);
-      // 2026-11-21 本人「題目の紙をもっとかっこよく」：墨の二重の罫で囲み、上に朱の帯、紙の縁は年月で焼けて黒ずむ
-      { const e = g.createLinearGradient(0, 0, W_, 0); e.addColorStop(0, 'rgba(70,40,14,.28)'); e.addColorStop(0.07, 'rgba(0,0,0,0)'); e.addColorStop(0.93, 'rgba(0,0,0,0)'); e.addColorStop(1, 'rgba(70,40,14,.28)'); g.fillStyle = e; g.fillRect(0, 0, W_, H_); }
-      g.strokeStyle = '#17110c'; g.lineWidth = 7; g.strokeRect(16, 16, W_ - 32, H_ - 32); g.lineWidth = 2; g.strokeRect(28, 28, W_ - 56, H_ - 56);
-      g.fillStyle = '#8e2418'; g.fillRect(28, 28, W_ - 56, 14);
-      yoseText(g, main, W_ / 2, 62, small ? H_ - 160 : H_ - 50, 250, '#0e0b09', W_ * 0.74);
-      if (small) { g.fillStyle = 'rgba(150,40,26,0.85)'; g.fillRect(W_ * 0.22, H_ - 140, W_ * 0.56, 3); yoseLine(g, small, W_ / 2, H_ - 86, 62, '#9c2a1c'); }
+      washi(g, W_, H_, 400 + main.length * 17, '#f6f1e4');
+      // 2026-11-23 本人「実際の寄席のめくりに近づける」：実物のめくりは、無地の白い和紙に墨一色の太い字を紙いっぱいに書いたもの（罫・朱の帯は付けない）。紙の縁はわずかに焼ける
+      { const e = g.createLinearGradient(0, 0, W_, 0); e.addColorStop(0, 'rgba(90,60,25,.16)'); e.addColorStop(0.05, 'rgba(0,0,0,0)'); e.addColorStop(0.95, 'rgba(0,0,0,0)'); e.addColorStop(1, 'rgba(90,60,25,.16)'); g.fillStyle = e; g.fillRect(0, 0, W_, H_); }
+      if (main) yoseText(g, main, W_ / 2, 70, small ? H_ - 150 : H_ - 40, 300, '#0b0907', W_ * 0.86, 0.1, 1.22);
+      if (small) yoseLine(g, small, W_ / 2, H_ - 82, 58, '#1a1410');
       tex.needsUpdate = true;
     };
     const grp = new THREE.Group();
@@ -213,8 +211,13 @@ export async function buildHall(ctx) {
     box(PWm, PHm, 0.026, back, 0, 0.6, -0.003, grp);   // 重ねた紙の束の厚み
     for (const sx of [-1, 1]) { box(0.032, 1.0, 0.032, lacq, sx * 0.2, 0.5, 0, grp); box(0.06, 0.02, 0.3, lacq, sx * 0.2, 0.01, -0.06, grp); }
     box(0.46, 0.036, 0.042, lacq, 0, 0.96, 0, grp);
+    // 2026-11-23：めくり台の上で紙の束をはさむ押さえの木（両端をつまみで締める）と、台の足もとの板
+    box(0.44, 0.05, 0.016, darkWood, 0, 0.935, 0.03, grp);
+    for (const sx of [-1, 1]) { const k = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.03, 10), lacq); k.rotation.x = Math.PI / 2; k.position.set(sx * 0.2, 0.935, 0.05); grp.add(k); }
+    box(0.5, 0.02, 0.2, lacq, 0, 0.01, -0.06, grp);
     // 2026-11-21：めくりを高座の上手の角の前へ寄せた（PC の席から観た画に入るように。前は画面の外だった）
-    grp.position.set(1.0, 0, 0.98); grp.rotation.y = -0.26;   // 2026-11-22：座った画で右の縁に切れないよう少し内へ scene.add(grp);
+    grp.position.set(0.74, KOZA_Y, 0.38); grp.rotation.y = -0.3; grp.scale.setScalar(0.78); if (innerWidth < innerHeight) { grp.position.set(0.5, KOZA_Y, -0.12); grp.scale.setScalar(0.56); }   /* スマホの縦の画角では内へ寄せて小さく */   /* 2026-11-23：実際の寄席にならい、高座の上手の脇に台ごと据える（床の高さ＝高座の上） */   // 2026-11-22：座った画で右の縁に切れないよう少し内へ
+    scene.add(grp);   // 2026-11-23：前の行の注に scene.add が入りこみ、めくりが出ていなかった
     let cur = null;
     out.mekuri = {
       set(main, small) { cur = [main, small]; draw(main, small); flipG.visible = false; },
@@ -392,7 +395,7 @@ export async function buildHall(ctx) {
     box(W + 0.05, 0.03, W + 0.05, darkWood, 0, H + 0.12, 0, g); box(W + 0.05, 0.03, W + 0.05, darkWood, 0, 0.08, 0, g);
     const lamp = new THREE.PointLight(0xffc98a, 0.5, 2.4, 2); lamp.position.set(0, H / 2 + 0.08, 0); g.add(lamp);
     const hit = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.85, 0.42), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 0.4; hit.userData.andon = true; hit.userData.mat = paper; g.add(hit);
-    g.position.set(0.6, 0.45, 0.45); g.scale.setScalar(0.8); g.rotation.y = -0.3; g.visible = false; scene.add(g);   // 高座の上・座布団の上手の手前（前幕に隠れず、座って観ている間も入る）。座ってから灯す
+    g.position.set(-0.62, 0.45, 0.45); g.scale.setScalar(0.8); g.rotation.y = 0.3; g.visible = false; scene.add(g);   // 高座の上・座布団の上手の手前（前幕に隠れず、座って観ている間も入る）。座ってから灯す
     out.andon = {
       group: g, hit,
       set(room, why) {
