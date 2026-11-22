@@ -248,7 +248,7 @@ export async function buildHall(ctx) {
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(64, 64, (c, w, h) => { const r = c.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); r.addColorStop(0, 'rgba(255,190,110,.55)'); r.addColorStop(1, 'rgba(255,140,60,0)'); c.fillStyle = r; c.fillRect(0, 0, w, h); }), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false }));
       halo.scale.setScalar(0.32); halo.position.y = 0.79; g.add(halo);
       const pl = new THREE.PointLight(0xff9a48, 0.9, 3.6, 2); pl.position.y = 0.82; g.add(pl);
-      g.position.set(sx * 1.26, 0, sx < 0 ? 0.55 : 0.25); scene.add(g);
+      g.position.set(sx < 0 ? -1.26 : 1.5, 0, 0.55); scene.add(g);   // 2026-11-22：上手の燭台はめくりの陰に隠れていた→めくりの外側（上手寄り）へ
       out.flames.push({ f1, f2, halo, pl, base: 0.9, s: sx * 3.1 + 7 });
     }
   }
