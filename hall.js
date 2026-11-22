@@ -358,9 +358,9 @@ export async function buildHall(ctx) {
       }
     }
     const eye = (x, y, z) => new THREE.Vector3(x, y, z);
-    out.seats = {
-      mae: { pos: eye(0.75, HALL_Y + 1.16, 2.78), name: '前の席' },
-      naka: { pos: eye(-0.75, HALL_Y + 1.16, 4.38), name: 'まん中の席' },
+    out.seats = {   // 2026-11-22 PC で前の客の頭が手前に大きく入り碧の顔が隠れた → 目の高さを少し上げる
+      mae: { pos: eye(0.75, HALL_Y + 1.3, 2.78), name: '前の席' },
+      naka: { pos: eye(-0.75, HALL_Y + 1.32, 4.38), name: 'まん中の席' },
       sajiki: { pos: eye(-4.55, HALL_Y + 0.38 + 0.78, 3.35), name: '桟敷' },
     };
     out.aisle = eye(0, HALL_Y + 1.58, 6.2);
@@ -376,7 +376,7 @@ export async function buildHall(ctx) {
     const string = new THREE.MeshBasicMaterial({ color: 0x2a1a10 });
     for (const [k, t, s2, tx] of [['sajiki', '桟敷', '畳の横', -0.4], ['naka', '中', '全体が見える', 0], ['mae', '前', '高座の近く', 0.4]]) {   // 通路に立った目の前に、左から桟敷・中・前（席のある向きの順）
       const S = out.seats[k], m = new THREE.MeshStandardMaterial({ map: tagTex(t, s2), roughness: 0.8, emissive: 0xffe2b0, emissiveIntensity: 0.18 }); m.emissiveMap = m.map;
-      const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.4), m); tag.position.set(tx, out.aisle.y - 0.32, 4.45); tag.lookAt(out.aisle.x, out.aisle.y, out.aisle.z);
+      const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.4), m); tag.position.set(tx, out.aisle.y - 0.47, 4.45);   /* 2026-11-22 札が高座の碧の顔を隠していた → 少し下げる */ tag.lookAt(out.aisle.x, out.aisle.y, out.aisle.z);
       const cord = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.5, 0.008), string); cord.position.set(0, 0.5, 0); tag.add(cord);
       const hit = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.6, 0.2), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(0, -0.03, 0); tag.add(hit);
       tag.userData.seat = k; hit.userData.seat = k; tag.userData.mat = m; hit.userData.mat = m; tag.visible = false; scene.add(tag); out.seatTags.push(tag, hit);
