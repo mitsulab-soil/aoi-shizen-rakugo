@@ -198,7 +198,7 @@ export async function buildHall(ctx) {
       tex.needsUpdate = true;
     };
     const grp = new THREE.Group();
-    const pm = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9 });
+    const pm = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, emissive: 0xfff4e0, emissiveMap: tex, emissiveIntensity: 0.32 });   // 2026-11-23 紙が灰色に沈む → 白く
     const back = new THREE.MeshStandardMaterial({ color: 0xe8e2d2, roughness: 0.95 });
     const PWm = 0.36, PHm = 0.66;
     const paper = new THREE.Mesh(new THREE.PlaneGeometry(PWm, PHm), pm); paper.position.set(0, 0.6, 0.012); grp.add(paper);
@@ -390,7 +390,8 @@ export async function buildHall(ctx) {
     const g = new THREE.Group(); const H = 0.62, W = 0.3;
     let cv = null; const tex = canvasTex(256, 512, (c) => { cv = c.canvas; });
     const paper = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, emissive: 0xffd8a0, emissiveIntensity: 0.55, side: THREE.DoubleSide }); paper.emissiveMap = tex;
-    for (let i = 0; i < 4; i++) { const p = new THREE.Mesh(new THREE.PlaneGeometry(W, H), paper); const a = i * Math.PI / 2; p.position.set(Math.sin(a) * W / 2, H / 2 + 0.08, Math.cos(a) * W / 2); p.rotation.y = a; g.add(p); }
+    const sidePaper = new THREE.MeshStandardMaterial({ color: 0xf3e8d2, roughness: 0.9, emissive: 0xffd8a0, emissiveIntensity: 0.55, side: THREE.DoubleSide });   // 2026-11-23 字は正面だけ（横から二重に読めた）
+    for (let i = 0; i < 4; i++) { const p = new THREE.Mesh(new THREE.PlaneGeometry(W, H), i ? sidePaper : paper); const a = i * Math.PI / 2; p.position.set(Math.sin(a) * W / 2, H / 2 + 0.08, Math.cos(a) * W / 2); p.rotation.y = a; g.add(p); }
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(0.025, H + 0.12, 0.025, darkWood, sx * W / 2, (H + 0.12) / 2, sz * W / 2, g);
     box(W + 0.05, 0.03, W + 0.05, darkWood, 0, H + 0.12, 0, g); box(W + 0.05, 0.03, W + 0.05, darkWood, 0, 0.08, 0, g);
     const lamp = new THREE.PointLight(0xffc98a, 0.5, 2.4, 2); lamp.position.set(0, H / 2 + 0.08, 0); g.add(lamp);
