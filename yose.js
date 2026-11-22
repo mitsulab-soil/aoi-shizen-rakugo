@@ -1024,8 +1024,8 @@ function pose(t) {
   rot('spine', 0.04 + 0.46 * bow + 0.30 * rb, yaw * 0.18, sway * 0.5);   // 2026-10-06 お辞儀を深く（落語好き「浅い会釈」）
   rot('chest', -0.012 * br + 0.12 * bow + 0.10 * rb, yaw * 0.20, sway * 0.5);
   rot('upperChest', -0.010 * br, yaw * 0.10, 0);
-  rot('neck', 0.03 + 0.12 * bow + nod * 0.4, yaw * 0.25, sway);
-  rot('head', 0.04 + 0.14 * bow + nod, yaw * 0.34 + 0.03 * Math.sin(t * 0.53 + 2.0), sway * 0.8 - yaw * 0.12);
+  rot('neck', 0.03 + 0.03 * bow + nod * 0.4, yaw * 0.25, sway);
+  rot('head', 0.04 - 0.04 * bow + nod,   /* 2026-11-22 礼のいちばん下で頭頂だけが見え、顔が黒い塊に見えた → 首と頭は前へ倒しすぎず（背は深いまま） */ yaw * 0.34 + 0.03 * Math.sin(t * 0.53 + 2.0), sway * 0.8 - yaw * 0.12);
   // 腕：膝の上へ（FK）。手振りのときは前腕を起こす。所作（見立て・羽織）のときは手の行き先を決めて IK で腕を解く
   const A = actAt(t);
   const G = A.w > 0.01 ? { g: 0, side: 0 } : gestureAt(t);
