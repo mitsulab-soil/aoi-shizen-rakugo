@@ -183,6 +183,8 @@
 </header>
 
 <!-- 木戸 -->
+<p id="kidoAsk">寄席を出たら、帰り道で、いちばん小さな音を探してみて。</p>
+<style>#kidoAsk{display:none}@media (max-width:767px){#kidoAsk{display:block;position:fixed;left:50%;transform:translateX(-50%);width:calc(100vw - 48px);top:calc(env(safe-area-inset-top) + 118px);margin:0;text-align:center;font:400 14px/1.8 var(--ml-serif,serif);letter-spacing:.08em;color:#e6dcc6;opacity:0;transition:opacity .8s;pointer-events:none;z-index:5;text-shadow:0 0 8px #000}#kidoAsk.on{opacity:.9}}   /* 2026-11-22 スマホの入口の上の黒い所に、現実へ戻る問いを一行 */</style>
 <section class="sheet off" id="sKido" aria-label="木戸">
   <div class="in">
     <p class="ml-kicker">Qualia Layer ── 語り ／ told by Aoi</p>
@@ -355,7 +357,7 @@ function choose(slug) {
   cur = slug; fillList(); info(w); unlock(); ichibanDaiko(); startMurmur();
   audio.src = `yose/enmoku/${slug}/voice.m4a`; audio.load();
   history.replaceState(null, '', `?e=${slug}`);
-  sheet('#sKido', false); $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`;
+  sheet('#sKido', false); document.getElementById('kidoAsk')?.classList.remove('on'); $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`;
   window.__CAM.walkIn(performance.now() / 1000);
   chosenRes(slug);
 }
@@ -397,7 +399,7 @@ window.__UI = {
     const e0 = q.get('e') || location.hash.replace('#', '');   // 前の版の #slug のリンクも効く
     if (e0 && ENM.some(x => x.slug === e0)) { cur = e0; const w = ENM.find(x => x.slug === e0); fillList(); info(w); audio.src = `yose/enmoku/${e0}/voice.m4a`; audio.load();
       $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); if (!AUTO_SEAT) window.__UI.atAisle(); else { AUTO_SEAT = false; setTimeout(() => document.querySelector('[data-seat="naka"]')?.click(), 60); } }
-    else { fillList(); sheet('#sKido', true); hint('まねきの札を押すと、その一席へ', '生き物や機械の受けとり方を噺にした八席・音が出ます'); }
+    else { fillList(); sheet('#sKido', true); document.getElementById('kidoAsk')?.classList.add('on'); hint('まねきの札を押すと、その一席へ', '生き物や機械の受けとり方を噺にした八席・音が出ます'); }
   },
   atAisle() { sheet('#sSeat', true); showTags(true); hint('木札の下がった席を押して、座る', '前・中・桟敷'); },
   seated() { seated = true; maybeStart(); },
