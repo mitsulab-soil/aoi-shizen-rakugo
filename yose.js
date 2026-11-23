@@ -117,6 +117,8 @@ VRMUtils.removeUnnecessaryVertices(gltf.scene); VRMUtils.combineSkeletons(gltf.s
 // 2026-10-04 夜 本人「碧が少し透明感がありすぎる…もう少し自然な感じに」：自発光をさらに弱め（寄席では 0.12 倍）、縁の光（rim）も 0.35 倍に
 const EMI = Number(q.get('emi') ?? (VENUE === 'mori' ? 0.3 : 0.12)), RIMK = Number(q.get('rimk') ?? (VENUE === 'mori' ? 1 : 0.35));
 const haoriMats = [], haoriMeshes = [];
+// 2026-11-23 桟敷（横）から観ると、正座の後ろに黒い靴が突き出て見えた → 高座では白い足袋の色に
+vrm.scene.traverse(o => { if (!o.isMesh) return; for (const mt of [].concat(o.material)) if (mt && /Shoes/i.test(mt.name || '')) { if (mt.color) mt.color.set(0xeee8dc); if (mt.shadeColorFactor) mt.shadeColorFactor.set(0xb8b0a2); if (mt.map) { mt.map = null; mt.needsUpdate = true; } if (mt.outlineColorFactor) mt.outlineColorFactor.set(0x6a6258); } });
 vrm.scene.traverse(o => { o.frustumCulled = false; if (o.isMesh) { o.castShadow = true; o.receiveShadow = true;
   for (const mt of [].concat(o.material)) { if (!mt) continue;
     if (mt.emissive) mt.emissive.multiplyScalar(EMI);
@@ -228,7 +230,7 @@ if (NOSPRING) vrm.springBoneManager = undefined;
 const P = {
   thigh: Number(q.get('thigh') ?? -1.35), shin: Number(q.get('shin') ?? 2.75), foot: Number(q.get('foot') ?? 0.9),
   spread: Number(q.get('spread') ?? 0.10), hipUp: Number(q.get('hipup') ?? 0.18),
-  uaZ: Number(q.get('uaz') ?? 1.30), uaX: Number(q.get('uax') ?? -0.30), laY: Number(q.get('lay') ?? -0.50), uaY: Number(q.get('uay') ?? -0.80), laZ: Number(q.get('laz') ?? 0), handX: Number(q.get('handx') ?? 0.0),
+  uaZ: Number(q.get('uaz') ?? 1.30), uaX: Number(q.get('uax') ?? -0.42)   /* 2026-11-23 横（桟敷）から観ると手が膝の着物にめり込んだ → 腕を少し前へ起こし、手を膝の上に浮かせる */, laY: Number(q.get('lay') ?? -0.50), uaY: Number(q.get('uay') ?? -0.80), laZ: Number(q.get('laz') ?? 0), handX: Number(q.get('handx') ?? 0.0),
 };
 function basePose() {
   for (const [s, side] of [[1, 'left'], [-1, 'right']]) {

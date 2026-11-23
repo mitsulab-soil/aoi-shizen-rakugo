@@ -293,6 +293,8 @@ export async function buildHall(ctx) {
     }
     // 格天井：格縁の間に杉の鏡板（Poly Haven CC0 japanese_cedar_planks）。煤けた古い色
     const ceil = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, BACK_Z - 1.0), texMat(SUGI, 6, 4, 0x6e5238, 0.75));
+    // 2026-11-23 格天井が暗くて見えない → 客席の上に、天井を照らす灯（吊り行灯の上へ漏れる光）を一つ
+    { const up = new THREE.PointLight(0xffb878, 0.9, 7.5, 1.6); up.position.set(0, CEIL_Y - 0.55, (BACK_Z + STAGE_Z1) / 2); scene.add(up); out.flickerLights.push([up, 0.05]); }
     ceil.rotation.x = Math.PI / 2; ceil.position.set(0, CEIL_Y, (BACK_Z + 1.0) / 2); scene.add(ceil); out.ceiling = ceil;
     for (let x = -WALL_X + 0.9; x < WALL_X; x += 0.9) box(0.08, 0.1, BACK_Z - 1.0, darkWood, x, CEIL_Y - 0.05, (BACK_Z + 1.0) / 2);
     for (let z = 1.5; z <= BACK_Z; z += 0.9) box(2 * WALL_X, 0.1, 0.08, darkWood, 0, CEIL_Y - 0.05, z);
@@ -301,6 +303,13 @@ export async function buildHall(ctx) {
     for (const sx of [-1, 1]) { const p = new THREE.Mesh(new THREE.PlaneGeometry(WALL_X - 0.75, CEIL_Y - HALL_Y), bw); p.rotation.y = Math.PI; p.position.set(sx * (WALL_X + 0.75) / 2, (CEIL_Y + HALL_Y) / 2, BACK_Z); scene.add(p); }
     { const p = new THREE.Mesh(new THREE.PlaneGeometry(1.5, CEIL_Y - 1.4), bw); p.rotation.y = Math.PI; p.position.set(0, (CEIL_Y + 1.4) / 2, BACK_Z); scene.add(p); }
   }
+  // 2026-11-23 本人の参考画像：奥の灯は大きくぼけた光の玉に（被写界深度の模式。光る板を重ねるだけ・スマホは数を減らす）
+  { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, 'rgba(255,214,150,.95)'); gr.addColorStop(.55, 'rgba(255,196,120,.55)'); gr.addColorStop(.8, 'rgba(255,186,110,.18)'); gr.addColorStop(1, 'rgba(255,180,100,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    const bm = new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.32, fog: false });
+    const P = [[-4.9, 2.5, 7.6, 1.1], [4.9, 2.4, 7.2, 1.0], [-5.0, 2.1, 5.2, 0.8], [5.0, 2.2, 4.6, 0.85], [-1.6, 3.0, 8.2, 1.3], [1.9, 2.8, 8.3, 1.2], [-3.2, 0.9, -2.6, 0.9], [3.4, 1.1, -2.7, 1.0], [0.0, 3.2, -2.9, 1.4]];
+    for (const [x, y, z, s0] of (LITE ? P.slice(0, 5) : P)) { const sp = new THREE.Sprite(bm); sp.position.set(x, y, z); sp.scale.setScalar(s0); scene.add(sp); } }
   // ---- 提灯（左右の壁に一列。紋だけ・字は書かない）
   const paperLantern = (seed, accent) => canvasTex(256, 256, (g, w, h) => {
     const gr = g.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, w * 0.7); gr.addColorStop(0, '#fff6dc'); gr.addColorStop(1, '#e9c88e'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
@@ -359,7 +368,7 @@ export async function buildHall(ctx) {
       const x = sx * cx;
       const back = new THREE.Mesh(chairGeoBack, seatM); back.position.set(x, HALL_Y + 0.68, z + 0.28); scene.add(back);
       const cu = new THREE.Mesh(chairGeoCush, seatM); cu.position.set(x, HALL_Y + 0.42, z + 0.05); scene.add(cu);
-      if (!keep.has(`${x},${z}`) && rnd(n + 400) < 0.62) person(x, HALL_Y + 0.46, z, n, false);
+      if (!keep.has(`${x},${z}`) && !(x < -2 && z < 3.4) && rnd(n + 400) < 0.62)   /* 2026-11-23 桟敷から観ると左端の前の客の頭がめくりを隠した */ person(x, HALL_Y + 0.46, z, n, false);
       n++;
     }
     // 桟敷
@@ -369,7 +378,7 @@ export async function buildHall(ctx) {
       box(1.4, 0.06, 0.06, darkWood, sx * 4.75, HALL_Y + 0.38, 2.2);
       for (let z = 2.6; z < 7.8; z += 0.75) {
         const zb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.06, 0.52), new THREE.MeshStandardMaterial({ color: 0x4a2030, roughness: 0.9 })); zb.position.set(sx * 4.55, HALL_Y + 0.38, z); scene.add(zb);
-        if (!(sx < 0 && Math.abs(z - 3.35) < 0.1) && rnd(n + 500) < 0.55) person(sx * 4.55, HALL_Y + 0.37 - 0.12, z, n, true);
+        if (!(sx < 0 && z < 3.4) && rnd(n + 500) < 0.55)   /* 2026-11-23 桟敷の席の一つ前の客の頭がめくりを隠した → 空ける */ person(sx * 4.55, HALL_Y + 0.37 - 0.12, z, n, true);
         n++;
       }
     }
@@ -393,7 +402,7 @@ export async function buildHall(ctx) {
     for (const [k, t, s2, tx] of [['sajiki', '桟敷', '畳の横', -0.4], ['naka', '中', '全体が見える', 0], ['mae', '前', '高座の近く', 0.4]]) {   // 通路に立った目の前に、左から桟敷・中・前（席のある向きの順）
       const S = out.seats[k], m = new THREE.MeshStandardMaterial({ map: tagTex(t, s2), roughness: 0.8, emissive: 0xffe2b0, emissiveIntensity: 0.18 }); m.emissiveMap = m.map;
       const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.4), m); tag.position.set(tx, out.aisle.y - 0.47, 4.45);   /* 2026-11-22 札が高座の碧の顔を隠していた → 少し下げる */ tag.lookAt(out.aisle.x, out.aisle.y, out.aisle.z);
-      const cord = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.5, 0.008), string); cord.position.set(0, 0.5, 0); tag.add(cord);
+      const cord = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.5, 0.008), string); cord.position.set(0, 0.5, 0); cord.visible = Math.abs(tx - out.aisle.x) > 0.05; tag.add(cord);   /* 2026-11-23 真ん中の札の紐が高座の碧を縦に貫いて見えた → 真ん中だけ紐を見せない */
       const hit = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.6, 0.2), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(0, -0.03, 0); tag.add(hit);
       if (innerWidth / innerHeight < .8) tag.scale.setScalar(.72);   /* 2026-11-22 スマホで席の札が高座を大きく隠した → 小さく（押せる範囲 hit はそのまま） */ tag.userData.seat = k; hit.userData.seat = k; tag.userData.mat = m; hit.userData.mat = m; tag.visible = false; scene.add(tag); out.seatTags.push(tag, hit);
     }
@@ -409,7 +418,7 @@ export async function buildHall(ctx) {
     box(W + 0.05, 0.03, W + 0.05, darkWood, 0, H + 0.12, 0, g); box(W + 0.05, 0.03, W + 0.05, darkWood, 0, 0.08, 0, g);
     const lamp = new THREE.PointLight(0xffc98a, 0.5, 2.4, 2); lamp.position.set(0, H / 2 + 0.08, 0); g.add(lamp);
     const hit = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.85, 0.42), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 0.4; hit.userData.andon = true; hit.userData.mat = paper; g.add(hit);
-    g.position.set(-0.62, 0.45, 0.45); g.scale.setScalar(0.8); g.rotation.y = 0.3; if (innerWidth < innerHeight) { g.position.set(-0.33, 0.45, -0.4); g.scale.setScalar(0.7); g.rotation.y = 0.2; }   /* 2026-11-23 スマホは碧の左うしろへ（画の左端で切れていた） */ g.visible = false; scene.add(g);   // 高座の上・座布団の上手の手前（前幕に隠れず、座って観ている間も入る）。座ってから灯す
+    g.position.set(-1.05, 0.45, 0.05); g.scale.setScalar(0.8); g.rotation.y = 0.3;   /* 2026-11-23 桟敷から観ると行灯が碧の体を隠した → 下手の奥へ */ if (innerWidth < innerHeight) { g.position.set(-0.33, 0.45, -0.4); g.scale.setScalar(0.7); g.rotation.y = 0.2; }   /* 2026-11-23 スマホは碧の左うしろへ（画の左端で切れていた） */ g.visible = false; scene.add(g);   // 高座の上・座布団の上手の手前（前幕に隠れず、座って観ている間も入る）。座ってから灯す
     out.andon = {
       group: g, hit,
       set(room, why) {

@@ -169,6 +169,11 @@
 </head>
 <body>
 <script src="loader/loader.js"></script>
+<style id="rk1123mood">/* 2026-11-23 本人の参考画像「落語の世界観」：くすんだ緑と琥珀の色調・強い明暗・周りの暗がり・映画のような粒子（画の上に薄く重ねるだけ。3D の重さは変えない） */
+#stage canvas{filter:sepia(.2) saturate(.8) contrast(1.12) brightness(.95) hue-rotate(-6deg)}
+#stage::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse 75% 70% at 50% 52%,rgba(0,0,0,0) 45%,rgba(4,6,3,.72) 100%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .35 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.9;mix-blend-mode:normal}
+@media (prefers-reduced-motion:no-preference){#stage::after{background-blend-mode:normal}}
+</style>
 <div id="stage"></div>
 <div class="loading" id="loading">寄席へ</div>
 <div id="subband"></div>
