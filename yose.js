@@ -1905,7 +1905,7 @@ function renderLive(t, now, dt) {
   // 寄っているときは主光とにじみを一段落とす（顔が白く飛ばないように）
   const close = Math.max(0, Math.min(1, (0.75 - c.h) / 0.4));
   if (KEYL) KEYL.intensity *= 1 - 0.2 * close; bloom.strength = BLOOM0 * (1 - 0.2 * close);
-  if (POST) { bokeh.uniforms.focus.value = c.dist; bokeh.uniforms.aperture.value = 0.0016 * (1 + 2.2 * close); bokeh.uniforms.maxblur.value = 0.009; }
+  if (POST) { bokeh.uniforms.focus.value = c.dist; bokeh.uniforms.aperture.value = 0.0016 * (1 + 2.2 * close) * (CAM.phaseName() === 'aisle' ? 0.2 : 1);   /* 2026-11-24 席を選ぶ札がぼけて字が読めなかった */ bokeh.uniforms.maxblur.value = 0.009; }
   world(t, now);
   QX.set(now, qLevel(t)); UI.qualia(QDEF.label, qLevel(t));
   grade.uniforms.uFrame.value = Math.floor(now * 30) % 997;

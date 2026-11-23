@@ -41,7 +41,7 @@ export async function buildHall(ctx) {
   // 2026-11-21 本人「演目の紙もかっこよく」：めくり・まねき・行灯の字＝Yuji Boku（OFL・太い筆の字。既存の寄席文字の意匠は写さず、
   // 太らせて詰めた縦組みと墨のにじみで寄席の札らしく）。紙は楮の繊維とむらを描いた和紙
   const YF = 'YujiBoku';
-  try { const ff = new FontFace(YF, `url(${BASE}fonts/yuji-boku.woff2)`); document.fonts.add(await ff.load()); } catch (e) { /* 読めなければ PottaOne */ }
+  try { const ff = new FontFace(YF, `url(${BASE}fonts/yuji-boku.woff2)`); document.fonts.add(await Promise.race([ff.load(), new Promise((_, rj) => setTimeout(rj, 450))])); }   /* 2026-11-24 起動を待たせない（index.html で先に読み始める・遅ければ PottaOne） */ catch (e) { /* 読めなければ PottaOne */ }
   const washi = (g, w, h, s0, base = '#f0e7d2') => {
     g.fillStyle = base; g.fillRect(0, 0, w, h);
     for (let i = 0; i < 36; i++) { const x = rnd(s0 + i) * w, y = rnd(s0 + i + 50) * h, r = (0.12 + rnd(s0 + i + 99) * 0.3) * w, a = 0.03 + 0.05 * rnd(s0 + i + 7);
@@ -148,7 +148,7 @@ export async function buildHall(ctx) {
       for (let i = 0; i < 60; i++) { const x = rnd(i + 41) * w, y = rnd(i + 43) * h, r = 30 + rnd(i + 45) * 220; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, rnd(i + 49) > 0.3 ? `rgba(52,32,10,${0.06 + 0.12 * rnd(i + 47)})` : `rgba(255,226,150,${0.05 + 0.06 * rnd(i + 47)})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r); }
       const b = g.createLinearGradient(0, h * 0.55, 0, h); b.addColorStop(0, 'rgba(36,22,8,0)'); b.addColorStop(1, 'rgba(36,22,8,0.42)'); g.fillStyle = b; g.fillRect(0, 0, w, h);
     });
-    const fm = new THREE.MeshStandardMaterial({ map: fusuma, roughness: 0.5, metalness: 0.35, envMapIntensity: 1.2 });
+    const fm = new THREE.MeshStandardMaterial({ map: fusuma, roughness: 0.5, metalness: 0.35, envMapIntensity: 0.55, color: 0xb8a890 });   /* 2026-11-24 金屏風を一段落とし、碧を浮かせる */
     // 袖の障子（向こうの灯が透ける）
     const shoji = canvasTex(256, 512, (g, w, h) => {
       const gr = g.createRadialGradient(w * 0.5, h * 0.62, 10, w * 0.5, h * 0.62, h * 0.75); gr.addColorStop(0, '#ffdca4'); gr.addColorStop(0.6, '#c98f4c'); gr.addColorStop(1, '#5a3418'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
@@ -269,12 +269,12 @@ export async function buildHall(ctx) {
   }
   // ---- 舞台の灯（上手前の主光・下手前の補い・後ろ上の縁・襖を洗う灯）
   {
-    const key = new THREE.SpotLight(0xffc584, 1.22, 0, THREE.MathUtils.degToRad(19), 0.7, 0);
-    key.position.set(1.2, 4.3, 3.8); key.target.position.set(0, 1.0, 0); scene.add(key, key.target);
+    const key = new THREE.SpotLight(0xffc584, 1.45, 0, THREE.MathUtils.degToRad(15), 0.6, 0);
+    key.position.set(2.6, 3.9, 2.9);   /* 2026-11-24 本人の参考画像：上手の斜め上から、碧だけにあたたかい光 */ key.target.position.set(0, 1.0, 0); scene.add(key, key.target);
     key.castShadow = true; key.shadow.mapSize.set(LITE ? 1024 : 2048, LITE ? 1024 : 2048); key.shadow.bias = -0.0003; key.shadow.normalBias = 0.02;
     const fill = new THREE.SpotLight(0xffd8b0, 0.17, 0, THREE.MathUtils.degToRad(24), 0.8, 0); fill.position.set(-2.4, 2.6, 3.2); fill.target.position.set(0, 1.0, 0); scene.add(fill, fill.target);
     const back = new THREE.SpotLight(0xffe2bd, 0.75, 0, THREE.MathUtils.degToRad(20), 0.6, 0); back.position.set(0.3, 3.6, -1.0); back.target.position.set(0, 1.2, 0.1); scene.add(back, back.target);
-    const wash = new THREE.SpotLight(0xffc888, 0.1, 0, THREE.MathUtils.degToRad(36), 0.9, 0); wash.position.set(0, 3.0, 1.6); wash.target.position.set(0, 0.9, -1.15); scene.add(wash, wash.target);
+    const wash = new THREE.SpotLight(0xffc888, 0.04, 0, THREE.MathUtils.degToRad(36), 0.9, 0); wash.position.set(0, 3.0, 1.6); wash.target.position.set(0, 0.9, -1.15); scene.add(wash, wash.target);
     const mk = new THREE.SpotLight(0xffe6c0, 0.5, 0, THREE.MathUtils.degToRad(12), 0.6, 0); mk.position.set(2.0, 3.2, 3.0); mk.target.position.set(1.12, 0.6, 0.98); scene.add(mk, mk.target);
     out.stageLights = [key, fill, back, wash, mk]; for (const l of out.stageLights) l.userData.k0 = l.intensity;
     out.keyLight = key;
