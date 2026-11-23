@@ -254,8 +254,8 @@ export function createStageLayer(ctx, score, opt = {}) {
   // 冒頭の礼（題の札のあいだに下げていて、札が消えてから上げるのを見せる）
   function titleBow(t) {
     const a = ctx.TL.title_sec;   // 声の始まり
-    if (t >= a) return null;
-    return 1 - ease((t - (a - 1.05)) / 0.9);   // 下げたまま止めて、a−1.05 から上げはじめ、a−0.15 で上がりきる
+    if (t >= a || (typeof window !== 'undefined' && !window.__yStarted)) return null;   // 2026-11-24 席を選ぶあいだは顔を上げて待つ（始まってから下げる）
+    return Math.min(ease(t / 0.7), 1 - ease((t - (a - 1.05)) / 0.9));   // 下げたまま止めて、a−1.05 から上げはじめ、a−0.15 で上がりきる
   }
   // ---- 手を置く（二つの骨の IK＝stage.html の ik2）。target＝手の骨の行き先（世界）・Rq＝手の向き（世界）・w＝今の形からの寄せ具合
   const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
