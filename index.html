@@ -12,7 +12,7 @@
 <meta property="og:image" content="img/hp_card_640x400.webp">
 <meta property="og:type" content="website">
 <link rel="icon" href="favicon/favicon.ico" sizes="any"><link rel="icon" href="favicon/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="favicon/apple-touch-icon.png"><link rel="manifest" href="favicon/manifest.webmanifest">
-<link rel="preload" href="yose/fonts/potta.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="yose/fonts/potta_a.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600&family=Inter:wght@400;500&family=Cormorant+Garamond:ital,wght@1,500&family=JetBrains+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <script type="importmap">
@@ -22,9 +22,11 @@
   "@pixiv/three-vrm": "./vendor/three-vrm/three-vrm.module.min.js"
 } }
 </script>
-<link rel="preload" href="yose/fonts/yuji-boku.woff2" as="font" type="font/woff2" crossorigin><link rel="modulepreload" href="vendor/three/build/three.module.js"><link rel="modulepreload" href="vendor/three/build/three.core.js"><link rel="modulepreload" href="yose.js"><link rel="modulepreload" href="hall.js"><link rel="modulepreload" href="enmoku.js">
+<link rel="preload" href="yose/fonts/yuji-boku.woff2" as="font" type="font/woff2" crossorigin><link rel="modulepreload" href="vendor/three/build/three.module.js"><link rel="modulepreload" href="vendor/three/build/three.core.js"><link rel="modulepreload" href="yose.js"><link rel="modulepreload" href="hall.js"><link rel="modulepreload" href="enmoku.js"><link rel="modulepreload" href="vendor/three/examples/jsm/environments/RoomEnvironment.js">
 <style>
-  @font-face{font-family:"PottaOne";src:url("yose/fonts/potta.woff2") format("woff2");font-display:block}
+  /* 2026-11-24 起動を 2 秒以内に：木戸の札で使う字（約 180 字・43 KB）だけを先に読み、残りの字は使うときに読む */
+  @font-face{font-family:"PottaOneRest";src:url("yose/fonts/potta_b.woff2") format("woff2");font-display:block}
+  @font-face{font-family:"PottaOne";src:url("yose/fonts/potta_a.woff2") format("woff2");font-display:block;unicode-range:U+0020,U+0022,U+0023,U+0024,U+0025,U+0027,U+0028,U+0029,U+002A,U+002B,U+002C,U+002D,U+002E,U+002F,U+0030,U+0031,U+0032,U+0033,U+0034,U+0035,U+0036,U+0037,U+0038,U+0039,U+003A,U+003B,U+003D,U+003E,U+003F,U+0041,U+0042,U+0043,U+0044,U+0045,U+0046,U+0047,U+0048,U+004B,U+004C,U+004D,U+004E,U+004F,U+0050,U+0051,U+0052,U+0053,U+0054,U+0055,U+0056,U+0059,U+005F,U+0061,U+0062,U+0063,U+0064,U+0065,U+0066,U+0067,U+0068,U+0069,U+006A,U+006B,U+006C,U+006D,U+006E,U+006F,U+0070,U+0072,U+0073,U+0074,U+0075,U+0076,U+0077,U+0078,U+0079,U+007A,U+007B,U+007C,U+007D,U+3042,U+3044,U+3046,U+3048,U+304B,U+304C,U+304D,U+304F,U+3055,U+3057,U+3059,U+305A,U+305C,U+305F,U+3061,U+3064,U+3067,U+3068,U+306A,U+306B,U+306E,U+3078,U+3079,U+307E,U+307F,U+3081,U+3082,U+3084,U+3088,U+3089,U+308B,U+308C,U+3092,U+3093,U+4E00,U+4E03,U+4E09,U+4E2D,U+4E57,U+4E8C,U+4E94,U+4F53,U+5149,U+5168,U+516B,U+516D,U+5176,U+5199,U+5206,U+523B,U+524D,U+5302,U+53D7,U+56DB,U+571F,U+5730,U+591C,U+5B88,U+5BC4,U+5E2D,U+5EA7,U+604B,U+63FA,U+6577,U+6587,U+65B9,U+661F,U+666F,U+6708,U+6765,U+685F,U+6A2A,U+6B05,U+6B21,U+7269,U+72AC,U+7372,U+7559,U+756A,U+7573,U+767E,U+76EE,U+771F,U+79D2,U+7B11,U+7C92,U+7CF8,U+7D04,U+8033,U+805E,U+82B1,U+86DB,U+86FE,U+8702,U+8718,U+898B,U+8FD1,U+9045,U+9053,U+96E8,U+9762,U+98A8,U+9928,U+9AD8}
   @font-face{font-family:"KleeSub";src:url("yose/fonts/klee-sb.woff2") format("woff2");font-weight:600;font-display:swap}
   /* mitsulab の共通トークン（12_ブランド/_共通3D/tokens.css から、このページで使う分）。層の色＝culture（小豆） */
   :root{
@@ -35,7 +37,7 @@
     --ml-serif:"Shippori Mincho","Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
     --ml-sans:"Inter","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP",sans-serif;
     --ml-latin:"Cormorant Garamond","Times New Roman",serif; --ml-mono:"JetBrains Mono",ui-monospace,monospace;
-    --yose:"PottaOne","Hiragino Mincho ProN",serif;
+    --yose:"PottaOne","PottaOneRest","Hiragino Mincho ProN",serif;
     --ml-radius:2px; --ml-ease:cubic-bezier(.22,.61,.36,1); --ml-t-fast:.18s; --ml-t:.42s;
     --g:16px; --sb:env(safe-area-inset-bottom,0px); color-scheme:dark;
   }

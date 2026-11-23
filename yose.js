@@ -49,7 +49,7 @@ const KOZA_Y = 0.45;            // 高座の高さ（座布団の下の台）
 const ZB_H = 0.11;              // 座布団の厚み
 const reflectors = [];
 let tenugui = null;
-await document.fonts.load('400 40px PottaOne').catch(() => {});
+await document.fonts.load('400 40px PottaOne', '寄席其の一蜂目').catch(() => {});
 const HL = await buildHall({ THREE, scene, renderer, KOZA_Y, rnd, ENM, BASE, lite: LITE, RoomEnvironment: { RoomEnvironment } });
 const { particles, audience, lanternMats, flickerLights } = HL;
 HL.mekuri.set('');   // 2026-11-23 本人：碧の名の紙は外す（はじめは白い紙、噺が始まるとめくって演目名）
@@ -222,6 +222,61 @@ async function recolorKimono(K) {
   } });
 }
 await recolorKimono(TL.kimono || (q.get('kimono') ? JSON.parse(q.get('kimono')) : null));
+// 2026-11-24 膝の着物が丸い塊に見えた → 正座の膝の形と布の折れを、着物の陰で描く（形は変えず、陰と明るみだけ）。
+//   ・左右の膝のあいだの谷（裾の合わせ）を暗く・膝頭のまわりは明るく丸く
+//   ・膝から帯へ向かって、布が引かれてできる斜めの折れ（数本・浅く）
+//   ・膝の脇と下は陰へ落とす（塊でなく二つの膝と腿に見える）。?knee=0 で前の形
+const KNEE = { on: q.get('knee') !== '0', u: { uKL: { value: new THREE.Vector3() }, uKR: { value: new THREE.Vector3() }, uHip: { value: new THREE.Vector3() }, uKneeOn: { value: 1 } } };
+if (KNEE.on) vrm.scene.traverse(o => { if (!o.isMesh) return; for (const mt of [].concat(o.material)) {
+  if (!mt || !/Tops_01_CLOTH/i.test(mt.name || '') || mt.__knee) continue; mt.__knee = true;
+  const prev = mt.onBeforeCompile;
+  mt.onBeforeCompile = (sh, r) => { if (prev) prev.call(mt, sh, r);
+    Object.assign(sh.uniforms, KNEE.u);
+    sh.vertexShader = 'varying vec3 vKW;\nvarying vec3 vKN;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vKW = (modelMatrix * vec4(transformed, 1.0)).xyz;\n  vKN = normalize(mat3(modelMatrix) * objectNormal);');
+    sh.fragmentShader = 'varying vec3 vKW;\nvarying vec3 vKN;\nuniform vec3 uKL; uniform vec3 uKR; uniform vec3 uHip; uniform float uKneeOn;\n' + sh.fragmentShader.replace('#include <dithering_fragment>', `
+  if (uKneeOn > 0.5) {
+    vec3 km = 0.5 * (uKL + uKR);
+    // 膝の高さの帯（腰の少し上から座布団まで）・腰より前
+    float yTop = uHip.y + 0.06, yBot = km.y - 0.16;
+    float band = smoothstep(yBot, yBot + 0.04, vKW.y) * (1.0 - smoothstep(yTop - 0.04, yTop, vKW.y));
+    float front = smoothstep(uHip.z - 0.02, uHip.z + 0.08, vKW.z);
+    float lap = band * front;
+    if (lap > 0.001) {
+      vec3 fw = normalize(vec3(km.x - uHip.x, 0.0, km.z - uHip.z));   // 腰→膝（前）
+      vec3 sd = vec3(fw.z, 0.0, -fw.x);                                // 横
+      float halfW = max(0.04, 0.5 * length((uKL - uKR).xz));
+      float xs = dot(vKW - km, sd);                                     // 左右（膝のまん中が 0）
+      float fz = dot(vKW - uHip, fw) / max(0.05, dot(km - uHip, fw));   // 0＝腰・1＝膝頭
+      // 谷：左右の膝のあいだ（裾の合わせ）。膝頭の近くで深く
+      float valley = exp(-pow(xs / (0.26 * halfW + 0.014), 2.0)) * smoothstep(0.2, 0.9, fz);
+      // 膝頭：二つの丸い明るみ
+      float capL = exp(-dot((vKW - uKL).xz, (vKW - uKL).xz) / 0.0040);
+      float capR = exp(-dot((vKW - uKR).xz, (vKW - uKR).xz) / 0.0040);
+      float cap = max(capL, capR) * clamp(vKN.y * 1.4 + 0.2, 0.0, 1.0);
+      // 斜めの折れ：膝頭から帯の脇へ引かれる布（片側ずつ・数本）
+      float ax = abs(xs) / halfW;              // 0＝谷・1＝膝のまん中
+      float ang = (ax - 1.0) * 2.2 + (1.0 - fz) * 1.8;
+      float fold = pow(0.5 + 0.5 * cos(ang * 6.2832 * 1.15), 4.0) * smoothstep(0.1, 0.45, fz) * (1.0 - smoothstep(0.85, 1.05, fz));
+      float lit = pow(0.5 + 0.5 * cos(ang * 6.2832 * 1.15 + 0.9), 9.0) * smoothstep(0.1, 0.45, fz) * (1.0 - smoothstep(0.85, 1.05, fz));
+      // 膝の脇と下へ向く面は陰へ
+      float under = 1.0 - clamp(vKN.y * 1.3 + 0.45, 0.0, 1.0);
+      float dome = 1.0 - pow(clamp(abs(ax - 1.0), 0.0, 1.4), 2.0);   // 膝のまん中の筋が明るく、谷と外側へ落ちる
+      float sh = 1.0 - 0.58 * valley - 0.34 * fold - 0.26 * under + 0.22 * cap + 0.12 * lit + 0.22 * dome - 0.12;
+      gl_FragColor.rgb *= mix(1.0, sh, lap);
+    }
+  }
+  #include <dithering_fragment>`);
+  };
+  const ck = mt.customProgramCacheKey ? mt.customProgramCacheKey.bind(mt) : () => ''; mt.customProgramCacheKey = () => ck() + '|knee1';
+  mt.needsUpdate = true;
+} });
+const _kv = new THREE.Vector3();
+function kneeUpdate() {
+  if (!KNEE.on) return;
+  const L = vrm.humanoid.getRawBoneNode('leftLowerLeg'), R = vrm.humanoid.getRawBoneNode('rightLowerLeg'), Hp = vrm.humanoid.getRawBoneNode('hips');
+  if (!L || !R || !Hp) { KNEE.u.uKneeOn.value = 0; return; }
+  L.getWorldPosition(KNEE.u.uKL.value); R.getWorldPosition(KNEE.u.uKR.value); Hp.getWorldPosition(KNEE.u.uHip.value);
+}
 const B = n => vrm.humanoid.getNormalizedBoneNode(n);
 const gaze = new THREE.Object3D(); scene.add(gaze); if (vrm.lookAt) vrm.lookAt.target = gaze;
 if (NOSPRING) vrm.springBoneManager = undefined;
@@ -1895,9 +1950,11 @@ function attention(t) {
   const s = shotAt(t); const f = (FR[s.k] || FR.MED)(); return { p: f[0].clone(), h: f[1] };
 }
 const AUD0 = AUD.clone(); let audApplied = null;
+const _hd = new THREE.Vector3();
+function focusDist(d0) { const h = vrm.humanoid.getRawBoneNode('head'); if (!h) return d0; h.getWorldPosition(_hd); _hd.y += 0.06; camera.updateMatrixWorld(); _hd.applyMatrix4(camera.matrixWorldInverse); return Math.max(0.3, -_hd.z); }   // ぼけはカメラの奥行き（viewZ）で測る
 function renderLive(t, now, dt) {
   if (AUD_SEAT && audApplied !== AUD_SEAT) { AUD.copy(AUD_SEAT).lerp(AUD0, 0.05); audApplied = AUD_SEAT; }
-  pose(t); vrm.update(dt); if (window.__RKL) window.__RKL.post(t);
+  pose(t); vrm.update(dt); kneeUpdate(); if (window.__RKL) window.__RKL.post(t);
   vrm.scene.updateMatrixWorld(true); clothUpdate(t);
   if (HAORI2) haoriSim(t); else haoriPost(t);
   fanPost(t);
@@ -1905,7 +1962,7 @@ function renderLive(t, now, dt) {
   // 寄っているときは主光とにじみを一段落とす（顔が白く飛ばないように）
   const close = Math.max(0, Math.min(1, (0.75 - c.h) / 0.4));
   if (KEYL) KEYL.intensity *= 1 - 0.2 * close; bloom.strength = BLOOM0 * (1 - 0.2 * close);
-  if (POST) { bokeh.uniforms.focus.value = c.dist; bokeh.uniforms.aperture.value = 0.0016 * (1 + 2.2 * close) * (CAM.phaseName() === 'aisle' ? 0.2 : 1);   /* 2026-11-24 席を選ぶ札がぼけて字が読めなかった */ bokeh.uniforms.maxblur.value = 0.009; }
+  if (POST) { bokeh.uniforms.focus.value = focusDist(c.dist);   /* 2026-11-24 頭の近くがぼけた → ピントは碧の顔（頭の骨）までの距離に合わせる */ bokeh.uniforms.aperture.value = 0.0016 * (1 + 2.2 * close) * (CAM.phaseName() === 'aisle' ? 0.2 : 1);   /* 2026-11-24 席を選ぶ札がぼけて字が読めなかった */ bokeh.uniforms.maxblur.value = 0.009; }
   world(t, now);
   QX.set(now, qLevel(t)); UI.qualia(QDEF.label, qLevel(t));
   grade.uniforms.uFrame.value = Math.floor(now * 30) % 997;
