@@ -157,7 +157,7 @@ export async function buildHall(ctx) {
       g.fillRect(0, 0, w, 12); g.fillRect(0, h - 16, w, 16); g.fillRect(0, 0, 12, h); g.fillRect(w - 12, 0, 12, h);
     });
     const shm = new THREE.MeshStandardMaterial({ map: shoji, emissive: 0xffffff, emissiveMap: shoji, emissiveIntensity: 0.5, roughness: 0.9 }); shm.userData.k = 0.5; out.lanternMats.push(shm);
-    const PW = 0.95, PH = 1.95, Z = -1.15, N = 4;
+    const PW = 0.76, PH = 1.95, Z = -1.15, N = 5;   /* 2026-11-23 四枚だと真ん中の継ぎ目が碧の頭を縦に割って見えた → 五枚（幅は同じ） */
     for (let i = 0; i < N; i++) {
       const x = (i - (N - 1) / 2) * PW;
       const p = new THREE.Mesh(new THREE.PlaneGeometry(PW - 0.02, PH), fm); p.position.set(x, PH / 2, Z); p.receiveShadow = true; scene.add(p);
@@ -404,7 +404,7 @@ export async function buildHall(ctx) {
       const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.4), m); tag.position.set(tx, out.aisle.y - 0.47, 4.45);   /* 2026-11-22 札が高座の碧の顔を隠していた → 少し下げる */ tag.lookAt(out.aisle.x, out.aisle.y, out.aisle.z);
       const cord = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.5, 0.008), string); cord.position.set(0, 0.5, 0); cord.visible = Math.abs(tx - out.aisle.x) > 0.05; tag.add(cord);   /* 2026-11-23 真ん中の札の紐が高座の碧を縦に貫いて見えた → 真ん中だけ紐を見せない */
       const hit = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.6, 0.2), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(0, -0.03, 0); tag.add(hit);
-      if (innerWidth / innerHeight < .8) tag.scale.setScalar(.72);   /* 2026-11-22 スマホで席の札が高座を大きく隠した → 小さく（押せる範囲 hit はそのまま） */ tag.userData.seat = k; hit.userData.seat = k; tag.userData.mat = m; hit.userData.mat = m; tag.visible = false; scene.add(tag); out.seatTags.push(tag, hit);
+      if (innerWidth / innerHeight < .8) tag.scale.setScalar(.72); else { tag.scale.setScalar(.8); tag.position.y += 0.05; }   /* 2026-11-23 PC で札の下が画面で切れた */   /* 2026-11-22 スマホで席の札が高座を大きく隠した → 小さく（押せる範囲 hit はそのまま） */ tag.userData.seat = k; hit.userData.seat = k; tag.userData.mat = m; hit.userData.mat = m; tag.visible = false; scene.add(tag); out.seatTags.push(tag, hit);
     }
   }
   // 2026-11-19：館への置き行灯（旧 Qualia/yose の「あわせて訪ねる館の部屋」を、高座の下手の行灯にした。押すと Qualia Museum のその部屋へ）
