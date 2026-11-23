@@ -287,7 +287,8 @@ window.__END = END;
 function bowAt(t) {
   const a = TL.title_sec;
   let b = 0;
-  if (t < a) b = 1 - ease((t - (a - 1.6)) / 1.4);              // 札のあいだは下げていて、札が消えるころ上げる
+  if (!window.__yStarted) return 0.06;   /* 2026-11-24 席を選ぶあいだ深く礼をして顔が見えなかった → 座る前は顔を上げて待ち、始まってから下げる */
+  if (t < a) b = Math.min(ease(t / 0.8), 1 - ease((t - (a - 1.6)) / 1.4));              // 札のあいだは下げていて、札が消えるころ上げる
   if (t > END.bow0) b = Math.max(b, ease((t - END.bow0) / (END.bowDn - END.bow0)) * (1 - ease((t - END.bowUp0) / Math.max(0.3, END.bowUp1 - END.bowUp0))));
   return b;
 }
@@ -1921,7 +1922,7 @@ function clock(now) {
   if (Math.abs(p - a) > 0.15) p = a;
   clockT = p; clockPerf = now; return p;
 }
-UI.onStart(() => { started = true; startAt = performance.now() / 1000; HL.mekuri.flipTo(ENMO.t); clockT = 0; clockPerf = startAt; });
+UI.onStart(() => { started = true; window.__yStarted = true; startAt = performance.now() / 1000; HL.mekuri.flipTo(ENMO.t); clockT = 0; clockPerf = startAt; });
 let lastNow = performance.now() / 1000, frames = 0;
 fullRender = (ms) => {
   const now = ms / 1000, dt = Math.max(1 / 240, Math.min(0.1, now - lastNow)); lastNow = now;
@@ -1978,7 +1979,8 @@ function createCamera() {
     walkIn(now) { if (st.phase !== 'kido') return; st.phase = 'walk'; st.t0 = now; st.yaw = st.pitch = 0; },
     toAisle() { st.phase = 'aisle'; st.pos.copy(HL.aisle); },
     sit(name, now) { const s = HL.seats[name]; if (!s) return; st.from = st.pos.clone(); st.seat = s.pos.clone(); st.seatName = name; st.phase = 'sit'; st.t0 = now; st.yaw = st.pitch = 0; st.zoom = 1;
-      AUD_SEAT = s.pos.clone(); },
+      AUD_SEAT = s.pos.clone();
+      if (name === 'sajiki' && camera.aspect < 0.8) { const g = HL.mekuri.group; g.position.x = 0.62; g.position.z = 0.32; g.rotation.y = -0.85; }   /* 2026-11-24 スマホの桟敷でめくりが碧の陰に入った → 桟敷のときだけ上手の前へ */ },
     update(now, att) {
       const dt = Math.max(0, Math.min(0.1, now - (st.lastNow || now))); st.lastNow = now;
       let look, h = 1.3, tau = 0.9, wfT = 0.8;
@@ -1989,7 +1991,7 @@ function createCamera() {
         const ahead = walk.getPointAt(Math.min(1, e + 0.12)).clone(); ahead.y = st.pos.y - 0.1;
         look = ahead.lerp(STAGE, ease((u - 0.35) / 0.5)); h = 1.5; tau = 0.35;
         if (u >= 1) { st.phase = 'aisle'; UI.atAisle(); }
-      } else if (st.phase === 'aisle') { st.pos.copy(HL.aisle); look = STAGE; h = camera.aspect < 0.8 ? 2.9 : 1.7; }   // 2026-11-19：縦長でも三つの席の札が入る広さ
+      } else if (st.phase === 'aisle') { st.pos.copy(HL.aisle); look = camera.aspect < 0.8 ? STAGE : _kidoLook.set(0, 0.78, 0); h = camera.aspect < 0.8 ? 2.9 : 1.78; }   /* 2026-11-24 PC は目線を少し下げ、札を画の上へ（下の案内と重ならない） */   // 2026-11-19：縦長でも三つの席の札が入る広さ
       else if (st.phase === 'sit' || st.phase === 'seat') {
         if (st.phase === 'sit') {
           const u = reducedMotion.matches ? 1 : Math.min(1, (now - st.t0) / SIT_SECONDS), e = u * u * (3 - 2 * u);
@@ -2002,7 +2004,8 @@ function createCamera() {
         if (st.mode === 'seki') { look = ended3d() ? _cv.set(camera.aspect < 0.8 ? 0.02 : 0.1, camera.aspect < 0.8 ? 1.0 : 0.85, 0.5).clone() : _cv.set(0.35, 1.0, 0.2).clone(); h = ended3d() ? (camera.aspect < 0.8 ? 1.45 : 1.3) : (camera.aspect < 0.8 ? 1.8 : 1.15); }   /* 2026-11-20：縦長で碧を大きく・終わりに碧が切れない */   // 終わりはめくりと行灯へ目を向ける   // 2026-11-19：縦長でもめくりと行灯が入る
         tau = 1.1;
         // 2026-11-21：縦長の席は横幅で画角を決めず、碧と行灯の幅（約 1.2 m）に合わせて寄る（上下の暗い空白を減らす）
-        if (camera.aspect < 0.8 && !ended3d()) { if (st.mode === 'seki') { look = _cv.set(0.1, 0.95, 0.2).clone(); h = 1.8; wfT = 0.36; } else { look = look.clone().add(_cv.set(0.12, 0, 0)); wfT = 0.55;   /* 2026-11-23 行灯を下手へ移したので、碧を画の中ほどに */ } }   // 寄って観るときも行灯（館へ）が右に入る
+        if (camera.aspect < 0.8 && !ended3d()) { if (st.mode === 'seki') { look = _cv.set(0.1, 0.95, 0.2).clone(); h = 1.8; wfT = 0.36; } else { look = look.clone().add(_cv.set(0.12, 0, 0)); wfT = 0.55;   /* 2026-11-23 行灯を下手へ移したので、碧を画の中ほどに */ }
+          if (st.seatName === 'sajiki') { look = look.clone().add(_cv.set(0.26, -0.04, 0.06)); wfT = 0.82; } }   /* 2026-11-24 スマホの桟敷はめくりまで入る幅に */   // 寄って観るときも行灯（館へ）が右に入る
       }
       // しばらく触らなければ、見回しと寄りを元へ戻す
       if (now - st.input > 7) { const k = 1 - Math.exp(-dt / 1.6); st.yaw *= 1 - k; st.pitch *= 1 - k; st.zoom += (1 - st.zoom) * k; }

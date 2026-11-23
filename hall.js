@@ -269,10 +269,10 @@ export async function buildHall(ctx) {
   }
   // ---- 舞台の灯（上手前の主光・下手前の補い・後ろ上の縁・襖を洗う灯）
   {
-    const key = new THREE.SpotLight(0xffcf98, 1.1, 0, THREE.MathUtils.degToRad(19), 0.7, 0);
+    const key = new THREE.SpotLight(0xffc584, 1.22, 0, THREE.MathUtils.degToRad(19), 0.7, 0);
     key.position.set(1.2, 4.3, 3.8); key.target.position.set(0, 1.0, 0); scene.add(key, key.target);
     key.castShadow = true; key.shadow.mapSize.set(LITE ? 1024 : 2048, LITE ? 1024 : 2048); key.shadow.bias = -0.0003; key.shadow.normalBias = 0.02;
-    const fill = new THREE.SpotLight(0xffd8b0, 0.24, 0, THREE.MathUtils.degToRad(24), 0.8, 0); fill.position.set(-2.4, 2.6, 3.2); fill.target.position.set(0, 1.0, 0); scene.add(fill, fill.target);
+    const fill = new THREE.SpotLight(0xffd8b0, 0.17, 0, THREE.MathUtils.degToRad(24), 0.8, 0); fill.position.set(-2.4, 2.6, 3.2); fill.target.position.set(0, 1.0, 0); scene.add(fill, fill.target);
     const back = new THREE.SpotLight(0xffe2bd, 0.75, 0, THREE.MathUtils.degToRad(20), 0.6, 0); back.position.set(0.3, 3.6, -1.0); back.target.position.set(0, 1.2, 0.1); scene.add(back, back.target);
     const wash = new THREE.SpotLight(0xffc888, 0.1, 0, THREE.MathUtils.degToRad(36), 0.9, 0); wash.position.set(0, 3.0, 1.6); wash.target.position.set(0, 0.9, -1.15); scene.add(wash, wash.target);
     const mk = new THREE.SpotLight(0xffe6c0, 0.5, 0, THREE.MathUtils.degToRad(12), 0.6, 0); mk.position.set(2.0, 3.2, 3.0); mk.target.position.set(1.12, 0.6, 0.98); scene.add(mk, mk.target);
@@ -284,6 +284,7 @@ export async function buildHall(ctx) {
   {
     const fl = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, BACK_Z - STAGE_Z1), texMat(OLD, 3, 2.4, 0x5a4634, 0.7, 0.25));
     fl.rotation.x = -Math.PI / 2; fl.position.set(0, HALL_Y, (BACK_Z + STAGE_Z1) / 2); fl.receiveShadow = true; scene.add(fl);
+    if (fl.material.isMeshPhysicalMaterial) { fl.material.clearcoat = 0.6; fl.material.clearcoatRoughness = 0.16; }   /* 2026-11-24 本人の参考画像：磨かれた木の床に灯が映る（スマホは軽い材質のまま） */
     // 左右の壁（杉の板）・腰板・天井（格天井）
     for (const sx of [-1, 1]) {
       const w = new THREE.Mesh(new THREE.PlaneGeometry(BACK_Z - 1.0, CEIL_Y - HALL_Y), texMat(DARK, 3, 1.6, 0x6a5444, 0.8));
@@ -402,9 +403,9 @@ export async function buildHall(ctx) {
     for (const [k, t, s2, tx] of [['sajiki', '桟敷', '畳の横', -0.4], ['naka', '中', '全体が見える', 0], ['mae', '前', '高座の近く', 0.4]]) {   // 通路に立った目の前に、左から桟敷・中・前（席のある向きの順）
       const S = out.seats[k], m = new THREE.MeshStandardMaterial({ map: tagTex(t, s2), roughness: 0.8, emissive: 0xffe2b0, emissiveIntensity: 0.18 }); m.emissiveMap = m.map;
       const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.4), m); tag.position.set(tx, out.aisle.y - 0.47, 4.45);   /* 2026-11-22 札が高座の碧の顔を隠していた → 少し下げる */ tag.lookAt(out.aisle.x, out.aisle.y, out.aisle.z);
-      const cord = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.5, 0.008), string); cord.position.set(0, 0.5, 0); cord.visible = Math.abs(tx - out.aisle.x) > 0.05; tag.add(cord);   /* 2026-11-23 真ん中の札の紐が高座の碧を縦に貫いて見えた → 真ん中だけ紐を見せない */
+      const cord = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.12, 0.008), string); cord.position.set(0, 0.26, 0);   /* 2026-11-24 長い紐が襖の両端の謎の細い棒に見えた → 札の上に短く */ cord.visible = Math.abs(tx - out.aisle.x) > 0.05; tag.add(cord);   /* 2026-11-23 真ん中の札の紐が高座の碧を縦に貫いて見えた → 真ん中だけ紐を見せない */
       const hit = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.6, 0.2), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(0, -0.03, 0); tag.add(hit);
-      if (innerWidth / innerHeight < .8) tag.scale.setScalar(.72); else { tag.scale.setScalar(.8); tag.position.y += 0.05; }   /* 2026-11-23 PC で札の下が画面で切れた */   /* 2026-11-22 スマホで席の札が高座を大きく隠した → 小さく（押せる範囲 hit はそのまま） */ tag.userData.seat = k; hit.userData.seat = k; tag.userData.mat = m; hit.userData.mat = m; tag.visible = false; scene.add(tag); out.seatTags.push(tag, hit);
+      if (innerWidth / innerHeight < .8) tag.scale.setScalar(.72); else { tag.scale.setScalar(.62); tag.position.y += 0.085; }   /* 2026-11-24 PC で下の案内が「中」の札に重なった → 札を小さく上げる */   /* 2026-11-23 PC で札の下が画面で切れた */   /* 2026-11-22 スマホで席の札が高座を大きく隠した → 小さく（押せる範囲 hit はそのまま） */ tag.userData.seat = k; hit.userData.seat = k; tag.userData.mat = m; hit.userData.mat = m; tag.visible = false; scene.add(tag); out.seatTags.push(tag, hit);
     }
   }
   // 2026-11-19：館への置き行灯（旧 Qualia/yose の「あわせて訪ねる館の部屋」を、高座の下手の行灯にした。押すと Qualia Museum のその部屋へ）
@@ -519,6 +520,14 @@ export async function buildHall(ctx) {
   // 客席の明かり（0＝暗転して高座だけ、1＝開演前の明るさ）・舞台の灯（0〜1）
   out.house = k => { out.hemi.intensity = out.hemi.userData.k0 * (0.55 + 0.9 * k); for (const [p] of out.flickerLights) { if (p.userData.base === undefined) p.userData.base = p.intensity; } };
   out.stage = k => { for (const l of out.stageLights) l.intensity = l.userData.k0 * k; };
+  // 2026-11-24 本人の参考画像「奥の行灯や提灯は大きくぼけた光」：高座の左右の奥に、ぼけた灯の玉（縁が少し明るい丸）。加算で描くだけで光源は足さない（重さはほぼ変えない）
+  {
+    const orbTex = canvasTex(128, 128, (g, w, h) => { const r = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); r.addColorStop(0, 'rgba(255,196,120,.30)'); r.addColorStop(0.6, 'rgba(255,184,110,.30)'); r.addColorStop(0.8, 'rgba(255,196,128,.16)'); r.addColorStop(1, 'rgba(255,170,90,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); });
+    const om = new THREE.SpriteMaterial({ map: orbTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false, opacity: 0.32 });
+    const P = [[-2.55, 2.35, -1.3, 0.5], [-3.05, 1.75, -1.1, 0.38], [2.6, 2.3, -1.3, 0.48], [3.1, 1.65, -1.1, 0.4], [-4.6, 2.7, -0.8, 0.6], [4.6, 2.65, -0.8, 0.6]];
+    out.orbs = [];
+    for (const [x, y, z, sc] of (LITE ? P.slice(0, 4) : P)) { const o = new THREE.Sprite(om); o.position.set(x, y, z); o.scale.setScalar(sc); o.renderOrder = 5; scene.add(o); out.orbs.push(o); }
+  }
   return out;
 }
 
