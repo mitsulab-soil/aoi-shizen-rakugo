@@ -397,7 +397,7 @@ export async function buildHall(ctx) {
       g.strokeStyle = '#3a2416'; g.lineWidth = 8; g.strokeRect(4, 4, w - 8, h - 8);
       g.fillStyle = '#121010'; g.textAlign = 'center'; g.textBaseline = 'middle';
       const cs = [...t], fs = Math.min(92, 250 / cs.length); g.font = `400 ${fs}px PottaOne, serif`; cs.forEach((c, i) => g.fillText(c, w / 2, 70 + fs / 2 + i * fs * 0.98));
-      g.fillStyle = '#7a1e1e'; g.font = '400 30px PottaOne, serif'; g.fillText(s2, w / 2, h - 34);
+      g.fillStyle = '#5a1010'; g.font = '400 38px PottaOne, serif'; g.fillText(s2, w / 2, h - 40);   /* 2026-11-24 小さい説明がつぶれて読めなかった → 大きく濃く */
     });
     const string = new THREE.MeshBasicMaterial({ color: 0x2a1a10 });
     for (const [k, t, s2, tx] of [['sajiki', '桟敷', '畳の横', -0.4], ['naka', '中', '全体が見える', 0], ['mae', '前', '高座の近く', 0.4]]) {   // 通路に立った目の前に、左から桟敷・中・前（席のある向きの順）
@@ -524,7 +524,7 @@ export async function buildHall(ctx) {
   {
     const orbTex = canvasTex(128, 128, (g, w, h) => { const r = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); r.addColorStop(0, 'rgba(255,196,120,.30)'); r.addColorStop(0.6, 'rgba(255,184,110,.30)'); r.addColorStop(0.8, 'rgba(255,196,128,.16)'); r.addColorStop(1, 'rgba(255,170,90,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); });
     const om = new THREE.SpriteMaterial({ map: orbTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false, opacity: 0.32 });
-    const P = [[-2.55, 2.35, -1.3, 0.5], [-3.05, 1.75, -1.1, 0.38], [2.6, 2.3, -1.3, 0.48], [3.1, 1.65, -1.1, 0.4], [-4.6, 2.7, -0.8, 0.6], [4.6, 2.65, -0.8, 0.6]];
+    const P = [[-2.45, 2.35, -0.95, 0.5], [-3.0, 1.75, -0.9, 0.38], [2.5, 2.3, -0.95, 0.48], [3.05, 1.65, -0.9, 0.4], [-4.6, 2.7, -0.8, 0.6], [4.6, 2.65, -0.8, 0.6]];
     out.orbs = [];
     for (const [x, y, z, sc] of (LITE ? P.slice(0, 4) : P)) { const o = new THREE.Sprite(om); o.position.set(x, y, z); o.scale.setScalar(sc); o.renderOrder = 5; scene.add(o); out.orbs.push(o); }
   }

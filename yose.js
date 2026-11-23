@@ -2004,8 +2004,8 @@ function createCamera() {
         if (st.mode === 'seki') { look = ended3d() ? _cv.set(camera.aspect < 0.8 ? 0.02 : 0.1, camera.aspect < 0.8 ? 1.0 : 0.85, 0.5).clone() : _cv.set(0.35, 1.0, 0.2).clone(); h = ended3d() ? (camera.aspect < 0.8 ? 1.45 : 1.3) : (camera.aspect < 0.8 ? 1.8 : 1.15); }   /* 2026-11-20：縦長で碧を大きく・終わりに碧が切れない */   // 終わりはめくりと行灯へ目を向ける   // 2026-11-19：縦長でもめくりと行灯が入る
         tau = 1.1;
         // 2026-11-21：縦長の席は横幅で画角を決めず、碧と行灯の幅（約 1.2 m）に合わせて寄る（上下の暗い空白を減らす）
-        if (camera.aspect < 0.8 && !ended3d()) { if (st.mode === 'seki') { look = _cv.set(0.1, 0.95, 0.2).clone(); h = 1.8; wfT = 0.36; } else { look = look.clone().add(_cv.set(0.12, 0, 0)); wfT = 0.55;   /* 2026-11-23 行灯を下手へ移したので、碧を画の中ほどに */ }
-          if (st.seatName === 'sajiki') { look = look.clone().add(_cv.set(0.26, -0.04, 0.06)); wfT = 0.82; } }   /* 2026-11-24 スマホの桟敷はめくりまで入る幅に */   // 寄って観るときも行灯（館へ）が右に入る
+        if (camera.aspect < 0.8 && !ended3d()) { if (st.mode === 'seki') { look = _cv.set(0.1, 0.95, 0.2).clone(); h = 1.8; wfT = 0.36; } else { look = look.clone().add(_cv.set(0.12, 0, 0)); wfT = 0.66;   /* 2026-11-24 噺の画で顔が大きすぎた → 少し引く */ /* 2026-11-23 行灯を下手へ移したので、碧を画の中ほどに */ }
+          if (st.seatName === 'sajiki') { look = look.clone().add(_cv.set(0.16, -0.04, 0.04)); wfT = 0.98; } }   /* 2026-11-24 スマホの桟敷はめくりまで入る幅に */   // 寄って観るときも行灯（館へ）が右に入る
       }
       // しばらく触らなければ、見回しと寄りを元へ戻す
       if (now - st.input > 7) { const k = 1 - Math.exp(-dt / 1.6); st.yaw *= 1 - k; st.pitch *= 1 - k; st.zoom += (1 - st.zoom) * k; }
