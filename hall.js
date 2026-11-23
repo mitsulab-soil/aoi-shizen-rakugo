@@ -173,6 +173,18 @@ export async function buildHall(ctx) {
     for (let i = 0; i <= 24; i++) box(0.018, 0.46, 0.03, rm, -N * PW / 2 + i * (N * PW / 24), PH + 0.25, Z);
     box(N * PW, 0.018, 0.03, rm, 0, PH + 0.25, Z);
     out.fusumaZ = Z; out.fusumaW = N * PW; out.fusumaH = PH;
+    // 2026-11-23 本人「歴史的な寄席、特に新宿の木造の寄席の内装をイメージして」：欄間の上に扁額（古い木の額に墨の四字・どこかの額の写しではない）
+    { const gaku = canvasTex(1024, 300, (g, w, h) => {
+        g.fillStyle = '#3b2616'; g.fillRect(0, 0, w, h);
+        for (let i = 0; i < 260; i++) { g.strokeStyle = `rgba(${rnd(i + 301) > 0.5 ? '90,60,34' : '24,14,8'},${0.18 + 0.2 * rnd(i + 303)})`; g.lineWidth = 0.6 + rnd(i + 305) * 1.6; const y = rnd(i + 307) * h; g.beginPath(); g.moveTo(0, y); g.bezierCurveTo(w * 0.3, y + (rnd(i + 309) - 0.5) * 14, w * 0.7, y + (rnd(i + 311) - 0.5) * 14, w, y + (rnd(i + 313) - 0.5) * 8); g.stroke(); }
+        g.fillStyle = '#c4a774'; g.globalAlpha = 0.82; g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.font = `700 170px "Yuji Boku","Hiragino Mincho ProN","Yu Mincho",serif`; const t = '笑門来福'; for (let i = 0; i < 4; i++) g.fillText(t[i], w * (0.86 - i * 0.24), h * 0.53);
+        g.globalAlpha = 1; for (let i = 0; i < 3000; i++) { g.fillStyle = `rgba(20,12,6,${0.25 * rnd(i + 331)})`; g.fillRect(rnd(i + 333) * w, rnd(i + 335) * h, 1 + rnd(i + 337) * 3, 1); }
+      });
+      const gm = new THREE.MeshStandardMaterial({ map: gaku, roughness: 0.55, metalness: 0.05 });
+      const gp = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 0.5), gm); gp.position.set(0, PH + 0.78, Z + 0.06); gp.rotation.x = 0.12; scene.add(gp);
+      for (const [w, h, x, y] of [[1.84, 0.06, 0, 0.28], [1.84, 0.06, 0, -0.28], [0.06, 0.62, -0.89, 0], [0.06, 0.62, 0.89, 0]]) { const f = box(w, h, 0.05, lacq, x, PH + 0.78 + y * Math.cos(0.12), Z + 0.07 - y * Math.sin(0.12)); f.rotation.x = 0.12; }
+    }
     const wall = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, 4.6), texMat(DARK, 3, 1.6, 0x6a5444, 0.78)); wall.position.set(0, 2.3, -3.2); scene.add(wall);
     box(2 * WALL_X, 0.34, 0.36, darkWood, 0, 3.3, 1.2);   // 舞台の上の梁
     for (const sx of [-1, 1]) {
@@ -279,10 +291,11 @@ export async function buildHall(ctx) {
       box(0.06, 0.12, BACK_Z - 1.0, darkWood, sx * (WALL_X - 0.03), 1.55, (BACK_Z + 1.0) / 2);   // 長押
       for (let z = 1.6; z < BACK_Z; z += 1.4) box(0.14, CEIL_Y - HALL_Y, 0.14, darkWood, sx * (WALL_X - 0.07), (CEIL_Y + HALL_Y) / 2, z);   // 柱
     }
-    const ceil = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, BACK_Z - 1.0), new THREE.MeshStandardMaterial({ color: 0x2a1d14, roughness: 0.8 }));
+    // 格天井：格縁の間に杉の鏡板（Poly Haven CC0 japanese_cedar_planks）。煤けた古い色
+    const ceil = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, BACK_Z - 1.0), texMat(SUGI, 6, 4, 0x6e5238, 0.75));
     ceil.rotation.x = Math.PI / 2; ceil.position.set(0, CEIL_Y, (BACK_Z + 1.0) / 2); scene.add(ceil); out.ceiling = ceil;
-    for (let x = -WALL_X + 0.9; x < WALL_X; x += 0.9) box(0.06, 0.07, BACK_Z - 1.0, darkWood, x, CEIL_Y - 0.035, (BACK_Z + 1.0) / 2);
-    for (let z = 1.5; z <= BACK_Z; z += 0.9) box(2 * WALL_X, 0.07, 0.06, darkWood, 0, CEIL_Y - 0.035, z);
+    for (let x = -WALL_X + 0.9; x < WALL_X; x += 0.9) box(0.08, 0.1, BACK_Z - 1.0, darkWood, x, CEIL_Y - 0.05, (BACK_Z + 1.0) / 2);
+    for (let z = 1.5; z <= BACK_Z; z += 0.9) box(2 * WALL_X, 0.1, 0.08, darkWood, 0, CEIL_Y - 0.05, z);
     // 後ろの壁（真ん中が木戸からの入口）
     const bw = texMat(DARK, 2, 2, 0x5a4636, 0.8);
     for (const sx of [-1, 1]) { const p = new THREE.Mesh(new THREE.PlaneGeometry(WALL_X - 0.75, CEIL_Y - HALL_Y), bw); p.rotation.y = Math.PI; p.position.set(sx * (WALL_X + 0.75) / 2, (CEIL_Y + HALL_Y) / 2, BACK_Z); scene.add(p); }
