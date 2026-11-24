@@ -248,7 +248,9 @@ if (KNEE.on) vrm.scene.traverse(o => { if (!o.isMesh) return; for (const mt of [
       float xs = dot(vKW - km, sd);                                     // 左右（膝のまん中が 0）
       float fz = dot(vKW - uHip, fw) / max(0.05, dot(km - uHip, fw));   // 0＝腰・1＝膝頭
       // 谷：左右の膝のあいだ（裾の合わせ）。膝頭の近くで深く
-      float valley = exp(-pow(xs / (0.26 * halfW + 0.014), 2.0)) * smoothstep(0.2, 0.9, fz);
+      // 2026-11-24 5 周目：谷の陰が硬い → 幅を広げてぼかし、膝頭から腰へ斜めに流れる折れにする（濃さも落とす）
+      float xo = xs + sign(xs + 1e-4) * 0.0 + (1.0 - fz) * 0.35 * halfW * sign(xs + 1e-4);
+      float valley = exp(-pow(xs / (0.55 * halfW + 0.03), 2.0)) * smoothstep(0.15, 0.95, fz) * 0.75 + exp(-pow(abs(xo) / (0.45 * halfW + 0.02) - 0.35, 2.0) * 3.0) * smoothstep(0.25, 0.8, fz) * (1.0 - smoothstep(0.85, 1.05, fz)) * 0.25;
       // 膝頭：二つの丸い明るみ
       float capL = exp(-dot((vKW - uKL).xz, (vKW - uKL).xz) / 0.0040);
       float capR = exp(-dot((vKW - uKR).xz, (vKW - uKR).xz) / 0.0040);
@@ -256,18 +258,18 @@ if (KNEE.on) vrm.scene.traverse(o => { if (!o.isMesh) return; for (const mt of [
       // 斜めの折れ：膝頭から帯の脇へ引かれる布（片側ずつ・数本）
       float ax = abs(xs) / halfW;              // 0＝谷・1＝膝のまん中
       float ang = (ax - 1.0) * 2.2 + (1.0 - fz) * 1.8;
-      float fold = pow(0.5 + 0.5 * cos(ang * 6.2832 * 1.15), 4.0) * smoothstep(0.1, 0.45, fz) * (1.0 - smoothstep(0.85, 1.05, fz));
+      float fold = pow(0.5 + 0.5 * cos(ang * 6.2832 * 1.15), 2.0) * smoothstep(0.1, 0.45, fz) * (1.0 - smoothstep(0.85, 1.05, fz));
       float lit = pow(0.5 + 0.5 * cos(ang * 6.2832 * 1.15 + 0.9), 9.0) * smoothstep(0.1, 0.45, fz) * (1.0 - smoothstep(0.85, 1.05, fz));
       // 膝の脇と下へ向く面は陰へ
       float under = 1.0 - clamp(vKN.y * 1.3 + 0.45, 0.0, 1.0);
       float dome = 1.0 - pow(clamp(abs(ax - 1.0), 0.0, 1.4), 2.0);   // 膝のまん中の筋が明るく、谷と外側へ落ちる
-      float sh = 1.0 - 0.58 * valley - 0.34 * fold - 0.26 * under + 0.22 * cap + 0.12 * lit + 0.22 * dome - 0.12;
+      float sh = 1.0 - 0.32 * valley - 0.14 * fold - 0.26 * under + 0.22 * cap + 0.12 * lit + 0.22 * dome - 0.12;
       gl_FragColor.rgb *= mix(1.0, sh, lap);
     }
   }
   #include <dithering_fragment>`);
   };
-  const ck = mt.customProgramCacheKey ? mt.customProgramCacheKey.bind(mt) : () => ''; mt.customProgramCacheKey = () => ck() + '|knee1';
+  const ck = mt.customProgramCacheKey ? mt.customProgramCacheKey.bind(mt) : () => ''; mt.customProgramCacheKey = () => ck() + '|knee2';
   mt.needsUpdate = true;
 } });
 const _kv = new THREE.Vector3();
@@ -1434,7 +1436,7 @@ function liningToOuter(m, proxy, side, seg, tt, wt) {
 const _mA = new THREE.Matrix4(), _mB = new THREE.Matrix4(), _bp = new THREE.Vector3(), _nv = new THREE.Vector3(), _acc = new THREE.Vector3(), _nacc = new THREE.Vector3(), _n3 = new THREE.Matrix3();
 let clothLastT = null;
 const TAM2 = q.get('tam2') !== '0';
-const TAMOTO = q.get('tamoto') !== '0', TAM_B = Number(q.get('tamb') ?? 0.06), TAM_F = Number(q.get('tamf') ?? 0.45), TAM_D = Number(q.get('tamd') ?? 0.5), TAM_S = Number(q.get('tams') ?? 0.42), TAM_DBG = q.get('tamdbg') === '1', TAM_C = Number(q.get('tamc') ?? 0.10), TAM_W = Number(q.get('tamw') ?? 0.02), TAM_I = Number(q.get('tami') ?? 0.07), TAM_SHADE = Number(q.get('tamshade') ?? 1.0), TAM_R = Number(q.get('tamr') ?? 0.32), TAM_FS = Number(q.get('tamfs') ?? 0.3), TAM_SUB = Number(q.get('tamsub') ?? 6), _tmA = new THREE.Vector3(), _tmB = new THREE.Vector3(), CHEST_W = new THREE.Vector3();
+const TAMOTO = q.get('tamoto') !== '0', TAM_B = Number(q.get('tamb') ?? 0.06), TAM_F = Number(q.get('tamf') ?? 0.45), TAM_D = Number(q.get('tamd') ?? 0.5), TAM_S = Number(q.get('tams') ?? 0.42), TAM_DBG = q.get('tamdbg') === '1', TAM_C = Number(q.get('tamc') ?? 0.10), TAM_W = Number(q.get('tamw') ?? 0.02), TAM_I = Number(q.get('tami') ?? 0.07), TAM_SHADE = Number(q.get('tamshade') ?? 1.0), TAM_R = Number(q.get('tamr') ?? 0.32), TAM_FS = Number(q.get('tamfs') ?? 0.06)   /* 2026-11-24 5 周目：袖に横縞が出た → 腕を横切る筋を弱める */, TAM_SUB = Number(q.get('tamsub') ?? 6), _tmA = new THREE.Vector3(), _tmB = new THREE.Vector3(), CHEST_W = new THREE.Vector3();
 function clothUpdate(t) {
   if (!clothes.length) return;
   CHEST().getWorldPosition(CHEST_W);
@@ -1547,7 +1549,7 @@ function clothUpdate(t) {
         let x = 0, y = 0, z = 0, t = 0, al = 0, ww = 0;
         for (let e = 0; e < 3; e++) { const v = ids[k * 3 + e], b = bw[k * 3 + e]; x += A[v * 3] * b; y += A[v * 3 + 1] * b; z += A[v * 3 + 2] * b; t += tt[v] * b; al += baseA[v] * b; ww += wt[v] * b; }
         fp.setXYZ(k, x, y, z);
-        const fo = 0.5 + 0.5 * Math.sin(Math.PI * 8 * t + 0.6);
+        const fo = 0.5 + 0.5 * Math.sin(Math.PI * 2 * t + 0.6);   // 2026-11-24 5 周目：横縞（8 本）→ ゆるい一つの濃淡
         fc.setXYZW(k, 1, 1, 1, TAM_DBG ? 0.6 * fo : Math.min(0.85, (al + ww * TAM_FS * fo * fo) * TAM_SHADE));
       }
       fp.needsUpdate = true; fc.needsUpdate = true;
@@ -1878,8 +1880,10 @@ const grade = new ShaderPass({
       c = c * c * (3.0 - 2.0 * c) * 0.30 + c * 0.70;
       // 周辺を落とす
       vec2 d = (vUv - 0.5) * vec2(uRes.x / uRes.y, 1.0);
-      float v = smoothstep(1.05, 0.35, length(d) * (uRes.x > uRes.y ? 0.95 : 1.25));
-      c *= mix(0.55, 1.0, v);
+      float v = smoothstep(1.05, 0.35, length(d) * (uRes.x > uRes.y ? 0.95 : 0.9));
+      c *= mix(uRes.x > uRes.y ? 0.55 : 0.72, 1.0, v);
+      // 2026-11-24 5 周目：スマホの縦の画で下半分が暗い → 下側の暗部を少し持ち上げる
+      if (uRes.y > uRes.x) c += (1.0 - smoothstep(0.05, 0.55, vUv.y)) * vec3(0.060, 0.048, 0.034) * (1.0 - smoothstep(0.0, 0.4, l));
       // フィルムの粒子（コマごとに決まった乱数）
       float g = hash(floor(gl_FragCoord.xy) + vec2(mod(uFrame * 61.0, 1009.0), mod(uFrame * 113.0, 997.0))) - 0.5;
       c += g * uGrain * (1.0 - 0.6 * l);
