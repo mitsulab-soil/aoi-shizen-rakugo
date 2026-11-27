@@ -2038,7 +2038,7 @@ function createCamera() {
     phaseName: () => st.phase,
     seatName: () => st.seatName,
     setMode(m) { st.mode = m; },
-    walkIn(now) { if (st.phase !== 'kido') return; st.phase = 'walk'; st.t0 = now; st.yaw = st.pitch = 0; },
+    walkIn(now) { if (st.phase !== 'kido') return; walk.points[0].copy(st.pos); walk.updateArcLengths();   /* 2026-11-27 歩き出しで横へ振れた → 今の目の位置から歩き出す */ st.phase = 'walk'; st.t0 = now; st.yaw = st.pitch = 0; },
     toAisle() { st.phase = 'aisle'; st.pos.copy(HL.aisle); },
     sit(name, now) { const s = HL.seats[name]; if (!s) return; st.from = st.pos.clone(); st.seat = s.pos.clone(); st.seatName = name; st.phase = 'sit'; st.t0 = now; st.yaw = st.pitch = 0; st.zoom = 1;
       AUD_SEAT = s.pos.clone();
