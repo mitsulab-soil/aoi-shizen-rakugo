@@ -2038,7 +2038,7 @@ function createCamera() {
     phaseName: () => st.phase,
     seatName: () => st.seatName,
     setMode(m) { st.mode = m; },
-    walkIn(now) { if (st.phase !== 'kido') return; walk.points[0].copy(st.pos); walk.updateArcLengths();   /* 2026-11-27 歩き出しで横へ振れた → 今の目の位置から歩き出す */ st.phase = 'walk'; st.t0 = now; st.yaw = st.pitch = 0; },
+    walkIn(now) { if (st.phase !== 'kido') return; if (HL.kenbaiki) HL.kenbaiki.group.visible = true; walk.points[0].copy(st.pos); walk.points[1].x = st.pos.x * 0.4; walk.curveType = 'centripetal'; walk.updateArcLengths();   /* 横へ行き過ぎて戻る揺れを消す */   /* 2026-11-27 歩き出しで横へ振れた → 今の目の位置から歩き出す */ st.phase = 'walk'; st.t0 = now; st.yaw = st.pitch = 0; },
     toAisle() { st.phase = 'aisle'; st.pos.copy(HL.aisle); },
     sit(name, now) { const s = HL.seats[name]; if (!s) return; st.from = st.pos.clone(); st.seat = s.pos.clone(); st.seatName = name; st.phase = 'sit'; st.t0 = now; st.yaw = st.pitch = 0; st.zoom = 1;
       AUD_SEAT = s.pos.clone();
@@ -2046,14 +2046,14 @@ function createCamera() {
     update(now, att) {
       const dt = Math.max(0, Math.min(0.1, now - (st.lastNow || now))); st.lastNow = now;
       let look, h = 1.3, tau = 0.9, wfT = 0.8;
-      if (st.phase === 'kido') { if (camera.aspect < 0.8) HL.kidoCam.pos.set(1.25, Y + 1.45, FZ + 2.7); st.pos.copy(HL.kidoCam.pos).add(_cv.set(reducedMotion.matches ? 0 : Math.sin(now * 0.21) * 0.05, reducedMotion.matches ? 0 : Math.sin(now * 0.33) * 0.02, 0)); look = camera.aspect < 0.8 ? _kidoLook.set(1.5, Y + 1.02, FZ + 0.62) : _kidoLook.set(0.75, Y + 1.35, FZ + 0.4); h = camera.aspect < 0.8 ? 1.12 : 1.25; }   // 2026-11-27 券売機の釦が押せる大きさに（スマホは箱を画いっぱいに）   // 2026-11-19：まねきの 8 枚が縦長の画面でも全部入る（札を押して選ぶ）
+      if (st.phase === 'kido') { if (HL.kenbaiki) HL.kenbaiki.group.visible = true; if (camera.aspect < 0.8) HL.kidoCam.pos.set(1.25, Y + 1.45, FZ + 2.7); st.pos.copy(HL.kidoCam.pos).add(_cv.set(reducedMotion.matches ? 0 : Math.sin(now * 0.21) * 0.05, reducedMotion.matches ? 0 : Math.sin(now * 0.33) * 0.02, 0)); look = camera.aspect < 0.8 ? _kidoLook.set(1.5, Y + 1.02, FZ + 0.62) : _kidoLook.set(0.75, Y + 1.35, FZ + 0.4); h = camera.aspect < 0.8 ? 1.12 : 1.25; }   // 2026-11-27 券売機の釦が押せる大きさに（スマホは箱を画いっぱいに）   // 2026-11-19：まねきの 8 枚が縦長の画面でも全部入る（札を押して選ぶ）
       else if (st.phase === 'walk') {
         const u = reducedMotion.matches ? 1 : Math.min(1, Math.max(0, (now - st.t0) / WALK_SECONDS) || 0), e = u * u * (3 - 2 * u);
         st.pos.copy(walk.getPointAt(e)); st.pos.y += (reducedMotion.matches ? 0 : 0.012) * Math.sin(u * WALK_SECONDS * 2 * Math.PI * 0.9) * Math.sin(Math.PI * u);
         const ahead = walk.getPointAt(Math.min(1, e + 0.35)).clone(); ahead.y = st.pos.y - 0.1; ahead.x = st.pos.x + (ahead.x - st.pos.x) * Math.min(1, e * 2.5);   /* 2026-11-27 券売機の前から歩き出すとき、横を向かず木戸へまっすぐ */
-        look = ahead.lerp(STAGE, ease((u - 0.35) / 0.5)); h = 1.5; tau = 0.35;
+        look = ahead.lerp(STAGE, ease((u - 0.35) / 0.5)); h = 1.5; tau = 0.35; if (HL.kenbaiki) HL.kenbaiki.group.visible = !(camera.aspect < 0.8 && u > 0.12);   /* 2026-11-27 スマホで歩く途中に券売機の切れ端が残った */
         if (u >= 1) { st.phase = 'aisle'; UI.atAisle(); }
-      } else if (st.phase === 'aisle') { st.pos.copy(HL.aisle); look = camera.aspect < 0.8 ? STAGE : _kidoLook.set(0, 0.78, 0); h = camera.aspect < 0.8 ? 2.9 : 1.78; }   /* 2026-11-24 PC は目線を少し下げ、札を画の上へ（下の案内と重ならない） */   // 2026-11-19：縦長でも三つの席の札が入る広さ
+      } else if (st.phase === 'aisle') { st.pos.copy(HL.aisle); look = camera.aspect < 0.8 ? STAGE : _kidoLook.set(0, 0.66, 0);   /* 2026-11-27 「中」の札の小さい字が下の案内に隠れた → 目線を下げ札を上へ */ h = camera.aspect < 0.8 ? 2.9 : 1.78; }   /* 2026-11-24 PC は目線を少し下げ、札を画の上へ（下の案内と重ならない） */   // 2026-11-19：縦長でも三つの席の札が入る広さ
       else if (st.phase === 'sit' || st.phase === 'seat') {
         if (st.phase === 'sit') {
           const u = reducedMotion.matches ? 1 : Math.min(1, (now - st.t0) / SIT_SECONDS), e = u * u * (3 - 2 * u);

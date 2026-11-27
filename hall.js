@@ -484,7 +484,7 @@ export async function buildHall(ctx) {
     const lp = new THREE.PointLight(0xffc98a, 2.2, 9, 2); lp.position.set(0, HALL_Y + 1.9, FZ + 1.6); scene.add(lp); out.flickerLights.push([lp, 0.05]);
     const sp = new THREE.SpotLight(0xffe0b0, 3.0, 0, THREE.MathUtils.degToRad(30), 0.7, 0); sp.position.set(0, HALL_Y + 1.2, FZ + 4.2); sp.target.position.set(0, HALL_Y + 3.6, FZ); scene.add(sp, sp.target);
     out.kidoLights = [lp, sp];
-    { const al = new THREE.PointLight(0xffc28a, 1.6, 7, 2); al.position.set(-0.2, HALL_Y + 2.3, FZ - 2.2); scene.add(al); out.kidoLights.push(al); }   /* 2026-11-27 木戸の奥の通路が暗すぎて奥行きが読めなかった → 通路の天井に弱い灯 */
+    { const al = new THREE.PointLight(0xffc28a, 2.4, 9, 2); al.position.set(0, HALL_Y + 2.1, FZ - 1.6); scene.add(al); out.kidoLights.push(al); }   /* 2026-11-27 木戸の奥の通路が暗すぎて奥行きが読めなかった → 通路の天井に弱い灯 */
     // 通り（石畳ふうの暗い地面）と夜空
     const road = canvasTex(512, 512, (g, w, h) => {
       g.fillStyle = '#1d1c1e'; g.fillRect(0, 0, w, h);
@@ -526,7 +526,7 @@ export async function buildHall(ctx) {
         const col = i % 2, row = Math.floor(i / 2), cx = (col ? 1 : -1) * 0.185, cy = 1.36 - row * 0.235;
         const lt = canvasTex(512, 192, (g, w, h) => { g.scale(2, 2); w = 256; h = 96;   /* 2026-11-27 筆の字（欅など）がつぶれた → 倍の解像度 */ washi(g, w, h, 900 + i, '#efe6cf'); g.strokeStyle = '#3a2416'; g.lineWidth = 4; g.strokeRect(2, 2, w - 4, h - 4);
           g.fillStyle = '#8a2216'; g.font = '400 22px "Klee One", serif'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(e.no.replace(/ /g, ''), 12, 22);
-          g.fillStyle = '#100c0a'; g.textAlign = 'center'; let fs = 50; g.font = `400 ${fs}px ${YF}, PottaOne, serif`; while (g.measureText(e.t).width > w - 36 && fs > 24) { fs -= 2; g.font = `400 ${fs}px ${YF}, PottaOne, serif`; } g.fillText(e.t, w / 2 + 8, h * 0.62); });
+          g.fillStyle = '#100c0a'; g.textAlign = 'center'; let fs = 50; g.font = `400 ${fs}px ${YF}, PottaOne, serif`; while (g.measureText(e.t).width > w - 36 && fs > 24) { fs -= 2; g.font = `400 ${fs}px ${YF}, PottaOne, serif`; } g.strokeStyle = '#100c0a'; g.lineWidth = 1.6; g.lineJoin = 'round'; g.strokeText(e.t, w / 2 + 8, h * 0.62); g.fillText(e.t, w / 2 + 8, h * 0.62);   /* 2026-11-27 細い筆の字がかすれた → 縁を足して太く */ });
         const lab = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 0.1), new THREE.MeshStandardMaterial({ map: lt, roughness: 0.85, emissive: 0xffe2b0, emissiveMap: lt, emissiveIntensity: 0.12 }));
         lab.position.set(cx, cy, KD / 2 + 0.006); kb.add(lab);
         const ring = new THREE.Mesh(ringGeo, brass); ring.position.set(cx, cy - 0.11, KD / 2 + 0.006); kb.add(ring);
@@ -564,7 +564,7 @@ export async function buildHall(ctx) {
         update(now) {
           for (const b of Object.values(out.kbButtons)) { if (b.t < 0) continue; const u = (now - b.t) / 0.35; b.cap.position.z = b.z0 - 0.022 * Math.max(0, Math.sin(Math.min(1, u) * Math.PI)); if (u > 1) b.t = -1; }
           if (ticket.visible) { const u = Math.min(1, Math.max(0, (now - ticket.userData.t0 - 0.25) / 1.1)), e = u * u * (3 - 2 * u);
-            ticket.position.set(-0.08 + 0.08 * e, 0.34 - 0.1 * e, KD / 2 + 0.02 + 0.42 * e);   /* 2026-11-27 375px で切符が札に重なった → 口の高さのまま手前へ */ ticket.scale.setScalar(1 + 0.6 * e); ticket.rotation.set(-1.2 * (1 - e) + 0.12, 0.25 * e, 0.04 * Math.sin(now * 3) * e); }
+            ticket.position.set(-0.08 + 0.08 * e, 0.34 + 1.2 * e, KD / 2 + 0.02 + 0.3 * e);   /* 2026-11-27 切符は上の『きっぷ』の看板の前へ浮かぶ（札にも字幕にも重ならない） */   /* 2026-11-27 375px で切符が札に重なった → 口の高さのまま手前へ */ ticket.scale.setScalar(1 + 1.5 * e);   /* 看板を覆い切る大きさ */ ticket.rotation.set(-1.2 * (1 - e) + 0.12, 0.25 * e, 0.04 * Math.sin(now * 3) * e); }
         },
       };
     }
