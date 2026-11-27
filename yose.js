@@ -1909,6 +1909,7 @@ function world(t, now) {
   for (const [i, [Lt, A]] of flickerLights.entries()) { if (Lt.userData.base === undefined) Lt.userData.base = Lt.intensity; Lt.intensity = Lt.userData.base * (1 + A * flick(now, i * 2.3 + 0.5)); }
   // 客の小さな揺れ（呼吸）。笑いどころでは少し肩が揺れる
   for (const p of audience) { p.userData.h.position.y = (p.userData.h0 ?? 0.80) + 0.004 * Math.sin(now * 1.4 + p.userData.ph); p.rotation.z = 0.01 * Math.sin(now * 0.5 + p.userData.ph); }
+  HL.kenbaiki?.update(now);
   for (const [i, n] of HL.noren.entries()) n.rotation.x = 0.03 * Math.sin(now * 0.9 + i * 1.3) + 0.015 * Math.sin(now * 2.3 + i);
 }
 
@@ -1966,7 +1967,7 @@ function renderLive(t, now, dt) {
   // 寄っているときは主光とにじみを一段落とす（顔が白く飛ばないように）
   const close = Math.max(0, Math.min(1, (0.75 - c.h) / 0.4));
   if (KEYL) KEYL.intensity *= 1 - 0.2 * close; bloom.strength = BLOOM0 * (1 - 0.2 * close);
-  if (POST) { bokeh.uniforms.focus.value = focusDist(c.dist);   /* 2026-11-24 頭の近くがぼけた → ピントは碧の顔（頭の骨）までの距離に合わせる */ bokeh.uniforms.aperture.value = 0.0016 * (1 + 2.2 * close) * (CAM.phaseName() === 'aisle' ? 0.2 : 1);   /* 2026-11-24 席を選ぶ札がぼけて字が読めなかった */ bokeh.uniforms.maxblur.value = 0.009; }
+  if (POST) { bokeh.uniforms.focus.value = focusDist(c.dist);   /* 2026-11-24 頭の近くがぼけた → ピントは碧の顔（頭の骨）までの距離に合わせる */ bokeh.uniforms.aperture.value = 0.0016 * (1 + 2.2 * close) * (CAM.phaseName() === 'aisle' ? 0.2 : CAM.phaseName() === 'kido' ? 0 : 1);   /* 2026-11-24 席を選ぶ札がぼけて字が読めなかった */ bokeh.uniforms.maxblur.value = 0.009; }
   world(t, now);
   QX.set(now, qLevel(t)); UI.qualia(QDEF.label, qLevel(t));
   grade.uniforms.uFrame.value = Math.floor(now * 30) % 997;
@@ -2015,7 +2016,7 @@ window.__ready = true; UI.aoiReady(TL);
 function createCamera() {
   // 入場と着席は短く。OS の減動設定では次の描画で移り、待ちと視点の揺れをなくす。
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const WALK_SECONDS = 0.8, SIT_SECONDS = 0.5;
+  const WALK_SECONDS = 1.8, SIT_SECONDS = 0.5;
   const V3 = (x, y, z) => new THREE.Vector3(x, y, z); const _cv = new THREE.Vector3(); const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
   const Y = HL.HALL_Y, FZ = HL.FZ;
   const st = { phase: 'kido', t0: 0, yaw: 0, pitch: 0, zoom: 1, input: -1e9, mode: 'yoru', seat: null, from: null,
@@ -2045,11 +2046,11 @@ function createCamera() {
     update(now, att) {
       const dt = Math.max(0, Math.min(0.1, now - (st.lastNow || now))); st.lastNow = now;
       let look, h = 1.3, tau = 0.9, wfT = 0.8;
-      if (st.phase === 'kido') { st.pos.copy(HL.kidoCam.pos).add(_cv.set(reducedMotion.matches ? 0 : Math.sin(now * 0.21) * 0.05, reducedMotion.matches ? 0 : Math.sin(now * 0.33) * 0.02, 0)); look = _kidoLook.set(0, Y + (camera.aspect < 0.8 ? 2.55 : 3.15), FZ); h = camera.aspect < 0.8 ? 3.05 : 2.0; }   // 2026-11-19：まねきの 8 枚が縦長の画面でも全部入る（札を押して選ぶ）
+      if (st.phase === 'kido') { if (camera.aspect < 0.8) HL.kidoCam.pos.set(1.25, Y + 1.45, FZ + 2.7); st.pos.copy(HL.kidoCam.pos).add(_cv.set(reducedMotion.matches ? 0 : Math.sin(now * 0.21) * 0.05, reducedMotion.matches ? 0 : Math.sin(now * 0.33) * 0.02, 0)); look = camera.aspect < 0.8 ? _kidoLook.set(1.5, Y + 1.02, FZ + 0.62) : _kidoLook.set(0.75, Y + 1.35, FZ + 0.4); h = camera.aspect < 0.8 ? 1.12 : 1.25; }   // 2026-11-27 券売機の釦が押せる大きさに（スマホは箱を画いっぱいに）   // 2026-11-19：まねきの 8 枚が縦長の画面でも全部入る（札を押して選ぶ）
       else if (st.phase === 'walk') {
         const u = reducedMotion.matches ? 1 : Math.min(1, Math.max(0, (now - st.t0) / WALK_SECONDS) || 0), e = u * u * (3 - 2 * u);
         st.pos.copy(walk.getPointAt(e)); st.pos.y += (reducedMotion.matches ? 0 : 0.012) * Math.sin(u * WALK_SECONDS * 2 * Math.PI * 0.9) * Math.sin(Math.PI * u);
-        const ahead = walk.getPointAt(Math.min(1, e + 0.12)).clone(); ahead.y = st.pos.y - 0.1;
+        const ahead = walk.getPointAt(Math.min(1, e + 0.35)).clone(); ahead.y = st.pos.y - 0.1; ahead.x = st.pos.x + (ahead.x - st.pos.x) * Math.min(1, e * 2.5);   /* 2026-11-27 券売機の前から歩き出すとき、横を向かず木戸へまっすぐ */
         look = ahead.lerp(STAGE, ease((u - 0.35) / 0.5)); h = 1.5; tau = 0.35;
         if (u >= 1) { st.phase = 'aisle'; UI.atAisle(); }
       } else if (st.phase === 'aisle') { st.pos.copy(HL.aisle); look = camera.aspect < 0.8 ? STAGE : _kidoLook.set(0, 0.78, 0); h = camera.aspect < 0.8 ? 2.9 : 1.78; }   /* 2026-11-24 PC は目線を少し下げ、札を画の上へ（下の案内と重ならない） */   // 2026-11-19：縦長でも三つの席の札が入る広さ

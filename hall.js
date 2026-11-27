@@ -156,7 +156,7 @@ export async function buildHall(ctx) {
       g.fillStyle = '#20140c'; for (let i = 1; i < 3; i++) g.fillRect(i * w / 3 - 3, 0, 6, h); for (let i = 1; i < 7; i++) g.fillRect(0, i * h / 7 - 3, w, 6);
       g.fillRect(0, 0, w, 12); g.fillRect(0, h - 16, w, 16); g.fillRect(0, 0, 12, h); g.fillRect(w - 12, 0, 12, h);
     });
-    const shm = new THREE.MeshStandardMaterial({ map: shoji, emissive: 0xffffff, emissiveMap: shoji, emissiveIntensity: 0.5, roughness: 0.9 }); shm.userData.k = 0.5; out.lanternMats.push(shm);
+    const shm = new THREE.MeshStandardMaterial({ map: shoji, emissive: 0xffffff, emissiveMap: shoji, emissiveIntensity: 0.2, roughness: 0.9 }); shm.userData.k = 0.2;   /* 2026-11-27 本人「部屋を暗めに」 */ out.lanternMats.push(shm);
     const PW = 0.76, PH = 1.95, Z = -1.15, N = 5;   /* 2026-11-23 四枚だと真ん中の継ぎ目が碧の頭を縦に割って見えた → 五枚（幅は同じ） */
     for (let i = 0; i < N; i++) {
       const x = (i - (N - 1) / 2) * PW;
@@ -295,7 +295,7 @@ export async function buildHall(ctx) {
     // 格天井：格縁の間に杉の鏡板（Poly Haven CC0 japanese_cedar_planks）。煤けた古い色
     const ceil = new THREE.Mesh(new THREE.PlaneGeometry(2 * WALL_X, BACK_Z - 1.0), texMat(SUGI, 6, 4, 0x6e5238, 0.75));
     // 2026-11-23 格天井が暗くて見えない → 客席の上に、天井を照らす灯（吊り行灯の上へ漏れる光）を一つ
-    { const up = new THREE.PointLight(0xffb878, 0.9, 7.5, 1.6); up.position.set(0, CEIL_Y - 0.55, (BACK_Z + STAGE_Z1) / 2); scene.add(up); out.flickerLights.push([up, 0.05]); }
+    { const up = new THREE.PointLight(0xffb878, 0.4, 7.5, 1.6); up.position.set(0, CEIL_Y - 0.55, (BACK_Z + STAGE_Z1) / 2); scene.add(up); out.flickerLights.push([up, 0.05]); }
     ceil.rotation.x = Math.PI / 2; ceil.position.set(0, CEIL_Y, (BACK_Z + 1.0) / 2); scene.add(ceil); out.ceiling = ceil;
     for (let x = -WALL_X + 0.9; x < WALL_X; x += 0.9) box(0.08, 0.1, BACK_Z - 1.0, darkWood, x, CEIL_Y - 0.05, (BACK_Z + 1.0) / 2);
     for (let z = 1.5; z <= BACK_Z; z += 0.9) box(2 * WALL_X, 0.1, 0.08, darkWood, 0, CEIL_Y - 0.05, z);
@@ -339,8 +339,8 @@ export async function buildHall(ctx) {
     let i = 0;
     for (const sx of [-1, 1]) for (let z = 2.2; z < BACK_Z - 0.4; z += 1.05) chochin(sx * (WALL_X - 0.38), 2.65, z, 0.9, i % 2 ? '#7a1e1e' : '#1e1e1e', rnd(i++ + 70), 0.9);
     for (const sx of [-1, 1]) chochin(sx * 2.7, 2.5, 1.55, 1.1, '#7a1e1e', rnd(sx + 90), 1.15);   // 舞台の左右の大きい提灯
-    for (const [x, z] of [[-3.6, 4.5], [3.6, 4.5]]) { const p = new THREE.PointLight(0xffa860, 0.9, 6, 2); p.position.set(x, 2.4, z); scene.add(p); out.flickerLights.push([p, 0.12]); }
-    const hemi = new THREE.HemisphereLight(0xa88a68, 0x120c06, 0.13); scene.add(hemi); out.hemi = hemi; hemi.userData.k0 = hemi.intensity;
+    for (const [x, z] of [[-3.6, 4.5], [3.6, 4.5]]) { const p = new THREE.PointLight(0xffa860, 0.5, 6, 2); p.position.set(x, 2.4, z); scene.add(p); out.flickerLights.push([p, 0.12]); }
+    const hemi = new THREE.HemisphereLight(0xa88a68, 0x120c06, 0.07); scene.add(hemi); out.hemi = hemi; hemi.userData.k0 = hemi.intensity;
   }
   // ---- 椅子の列（真ん中に通路）と、左右の桟敷（畳に座布団）。客は黒い影（舞台を向いて座る）
   const tatami = canvasTex(256, 512, (g, w, h) => {
@@ -449,7 +449,7 @@ export async function buildHall(ctx) {
     const noren = canvasTex(512, 384, (g, w, h) => {
       g.fillStyle = '#1b2a44'; g.fillRect(0, 0, w, h);
       g.globalAlpha = 0.12; for (let i = 0; i < 4000; i++) { g.fillStyle = rnd(i + 51) > 0.5 ? '#000' : '#4a6a9a'; g.fillRect(rnd(i + 53) * w, rnd(i + 55) * h, 2, 2); } g.globalAlpha = 1;
-      g.fillStyle = '#efe9da'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = 'italic 500 58px "Cormorant Garamond", serif'; g.fillText('Qualia/rakugo', w / 2, h * 0.42);  // 2026-11-19：yose を rakugo に統合（名は一つ）
+      g.fillStyle = '#efe9da'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = 'italic 500 58px "Cormorant Garamond", serif'; g.fillText('Qualia/yose', w / 2, h * 0.42);  // 2026-11-19：yose を rakugo に統合（名は一つ）
       g.font = '400 30px PottaOne, serif'; g.fillText('寄 席', w / 2, h * 0.68);
     });
     out.norenTex = noren;
@@ -457,7 +457,7 @@ export async function buildHall(ctx) {
     out.noren = [];
     for (let i = 0; i < 3; i++) {
       const g = new THREE.PlaneGeometry(0.5, 1.0, 1, 8); const uv = g.attributes.uv; for (let j = 0; j < uv.count; j++) uv.setX(j, (uv.getX(j) + i) / 3);
-      const p = new THREE.Mesh(g, nm); p.position.set((i - 1) * 0.505, HALL_Y + 2.12 - 0.5, FZ + 0.12); scene.add(p); out.noren.push(p);
+      const p = new THREE.Mesh(g, nm); p.position.set((i - 1) * 0.505, HALL_Y + 2.12 - 0.5, FZ + 0.12); p.visible = false; /* 2026-11-27 本人「碧ののれんは削除」 */ scene.add(p); out.noren.push(p);
     }
     // まねき（演目名の木の札を、入口の上に横一列）
     const boardTex = (title, mins) => canvasTex(160, 640, (g, w, h) => {
@@ -473,12 +473,12 @@ export async function buildHall(ctx) {
       const m = new THREE.MeshStandardMaterial({ map: boardTex(e.t, Math.round(e.d / 60)), roughness: 0.75, emissive: 0xffffff, emissiveIntensity: 0.0 });
       m.emissiveMap = m.map;
       const b = new THREE.Mesh(new THREE.BoxGeometry(bw, 1.6, 0.05), [darkWood, darkWood, darkWood, darkWood, m, darkWood]);
-      b.position.set(-total / 2 + bw / 2 + i * (bw + gap), HALL_Y + 3.65, FZ + 0.2); b.rotation.x = -0.08; b.userData.slug = e.slug; b.userData.mat = m; scene.add(b); out.boards.push(b);
+      b.position.set(-total / 2 + bw / 2 + i * (bw + gap), HALL_Y + 3.65, FZ + 0.2); b.rotation.x = -0.08; b.userData.slug = e.slug; b.userData.mat = m; b.visible = false; /* 2026-11-27 本人「演目名は削除」（演目は券売機とめくりで） */ scene.add(b); out.boards.push(b);
       // 2026-11-19：押しやすさのため、札のすき間まで覆う見えない当たり（375px でも一枚 44px 前後）
       const hit = new THREE.Mesh(new THREE.BoxGeometry(bw + gap, 1.9, 0.3), new THREE.MeshBasicMaterial({ visible: false }));
-      hit.position.copy(b.position); hit.userData.slug = e.slug; hit.userData.mat = m; scene.add(hit); out.boardHits.push(hit);
+      /* 2026-11-27 演目は券売機で選ぶ（まねきは看板として見せるだけ） */
     });
-    box(total + 0.5, 0.08, 0.1, darkWood, 0, HALL_Y + 4.5, FZ + 0.2); box(total + 0.5, 0.08, 0.1, darkWood, 0, HALL_Y + 2.8, FZ + 0.2);
+    /* まねきの桟も外した（2026-11-27） */
     // 提灯（庇の下に一列）と、まねきを照らす灯
     for (let i = 0; i < 8; i++) { const x = (i - 3.5) * 1.15; if (Math.abs(x) < 0.9) continue; chochin(x, HALL_Y + 2.1, FZ + 0.85, 1.25, i % 2 ? '#7a1e1e' : '#1e1e1e', rnd(i + 300), 0.95); }
     const lp = new THREE.PointLight(0xffc98a, 2.2, 9, 2); lp.position.set(0, HALL_Y + 1.9, FZ + 1.6); scene.add(lp); out.flickerLights.push([lp, 0.05]);
@@ -497,7 +497,77 @@ export async function buildHall(ctx) {
     const sky = canvasTex(16, 256, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#05070f'); gr.addColorStop(0.7, '#0b1022'); gr.addColorStop(1, '#141a2c'); g.fillStyle = gr; g.fillRect(0, 0, w, h); });
     const sk = new THREE.Mesh(new THREE.SphereGeometry(40, 24, 12), new THREE.MeshBasicMaterial({ map: sky, side: THREE.BackSide, fog: false, depthWrite: false }));
     sk.position.set(0, 0, FZ + 6); scene.add(sk); out.sky = sk;
-    out.kidoCam = { pos: new THREE.Vector3(0, HALL_Y + 1.6, FZ + 10.5), look: new THREE.Vector3(0, HALL_Y + 2.05, FZ) };
+    // ---- 券売機（2026-11-27 本人「ボタンはデジタル上でなく、昔ながらの券売機で、演目を選ぶようなデザインに」）
+    // 木戸の上手脇に立つ、木の箱に真鍮の押しボタンが並んだ古い切符の機械（特定の製品・寄席の意匠は写さない自作）。
+    // ボタンを押すと沈み、下の口から演目名を刷った紙の切符が出る → 木戸のもぎりで半券をもぎって客席へ。
+    {
+      const KX = 1.62, KZ = FZ + 0.55, KW = 0.86, KH = 1.62, KD = 0.48;
+      const kb = new THREE.Group(); kb.position.set(KX, HALL_Y, KZ); kb.rotation.y = -0.32; scene.add(kb);
+      const body = texMat(DARK, 1, 2, 0x5a2a1c, 0.5, 0.35);   // 弁柄の漆を塗り重ねた古い木の箱
+      const brass = new THREE.MeshStandardMaterial({ color: 0xb08a4a, roughness: 0.38, metalness: 0.85 });
+      const iron = new THREE.MeshStandardMaterial({ color: 0x1a1816, roughness: 0.5, metalness: 0.6 });
+      box(KW, KH, KD, body, 0, KH / 2 + 0.1, 0, kb);
+      box(KW + 0.06, 0.1, KD + 0.06, darkWood, 0, 0.05, 0, kb);                    // 台
+      box(KW + 0.08, 0.05, KD + 0.08, darkWood, 0, KH + 0.125, 0, kb);             // 天板
+      for (const sx of [-1, 1]) box(0.03, KH, 0.03, brass, sx * (KW / 2 + 0.005), KH / 2 + 0.1, KD / 2 + 0.005, kb);   // 角の真鍮
+      // 頭の看板（灯の入る擦りガラスに墨の字）
+      const signTex = canvasTex(512, 160, (g, w, h) => { washi(g, w, h, 777, '#efe2c2');
+        g.fillStyle = '#120d0a'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = `400 84px ${YF}, PottaOne, serif`; g.fillText('きっぷ', w / 2, h * 0.46);
+        g.font = '400 24px "Klee One", serif'; g.fillStyle = '#5a2216'; g.fillText('演目の釦を押してください', w / 2, h * 0.86); });
+      const signM = new THREE.MeshStandardMaterial({ map: signTex, emissive: 0xffd9a0, emissiveMap: signTex, emissiveIntensity: 0.55, roughness: 0.8 });
+      const sign = new THREE.Mesh(new THREE.PlaneGeometry(KW - 0.1, 0.25), signM); sign.position.set(0, KH - 0.08, KD / 2 + 0.004); kb.add(sign);
+      // 押しボタンの盤（二列×四段＝八席）。札に演目名、下に真鍮の輪と象牙色の釦
+      const panelTex = canvasTex(256, 512, (g, w, h) => { g.fillStyle = '#2a1712'; g.fillRect(0, 0, w, h); g.globalAlpha = 0.18; for (let y = 0; y < h; y += 2) { g.fillStyle = rnd(y + 801) > 0.5 ? '#000' : '#6a3a28'; g.fillRect(0, y, w, 1); } g.globalAlpha = 1; });
+      const panel = new THREE.Mesh(new THREE.PlaneGeometry(KW - 0.12, 0.98), new THREE.MeshStandardMaterial({ map: panelTex, roughness: 0.55 })); panel.position.set(0, 0.98, KD / 2 + 0.003); kb.add(panel);
+      const capGeo = new THREE.CylinderGeometry(0.036, 0.04, 0.05, 28), ringGeo = new THREE.TorusGeometry(0.046, 0.01, 10, 32);
+      out.kbButtons = {};
+      ENM.forEach((e, i) => {
+        const col = i % 2, row = Math.floor(i / 2), cx = (col ? 1 : -1) * 0.185, cy = 1.36 - row * 0.235;
+        const lt = canvasTex(256, 96, (g, w, h) => { washi(g, w, h, 900 + i, '#efe6cf'); g.strokeStyle = '#3a2416'; g.lineWidth = 4; g.strokeRect(2, 2, w - 4, h - 4);
+          g.fillStyle = '#8a2216'; g.font = '400 22px "Klee One", serif'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(e.no.replace(/ /g, ''), 12, 22);
+          g.fillStyle = '#100c0a'; g.textAlign = 'center'; let fs = 50; g.font = `400 ${fs}px ${YF}, PottaOne, serif`; while (g.measureText(e.t).width > w - 36 && fs > 24) { fs -= 2; g.font = `400 ${fs}px ${YF}, PottaOne, serif`; } g.fillText(e.t, w / 2 + 8, h * 0.62); });
+        const lab = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 0.1), new THREE.MeshStandardMaterial({ map: lt, roughness: 0.85, emissive: 0xffe2b0, emissiveMap: lt, emissiveIntensity: 0.12 }));
+        lab.position.set(cx, cy, KD / 2 + 0.006); kb.add(lab);
+        const ring = new THREE.Mesh(ringGeo, brass); ring.position.set(cx, cy - 0.11, KD / 2 + 0.006); kb.add(ring);
+        const capM = new THREE.MeshStandardMaterial({ color: 0xe8dcc0, roughness: 0.35, emissive: 0xff9a40, emissiveIntensity: 0.0 });
+        const cap = new THREE.Mesh(capGeo, capM); cap.rotation.x = Math.PI / 2; cap.position.set(cx, cy - 0.11, KD / 2 + 0.02); kb.add(cap);
+        // 押しやすさ：札と釦をまとめた見えない当たり（一段 0.235 の高さ＝スマホの画で 44px 以上になるよう木戸の目を寄せる）
+        const hit = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.23, 0.12), new THREE.MeshBasicMaterial({ visible: false }));
+        hit.position.set(cx, cy - 0.04, KD / 2 + 0.05); hit.userData.slug = e.slug; hit.userData.mat = capM; kb.add(hit); out.boardHits.push(hit);
+        out.kbButtons[e.slug] = { cap, z0: cap.position.z, t: -1, title: e.t, no: e.no.replace(/ /g, '') };
+      });
+      // 銭の口と、切符の出る口（真鍮の縁）
+      box(0.1, 0.012, 0.01, iron, 0.26, 0.37, KD / 2 + 0.014, kb); box(0.14, 0.05, 0.012, brass, 0.26, 0.37, KD / 2 + 0.008, kb);   // 銭の口（出口の右）
+      box(0.3, 0.07, 0.02, brass, -0.08, 0.36, KD / 2 + 0.01, kb); box(0.26, 0.025, 0.03, iron, -0.08, 0.36, KD / 2 + 0.012, kb);
+      // 足もとの灯（箱の正面を下から照らす。スマホは足さない）
+      if (!LITE) { const kl = new THREE.PointLight(0xffc888, 1.1, 2.6, 2); kl.position.set(KX - 0.1, HALL_Y + 1.25, KZ + 0.75); scene.add(kl); out.kidoLights.push(kl); }
+      // 切符（紙）。押すと口から出て、手前へ浮かぶ
+      const tkCanvas = document.createElement('canvas'); tkCanvas.width = 384; tkCanvas.height = 160;
+      const tkTex = new THREE.CanvasTexture(tkCanvas); tkTex.colorSpace = THREE.SRGBColorSpace;
+      const drawTicket = (e) => { const g = tkCanvas.getContext('2d'), w = 384, h = 160; washi(g, w, h, 1234, '#efe0c0');
+        g.strokeStyle = '#8a2216'; g.lineWidth = 3; g.strokeRect(8, 8, w - 16, h - 16); g.setLineDash([6, 6]); g.beginPath(); g.moveTo(w * 0.72, 10); g.lineTo(w * 0.72, h - 10); g.stroke(); g.setLineDash([]);
+        g.fillStyle = '#8a2216'; g.font = '400 22px "Klee One", serif'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText('木戸札　' + e.no, 22, 34);
+        g.fillStyle = '#100c0a'; g.font = `400 56px ${YF}, PottaOne, serif`; g.fillText(e.title, 22, 98);
+        g.save(); g.translate(w * 0.86, h / 2); g.fillStyle = '#5a2216'; g.font = '400 26px "Klee One", serif'; g.textAlign = 'center'; g.fillText('半券', 0, -16); g.fillText('入場', 0, 22); g.restore(); tkTex.needsUpdate = true; };
+      const tkM = new THREE.MeshStandardMaterial({ map: tkTex, roughness: 0.9, side: THREE.DoubleSide, emissive: 0xffe6c0, emissiveMap: tkTex, emissiveIntensity: 0.25 });
+      const ticket = new THREE.Mesh(new THREE.PlaneGeometry(0.29, 0.12), tkM); ticket.visible = false; kb.add(ticket);
+      // もぎり（木戸の内側の小さな台。もいだ半券が箱にたまる）
+      const mg = new THREE.Group(); mg.position.set(-0.95, HALL_Y, BACK_Z - 0.55); scene.add(mg);
+      box(0.7, 0.72, 0.42, texMat(OLD, 1, 1, 0x6a4a30, 0.6), 0, 0.36, 0, mg);
+      box(0.24, 0.07, 0.16, darkWood, 0.12, 0.755, 0, mg);
+      const stubs = []; for (let i = 0; i < 9; i++) { const s = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.11), tkM); s.rotation.x = -Math.PI / 2 + 0.1; s.rotation.z = rnd(i + 70) * 3; s.position.set(0.12 + (rnd(i + 71) - 0.5) * 0.12, 0.792 + i * 0.002, (rnd(i + 72) - 0.5) * 0.08); mg.add(s); stubs.push(s); }
+      chochin(-0.95, HALL_Y + 1.85, BACK_Z - 0.55, 0.7, '#7a1e1e', rnd(333), 0.7);
+      out.kenbaiki = {
+        group: kb,
+        press(slug, now) { const b = out.kbButtons[slug]; if (!b) return; b.t = now; drawTicket(b); ticket.visible = true; ticket.userData.t0 = now; },
+        update(now) {
+          for (const b of Object.values(out.kbButtons)) { if (b.t < 0) continue; const u = (now - b.t) / 0.35; b.cap.position.z = b.z0 - 0.022 * Math.max(0, Math.sin(Math.min(1, u) * Math.PI)); if (u > 1) b.t = -1; }
+          if (ticket.visible) { const u = Math.min(1, Math.max(0, (now - ticket.userData.t0 - 0.25) / 1.1)), e = u * u * (3 - 2 * u);
+            ticket.position.set(-0.08 + 0.08 * e, 0.34 + 0.5 * e, KD / 2 + 0.02 + 0.42 * e); ticket.scale.setScalar(1 + 0.6 * e); ticket.rotation.set(-1.2 * (1 - e) + 0.12, 0.25 * e, 0.04 * Math.sin(now * 3) * e); }
+        },
+      };
+    }
+    out.kidoCam = { pos: new THREE.Vector3(0.8, HALL_Y + 1.5, FZ + 3.6), look: new THREE.Vector3(0.9, HALL_Y + 1.25, FZ + 0.4) };   // 2026-11-27 木戸と券売機を正面に
     out.FZ = FZ;
   }
 
@@ -523,7 +593,7 @@ export async function buildHall(ctx) {
   // 2026-11-24 本人の参考画像「奥の行灯や提灯は大きくぼけた光」：高座の左右の奥に、ぼけた灯の玉（縁が少し明るい丸）。加算で描くだけで光源は足さない（重さはほぼ変えない）
   {
     const orbTex = canvasTex(128, 128, (g, w, h) => { const r = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); r.addColorStop(0, 'rgba(255,196,120,.30)'); r.addColorStop(0.6, 'rgba(255,184,110,.30)'); r.addColorStop(0.8, 'rgba(255,196,128,.16)'); r.addColorStop(1, 'rgba(255,170,90,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); });
-    const om = new THREE.SpriteMaterial({ map: orbTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false, opacity: 0.32 });
+    const om = new THREE.SpriteMaterial({ map: orbTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false, opacity: 0.14 });   /* 2026-11-27 埃に見えた → 薄く */
     const P = [[-2.45, 2.35, -0.95, 0.5], [-3.0, 1.75, -0.9, 0.38], [2.5, 2.3, -0.95, 0.48], [3.05, 1.65, -0.9, 0.4], [-4.6, 2.7, -0.8, 0.6], [4.6, 2.65, -0.8, 0.6]];
     out.orbs = [];
     for (const [x, y, z, sc] of (LITE ? P.slice(0, 4) : P)) { const o = new THREE.Sprite(om); o.position.set(x, y, z); o.scale.setScalar(sc); o.renderOrder = 5; scene.add(o); out.orbs.push(o); }

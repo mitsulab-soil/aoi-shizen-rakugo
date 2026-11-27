@@ -5,9 +5,9 @@
 <script data-embed>/* 2026-11-09：?embed=1 は集約アプリ（Qualia/yose・Qualium x/31）の中で、自分の見出しを隠す。引数なしは今までどおり */if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script><style>.embed .mu-logo{display:none!important}.embed #sKido{display:none!important}</style>
 <meta name="tdm-reservation" content="1">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Qualia/rakugo</title>
-<meta name="description" content="Qualia/rakugo ── 木戸をくぐって席に座ると、高座で碧が噺をする 3D の寄席。蜂やみみずや犬や写真機の受けとっている世界を、噺に訳した 8 席。mitsulab">
-<meta property="og:title" content="Qualia/rakugo ／ mitsulab">
+<title>Qualia/yose</title>
+<meta name="description" content="Qualia/yose ── 木戸をくぐって席に座ると、高座で碧が噺をする 3D の寄席。蜂やみみずや犬や写真機の受けとっている世界を、噺に訳した 8 席。mitsulab">
+<meta property="og:title" content="Qualia/yose ／ mitsulab">
 <meta property="og:description" content="木戸をくぐって、席に座る。高座で碧が、ほかの生き物や機械の受けとり方を噺に訳して語る、3D の寄席。8 席。">
 <meta property="og:image" content="img/hp_card_640x400.webp">
 <meta property="og:type" content="website">
@@ -187,7 +187,7 @@
 <div id="hint" aria-live="polite"></div>
 
 <header class="bar mu-top">
-  <a class="mark mu-logo" href="https://mitsulab.jp" aria-label="mitsulab のサイトへ"><b>Qualia/rakugo</b><small>mitsulab</small></a>
+  <a class="mark mu-logo" href="https://mitsulab.jp" aria-label="mitsulab のサイトへ"><b>Qualia/yose</b><small>mitsulab</small></a>
   <div class="r mu-top-r">
     <button class="ml-btn" id="bProg" type="button" aria-label="木戸へもどって演目を替える" hidden><span aria-hidden="true">≡</span><span class="lbl">木戸へ</span></button>
     <button class="ml-btn" id="bInfo" type="button" aria-label="この噺と寄席のこと"><span aria-hidden="true">i</span><span class="lbl">この噺と寄席のこと</span></button>
@@ -223,7 +223,7 @@
 <!-- 終わり -->
 <section class="sheet off" id="sEnd" aria-label="終演">
   <div class="in">
-    <p class="ml-kicker">Qualia/rakugo</p>
+    <p class="ml-kicker">Qualia/yose</p>
     <h2 id="endT"></h2>
     <p id="endInvite"></p>
     <div class="row">
@@ -262,7 +262,7 @@
   </div>
   <div data-pane="yose" hidden>
     <h2>この寄席のこと</h2>
-    <p>木戸（入口）の上には演目名のまねき、客席の左右には提灯と畳の桟敷。高座には座布団、上手（客席から見て右）に高座の演者の名を出すめくり。噺は江戸の型なので、ふだんは見台と膝隠しを置きません。見台・小拍子・膝隠しは上方（関西）の落語の道具です。下の切りかえで、上方の高座のしつらいも見られます。</p>
+    <p>木戸の脇の券売機で演目の釦を押すと、切符が出ます。木戸のもぎりで半券をもいで客席へ。券売機は昔の切符の機械に見立てた自作で、寄席に実際にある設備ではありません。木戸（入口）の上には演目名のまねき、客席の左右には提灯と畳の桟敷。高座には座布団、上手（客席から見て右）に高座の演者の名を出すめくり。噺は江戸の型なので、ふだんは見台と膝隠しを置きません。見台・小拍子・膝隠しは上方（関西）の落語の道具です。下の切りかえで、上方の高座のしつらいも見られます。</p>
     <p>席に座ると、出囃子が鳴って高座が明るくなり、碧がお辞儀をして話しはじめます。まくらでは本に書いてある事実だけを話し、羽織を脱いで本題（江戸の作り話）へ。人物が替わると顔の向き（上下〈かみしも〉）が替わり、扇子と手拭いで物を見立てます。サゲのあと、正面を向いてお辞儀をします。</p>
     <p>本題のあいだ、高座の後ろの襖や客席の空気に、その噺の生き物や機械の受けとり方を、淡い模式として重ねます（下の「層」で消せます）。ほかのものの感じ方そのものは渡せないので、典拠にもとづいて人の感覚へ置きかえたものです。</p>
     <p><button class="ml-btn" id="bKami" type="button" aria-pressed="false">上方の高座にする（見台・膝隠しを置く）</button></p>
@@ -344,6 +344,13 @@ function applause(sec = 4.2) {   // 拍手（手を打つ短い音の集まり�
     n.connect(f).connect(g); (p ? g.connect(p).connect(a.destination) : g.connect(a.destination)); n.start(t);
   }
 }
+function kachan() {   // 券売機の音（釦の当たり・歯車・切符の出る紙の音。数式から合成）
+  const a = ac(); if (!a) return; const t = a.currentTime + 0.02;
+  const click = (t0, f, g0) => { const n = a.createBufferSource(); n.buffer = noiseBuf(0.04); const bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f; bp.Q.value = 3; const g = a.createGain(); g.gain.setValueAtTime(g0, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.04); n.connect(bp).connect(g).connect(a.destination); n.start(t0); };
+  click(t, 2400, 0.35); for (let i = 0; i < 7; i++) click(t + 0.3 + i * 0.07, 900 + i * 40, 0.12);
+  const n = a.createBufferSource(); n.buffer = noiseBuf(0.5); const hp = a.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2500; const g = a.createGain(); g.gain.setValueAtTime(0, t + 0.8); g.gain.linearRampToValueAtTime(0.06, t + 0.9); g.gain.exponentialRampToValueAtTime(0.001, t + 1.3); n.connect(hp).connect(g).connect(a.destination); n.start(t + 0.8);
+  const o = a.createOscillator(), og = a.createGain(); o.frequency.value = 1320; og.gain.setValueAtTime(0.08, t + 1.35); og.gain.exponentialRampToValueAtTime(0.001, t + 2.2); o.connect(og).connect(a.destination); o.start(t + 1.35); o.stop(t + 2.3);
+}
 const unlock = () => { ac(); audio.muted = true; const p = audio.play(); if (p && p.then) p.then(() => { if (!playing) { audio.pause(); audio.currentTime = 0; } audio.muted = false; }).catch(() => { audio.muted = false; }); else { audio.pause(); audio.muted = false; } };
 
 // ---- 画面の状態
@@ -370,7 +377,9 @@ function choose(slug) {
   audio.src = `yose/enmoku/${slug}/voice.m4a`; audio.load();
   history.replaceState(null, '', `?e=${slug}`);
   sheet('#sKido', false); document.getElementById('kidoAsk')?.classList.remove('on'); $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`;
-  window.__CAM.walkIn(performance.now() / 1000);
+  // 2026-11-27 券売機：釦が沈み、切符が出てから木戸へ（もぎりを通って客席へ）
+  const t0 = performance.now() / 1000; window.__HL?.kenbaiki?.press(slug, t0); kachan();
+  setTimeout(() => window.__CAM.walkIn(performance.now() / 1000), matchMedia('(prefers-reduced-motion: reduce)').matches ? 300 : 2100);
   chosenRes(slug);
 }
 $('#list').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) { if (!cur) choose(c.dataset.slug); else choose(c.dataset.slug); } });
@@ -411,7 +420,7 @@ window.__UI = {
     const e0 = q.get('e') || location.hash.replace('#', '');   // 前の版の #slug のリンクも効く
     if (e0 && ENM.some(x => x.slug === e0)) { cur = e0; const w = ENM.find(x => x.slug === e0); fillList(); info(w); audio.src = `yose/enmoku/${e0}/voice.m4a`; audio.load();
       $('#seatKicker').textContent = `${w.no.replace(/ /g, '')}　${w.t}`; window.__CAM.toAisle(); chosenRes(e0); if (!AUTO_SEAT) window.__UI.atAisle(); else { AUTO_SEAT = false; setTimeout(() => document.querySelector('[data-seat="naka"]')?.click(), 60); } }
-    else { fillList(); sheet('#sKido', true); if (innerWidth < 900) document.getElementById('kidoAsk')?.classList.add('on'); hint('まねきの札を押すと、その一席へ', innerWidth < 600 ? '八席・音が出ます' : innerWidth < 900 ? '生き物や機械の受けとり方を噺にした八席・音が出ます' : '八席・音が出ます ── 寄席を出たら、帰り道で、いちばん小さな音を探してみて');   /* 2026-11-22 PC は問いと案内を下の一か所にまとめる（上の問いは出さない） */   /* 2026-11-22 スマホは詰まって見えた → 短く */ }
+    else { fillList(); /* 2026-11-27 演目は 3D の券売機で選ぶ（紙の一覧は出さない） */ if (innerWidth < 900) document.getElementById('kidoAsk')?.classList.add('on'); hint('券売機の釦を押して、演目の切符を', innerWidth < 600 ? '八席・音が出ます' : innerWidth < 900 ? '生き物や機械の受けとり方を噺にした八席・音が出ます' : '八席・音が出ます ── 寄席を出たら、帰り道で、いちばん小さな音を探してみて');   /* 2026-11-22 PC は問いと案内を下の一か所にまとめる（上の問いは出さない） */   /* 2026-11-22 スマホは詰まって見えた → 短く */ }
   },
   atAisle() { sheet('#sSeat', true); showTags(true); hint('木札の下がった席を押して、座る', innerWidth < 900 ? '前・中・桟敷' : ''); document.body.classList.add('aisle'); },   /* 2026-11-24 PC は札に字があるので小さい行を省き、案内を下の端へ */
   seated() { seated = true; maybeStart(); },
