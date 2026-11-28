@@ -2046,7 +2046,7 @@ function createCamera() {
     update(now, att) {
       const dt = Math.max(0, Math.min(0.1, now - (st.lastNow || now))); st.lastNow = now;
       let look, h = 1.3, tau = 0.9, wfT = 0.8;
-      if (st.phase === 'kido') { if (HL.kenbaiki) HL.kenbaiki.group.visible = true; if (camera.aspect < 0.8) HL.kidoCam.pos.set(1.25, Y + 1.45, FZ + 2.7); st.pos.copy(HL.kidoCam.pos).add(_cv.set(reducedMotion.matches ? 0 : Math.sin(now * 0.21) * 0.05, reducedMotion.matches ? 0 : Math.sin(now * 0.33) * 0.02, 0)); look = camera.aspect < 0.8 ? _kidoLook.set(1.5, Y + 1.02, FZ + 0.62) : _kidoLook.set(0.75, Y + 1.35, FZ + 0.4); h = camera.aspect < 0.8 ? 1.12 : 1.25; }   // 2026-11-27 券売機の釦が押せる大きさに（スマホは箱を画いっぱいに）   // 2026-11-19：まねきの 8 枚が縦長の画面でも全部入る（札を押して選ぶ）
+      if (st.phase === 'kido') { if (HL.kenbaiki) HL.kenbaiki.group.visible = true; if (camera.aspect < 0.8) HL.kidoCam.pos.set(1.2, Y + 1.45, FZ + 3.05); st.pos.copy(HL.kidoCam.pos).add(_cv.set(reducedMotion.matches ? 0 : Math.sin(now * 0.21) * 0.05, reducedMotion.matches ? 0 : Math.sin(now * 0.33) * 0.02, 0)); look = camera.aspect < 0.8 ? _kidoLook.set(1.5, Y + 1.02, FZ + 0.62) : _kidoLook.set(0.75, Y + 1.35, FZ + 0.4); h = camera.aspect < 0.8 ? 1.12 : 1.25; }   // 2026-11-27 券売機の釦が押せる大きさに（スマホは箱を画いっぱいに）   // 2026-11-19：まねきの 8 枚が縦長の画面でも全部入る（札を押して選ぶ）
       else if (st.phase === 'walk') {
         const u = reducedMotion.matches ? 1 : Math.min(1, Math.max(0, (now - st.t0) / WALK_SECONDS) || 0), e = u * u * (3 - 2 * u);
         st.pos.copy(walk.getPointAt(e)); st.pos.y += (reducedMotion.matches ? 0 : 0.012) * Math.sin(u * WALK_SECONDS * 2 * Math.PI * 0.9) * Math.sin(Math.PI * u);

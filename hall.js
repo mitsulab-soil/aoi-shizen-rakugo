@@ -397,7 +397,7 @@ export async function buildHall(ctx) {
       g.strokeStyle = '#3a2416'; g.lineWidth = 8; g.strokeRect(4, 4, w - 8, h - 8);
       g.fillStyle = '#121010'; g.textAlign = 'center'; g.textBaseline = 'middle';
       const cs = [...t], fs = Math.min(92, 250 / cs.length); g.font = `400 ${fs}px PottaOne, serif`; cs.forEach((c, i) => g.fillText(c, w / 2, 70 + fs / 2 + i * fs * 0.98));
-      g.fillStyle = '#5a1010'; g.font = '400 38px PottaOne, serif'; g.fillText(s2, w / 2, h - 40);   /* 2026-11-24 小さい説明がつぶれて読めなかった → 大きく濃く */
+      g.fillStyle = '#3a0606'; g.font = `400 ${Math.min(44, Math.floor((w - 44) / [...s2].length))}px PottaOne, serif`; g.fillText(s2, w / 2, h - 40);   /* 2026-11-28 長い説明（全体が見える）が札の枠で切れた → 枠の内に収まる大きさに */   /* 2026-11-24 小さい説明がつぶれて読めなかった → 大きく濃く */
     });
     const string = new THREE.MeshBasicMaterial({ color: 0x2a1a10 });
     for (const [k, t, s2, tx] of [['sajiki', '桟敷', '畳の横', -0.4], ['naka', '中', '全体が見える', 0], ['mae', '前', '高座の近く', 0.4]]) {   // 通路に立った目の前に、左から桟敷・中・前（席のある向きの順）
@@ -525,7 +525,7 @@ export async function buildHall(ctx) {
       ENM.forEach((e, i) => {
         const col = i % 2, row = Math.floor(i / 2), cx = (col ? 1 : -1) * 0.185, cy = 1.36 - row * 0.235;
         const lt = canvasTex(512, 192, (g, w, h) => { g.scale(2, 2); w = 256; h = 96;   /* 2026-11-27 筆の字（欅など）がつぶれた → 倍の解像度 */ washi(g, w, h, 900 + i, '#efe6cf'); g.strokeStyle = '#3a2416'; g.lineWidth = 4; g.strokeRect(2, 2, w - 4, h - 4);
-          g.fillStyle = '#8a2216'; g.font = '400 22px "Klee One", serif'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(e.no.replace(/ /g, ''), 12, 22);
+          g.fillStyle = '#6a140c'; g.font = '600 30px "Klee One", serif'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(e.no.replace(/ /g, ''), 12, 22);
           g.fillStyle = '#100c0a'; g.textAlign = 'center'; let fs = 50; g.font = `400 ${fs}px ${YF}, PottaOne, serif`; while (g.measureText(e.t).width > w - 36 && fs > 24) { fs -= 2; g.font = `400 ${fs}px ${YF}, PottaOne, serif`; } g.strokeStyle = '#100c0a'; g.lineWidth = 1.6; g.lineJoin = 'round'; g.strokeText(e.t, w / 2 + 8, h * 0.62); g.fillText(e.t, w / 2 + 8, h * 0.62);   /* 2026-11-27 細い筆の字がかすれた → 縁を足して太く */ });
         const lab = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 0.1), new THREE.MeshStandardMaterial({ map: lt, roughness: 0.85, emissive: 0xffe2b0, emissiveMap: lt, emissiveIntensity: 0.12 }));
         lab.position.set(cx, cy, KD / 2 + 0.006); kb.add(lab);
@@ -564,7 +564,7 @@ export async function buildHall(ctx) {
         update(now) {
           for (const b of Object.values(out.kbButtons)) { if (b.t < 0) continue; const u = (now - b.t) / 0.35; b.cap.position.z = b.z0 - 0.022 * Math.max(0, Math.sin(Math.min(1, u) * Math.PI)); if (u > 1) b.t = -1; }
           if (ticket.visible) { const u = Math.min(1, Math.max(0, (now - ticket.userData.t0 - 0.25) / 1.1)), e = u * u * (3 - 2 * u);
-            ticket.position.set(-0.08 + 0.08 * e, 0.34 + 1.2 * e, KD / 2 + 0.02 + 0.3 * e);   /* 2026-11-27 切符は上の『きっぷ』の看板の前へ浮かぶ（札にも字幕にも重ならない） */   /* 2026-11-27 375px で切符が札に重なった → 口の高さのまま手前へ */ ticket.scale.setScalar(1 + 1.5 * e);   /* 看板を覆い切る大きさ */ ticket.rotation.set(-1.2 * (1 - e) + 0.12, 0.25 * e, 0.04 * Math.sin(now * 3) * e); }
+            ticket.position.set(-0.08 + 0.08 * e, 0.34 + 1.2 * e, KD / 2 + 0.02 + 0.3 * e);   /* 2026-11-27 切符は上の『きっぷ』の看板の前へ浮かぶ（札にも字幕にも重ならない） */   /* 2026-11-27 375px で切符が札に重なった → 口の高さのまま手前へ */ ticket.scale.setScalar(1 + (innerWidth / innerHeight < 0.8 ? 0.9 : 1.5) * e);   /* 2026-11-28 スマホで切符が出たこまに券売機の右端が切れた */   /* 看板を覆い切る大きさ */ ticket.rotation.set(-1.2 * (1 - e) + 0.12, 0.25 * e, 0.04 * Math.sin(now * 3) * e); }
         },
       };
     }
